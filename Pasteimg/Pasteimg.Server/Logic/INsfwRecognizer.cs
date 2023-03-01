@@ -25,7 +25,7 @@ namespace Pasteimg.Server.Logic
         private bool Decide(Dictionary<string,float> values)
         {
             float pornValue = values[NsfwClass.Pornography.ToString()];
-            float hentaiValue = values[NsfwClass.Pornography.ToString()];
+            float hentaiValue = values[NsfwClass.Hentai.ToString()];
             return pornValue >treshhold ||hentaiValue >treshhold;
         }
         public bool IsNsfw(byte[] binary)

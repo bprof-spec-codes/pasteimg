@@ -22,7 +22,7 @@ builder.Services.AddTransient<INsfwRecognizer, NsfwRecognizer>();
 builder.Services.AddTransient<IBinaryHandler, BinaryHandler>();
 builder.Services.AddTransient<IKeyGenerator, KeyGenerator>();
 builder.Services.AddTransient<IPasswordHasher, PasswordHasher>();
-builder.Services.AddTransient<IPasteImgLogic, IPasteImgLogic>();
+builder.Services.AddTransient<IPasteImgLogic, PasteImgLogic>();
 
 var app = builder.Build();
 
