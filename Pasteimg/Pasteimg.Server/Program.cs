@@ -1,6 +1,9 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Pasteimg.Server.Data;
+using Pasteimg.Server.Logic;
+using Pasteimg.Server.Models;
+using Pasteimg.Server.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +16,13 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddTransient<IRepository<BinaryImage>, Repository<BinaryImage>>();
+builder.Services.AddTransient<INsfwRecognizer, NsfwRecognizer>();
+builder.Services.AddTransient<IBinaryHandler, BinaryHandler>();
+builder.Services.AddTransient<IKeyGenerator, KeyGenerator>();
+builder.Services.AddTransient<IPasswordHasher, PasswordHasher>();
+builder.Services.AddTransient<IPasteImgLogic, IPasteImgLogic>();
 
 var app = builder.Build();
 
