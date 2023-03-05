@@ -4,12 +4,12 @@ using Pasteimg.Server.Models;
 
 namespace Pasteimg.Server.Controllers
 {
-    public class DebugController : Controller
+    public class DebugViewController : Controller
     {
 
         private readonly ILogger<HomeController> _logger;
         private readonly DebugLogic _logic;
-        public DebugController(ILogger<HomeController> logger, DebugLogic logic)
+        public DebugViewController(ILogger<HomeController> logger, DebugLogic logic)
         {
             _logger = logger;
             _logic = logic;
