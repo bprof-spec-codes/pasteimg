@@ -1,17 +1,36 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using Pasteimg.Server.Repository;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.CompilerServices;
 
 namespace Pasteimg.Server.Models
 {
-    public class Upload
+    public class UploadBase
+    {
+        public virtual string? Id { get; set; }
+        public string? Password { get; set; }
+        public DateTime TimeStamp { get; set; }
+    }
+
+
+    public class Upload : UploadBase, IEntity
     {
         public Upload()
         {
-            this.Id = Guid.NewGuid().ToString();
+            Images = new List<Image>();
         }
 
-        public string Id { get; set; }
+        [Key]
+        public override string? Id { get; set; }
 
         [NotMapped]
         public virtual List<Image> Images { get; set; }
+
+        public object[] GetKey()
+        {
+            return new object[] { Id };
+        }
     }
 }
