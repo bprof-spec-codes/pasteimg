@@ -1,6 +1,8 @@
-﻿namespace Pasteimg.Server.Repository
+﻿using Pasteimg.Server.Models;
+
+namespace Pasteimg.Server.Repository
 {
-    public interface IRepository<TEntity> where TEntity : class
+    public interface IRepository<TEntity> where TEntity : class,IEntity
     {
         void Create(TEntity item);
         TEntity? Delete(params object[] id);
