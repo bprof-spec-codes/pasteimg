@@ -17,12 +17,14 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddTransient<IRepository<BinaryImage>, Repository<BinaryImage>>();
-builder.Services.AddTransient<INsfwRecognizer, NsfwRecognizer>();
-builder.Services.AddTransient<IBinaryHandler, BinaryHandler>();
-builder.Services.AddTransient<IKeyGenerator, KeyGenerator>();
+builder.Services.AddTransient<IRepository<Image>, Repository<Image>>();
+builder.Services.AddTransient<IRepository<Upload>, Repository<Upload>>();
+builder.Services.AddTransient<IImageProcessor, ImageProcessor>();
 builder.Services.AddTransient<IPasswordHasher, PasswordHasher>();
-builder.Services.AddTransient<IPasteImgLogic, PasteImgLogic>();
+builder.Services.AddTransient<IPasteImgLogic,PasteImgLogic>();
+builder.Services.AddTransient<IImageFileStorage, ImageFileStorage>();
+builder.Services.AddSingleton<DebugLogic>();
+builder.Services.AddSession();
 
 var app = builder.Build();
 
@@ -40,7 +42,7 @@ else
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
+app.UseSession();
 app.UseRouting();
 
 app.UseAuthentication();
@@ -50,5 +52,4 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
-
 app.Run();
