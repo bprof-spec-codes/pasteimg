@@ -1,27 +1,35 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Newtonsoft.Json;
+using Pasteimg.Server.Models;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Pasteimg.Server.Models
 {
-    public class Image
+
+    public class Image:IEntity
     {
-        public Image()
-        {
-            this.Id = Guid.NewGuid().ToString();
-        }
-
         [Key]
-        public string Id { get; set; }
-
-        public bool NSFW { get; set; }
-
-        [MaxLength(120)]
-        public string Description { get; set; }
-
-        [NotMapped]
-        public virtual Upload Upload { get; set; }
+        public string? Id { get; set; }
 
         [ForeignKey(nameof(Upload))]
-        public string UploadID { get; set; }
+        public string? UploadID { get; set; }
+        [NotMapped, JsonIgnore]
+        public Upload? Upload { get; set; }
+        
+        [MaxLength(120)]
+        public string Description { get; set; }
+        
+        public bool NSFW { get; set; }
+        public object[] GetKey()
+        {
+            return new object[] { Id };
+        }
     }
+
+    public class ImageModel:Image
+    {
+        public IFormFile? Content { get; set; }
+    }
+  
+   
 }
