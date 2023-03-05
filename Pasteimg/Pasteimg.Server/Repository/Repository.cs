@@ -1,9 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Pasteimg.Server.Data;
+using Pasteimg.Server.Models;
 
 namespace Pasteimg.Server.Repository
 {
-    public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
+
+    public class Repository<TEntity> : IRepository<TEntity> where TEntity : class,IEntity
     {
         private DbContext context;
 
