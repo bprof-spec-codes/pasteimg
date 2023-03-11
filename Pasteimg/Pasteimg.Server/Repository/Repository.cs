@@ -4,8 +4,19 @@ using Pasteimg.Server.Models;
 
 namespace Pasteimg.Server.Repository
 {
+    public interface IRepository<TEntity> where TEntity : class, IEntity
+    {
+        void Create(TEntity item);
+        TEntity? Delete(params object[] id);
 
-    public class Repository<TEntity> : IRepository<TEntity> where TEntity : class,IEntity
+        TEntity? Read(params object[] id);
+
+        IQueryable<TEntity> ReadAll();
+
+        void Update(Action<TEntity> updateAction, params object[] id);
+    }
+
+    public class Repository<TEntity> : IRepository<TEntity> where TEntity : class, IEntity
     {
         private DbContext context;
 
@@ -13,7 +24,6 @@ namespace Pasteimg.Server.Repository
         {
             this.context = context;
         }
-
 
         public void Create(TEntity item)
         {
@@ -31,16 +41,7 @@ namespace Pasteimg.Server.Repository
             }
             return entity;
         }
-
-        public void Update(Action<TEntity> updateAction, params object[] id)
-        {
-            TEntity? entity = Read(id);
-            if (entity != null)
-            {
-                updateAction(entity);
-                context.SaveChanges();
-            }
-        }
+     
         public TEntity? Read(params object[] id)
         {
             return context.Set<TEntity>().Find(id);
@@ -51,6 +52,14 @@ namespace Pasteimg.Server.Repository
             return context.Set<TEntity>();
         }
 
-
+        public void Update(Action<TEntity> updateAction, params object[] id)
+        {
+            TEntity? entity = Read(id);
+            if (entity != null)
+            {
+                updateAction(entity);
+                context.SaveChanges();
+            }
+        }
     }
 }
