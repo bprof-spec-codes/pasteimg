@@ -1,36 +1,30 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using Pasteimg.Server.Repository;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Runtime.CompilerServices;
 
 namespace Pasteimg.Server.Models
 {
-    public class UploadBase
+    [ModelBinder(typeof(UploadModelBinder))]
+    public class Upload :IEntity
     {
-        public virtual string? Id { get; set; }
+        [ValidateNever, StringLength(32, MinimumLength = 32)]
+        public string Id { get; set; }
         public string? Password { get; set; }
         public DateTime TimeStamp { get; set; }
-    }
 
-
-    public class Upload : UploadBase, IEntity
-    {
         public Upload()
         {
             Images = new List<Image>();
         }
 
-        [Key]
-        public override string? Id { get; set; }
-
         [NotMapped]
-        public virtual List<Image> Images { get; set; }
+        public virtual IList<Image> Images { get; set; }
 
         public object[] GetKey()
         {
             return new object[] { Id };
         }
     }
+  
 }
