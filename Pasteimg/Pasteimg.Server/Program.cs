@@ -1,29 +1,39 @@
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Pasteimg.Server.Data;
 using Pasteimg.Server.Logic;
 using Pasteimg.Server.Models;
 using Pasteimg.Server.Repository;
+using Pasteimg.Server.Repository.IFileStorage;
+using System.Diagnostics;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+/*builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(connectionString));*/
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(connectionString));
+{
+    options.UseInMemoryDatabase("test")
+           .UseLazyLoadingProxies(true)
+           .EnableDetailedErrors(true);
+});
+
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();
-builder.Services.AddControllersWithViews();
 
+builder.Services.AddControllersWithViews();
+builder.Services.AddSingleton(builder.Environment);
 builder.Services.AddTransient<IRepository<Image>, Repository<Image>>();
 builder.Services.AddTransient<IRepository<Upload>, Repository<Upload>>();
-builder.Services.AddTransient<IImageProcessor, ImageProcessor>();
-builder.Services.AddTransient<IPasswordHasher, PasswordHasher>();
-builder.Services.AddTransient<IPasteImgLogic,PasteImgLogic>();
-builder.Services.AddTransient<IImageFileStorage, ImageFileStorage>();
-builder.Services.AddSingleton<DebugLogic>();
+builder.Services.AddTransient<IRepository<OptimizationResult>, Repository<OptimizationResult>>();
+builder.Services.AddTransient<IImageFileStorageFactory, ImageFileStorageFactory>();
+builder.Services.AddTransient<IPasteImgLogic,DebugLogic>();
 builder.Services.AddSession();
 
 var app = builder.Build();
