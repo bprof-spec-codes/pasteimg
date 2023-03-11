@@ -1,44 +1,43 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Pasteimg.Server.Logic;
 using Pasteimg.Server.Models;
+using System.Diagnostics;
 
 namespace Pasteimg.Server.Controllers
 {
     public class DebugViewController : Controller
     {
-
         private readonly ILogger<HomeController> _logger;
-        private readonly DebugLogic _logic;
-        public DebugViewController(ILogger<HomeController> logger, DebugLogic logic)
+        IPasteImgLogic _logic;
+
+        public DebugViewController(ILogger<HomeController> logger, IPasteImgLogic logic)
         {
             _logger = logger;
             _logic = logic;
-
         }
 
         [HttpGet]
         public IActionResult GetBlankItem()
         {
-            return PartialView("_BlankItem", new UploadModel());
+            return PartialView("_BlankItem", new Upload());
+        }
+
+        public IActionResult ListUploads()
+        {
+            return View(_logic);
         }
 
         public IActionResult Upload()
         {
-            return View("UploadModel",new UploadModel());
+            return View(new Upload());
         }
 
         [HttpPost]
-        public IActionResult SubmitUpload(UploadModel upload)
+        public async Task<IActionResult> SubmitUpload(Upload upload)
         {
-            return RedirectToAction(nameof(Upload));
+            await _logic.UploadAndStoreResultsAsync(upload);
+            return RedirectToAction(nameof(ListUploads));
         }
-        public IActionResult UploadList()
-        {
-            throw new NotImplementedException();
-        }
-        public IActionResult Images(string uploadKey)
-        {
-            throw new NotImplementedException();
-        }
+
     }
 }
