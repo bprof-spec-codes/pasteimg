@@ -1,12 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Pasteimg.Server.Data;
-using Pasteimg.Server.Models;
+using Pasteimg.Server.Models.Entity;
 
 namespace Pasteimg.Server.Repository
 {
     public interface IRepository<TEntity> where TEntity : class, IEntity
     {
         void Create(TEntity item);
+
         TEntity? Delete(params object[] id);
 
         TEntity? Read(params object[] id);
@@ -41,7 +42,7 @@ namespace Pasteimg.Server.Repository
             }
             return entity;
         }
-     
+
         public TEntity? Read(params object[] id)
         {
             return context.Set<TEntity>().Find(id);
