@@ -3,14 +3,16 @@ using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Pasteimg.Server.Models
+namespace Pasteimg.Server.Models.Entity
 {
-    public class Image:IEntity
+    public class Image : IEntity
     {
-        [MaxLength(120)]
+        [NotMapped]
+        public IFormFile? Content { get; set; }
+
         public string? Description { get; set; }
 
-        [ValidateNever,StringLength(32, MinimumLength = 32)]
+        [ValidateNever, StringLength(32, MinimumLength = 32)]
         public string Id { get; set; }
 
         public bool NSFW { get; set; }
@@ -20,14 +22,10 @@ namespace Pasteimg.Server.Models
 
         [ValidateNever, StringLength(32, MinimumLength = 32)]
         public string UploadID { get; set; }
-        
-        [NotMapped]
-        public IFormFile? Content { get; set; }
-        public virtual OptimizationResult? OptimizationResult { get; set; } 
+
         public object[] GetKey()
         {
             return new object[] { Id };
         }
     }
-
 }
