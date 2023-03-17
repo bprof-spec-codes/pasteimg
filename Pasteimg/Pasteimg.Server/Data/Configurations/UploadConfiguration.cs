@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Pasteimg.Server.Models;
+using Pasteimg.Server.Models.Entity;
 
 namespace Pasteimg.Server.Data.Configurations
 {
