@@ -2,13 +2,14 @@
 {
     public class InvalidEntityException : PasteImgException
     {
-        public InvalidEntityException(Type entityType, string name, object value, string? message = null) : base(entityType, null, message)
+        public InvalidEntityException(Type entityType, string propertyName, object value) : 
+            base(entityType, null, $"Model state is invalid! PropertyName: {propertyName}, Value: {value}")
         {
-            Name = name;
+            PropertyName = propertyName;
             Value = value;
         }
 
-        public string Name { get; }
+        public string PropertyName { get; }
         public object Value { get; }
     }
 }

@@ -4,7 +4,8 @@ namespace Pasteimg.Server.Models.Error
 {
     public class WrongPasswordException : PasteImgException
     {
-        public WrongPasswordException(string id, int remainingAttempt, string? message = null) : base(typeof(Upload), id, message)
+        public WrongPasswordException(string id, int remainingAttempt) : 
+            base(typeof(Upload), id, $"Password incorrect! Remaining attempt: {remainingAttempt}")
         {
             RemainingAttempt = remainingAttempt;
         }
