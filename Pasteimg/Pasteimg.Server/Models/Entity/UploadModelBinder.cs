@@ -1,9 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace Pasteimg.Server.Models
+namespace Pasteimg.Server.Models.Entity
 {
-   
     public class UploadModelBinder : IModelBinder
     {
         public Task BindModelAsync(ModelBindingContext bindingContext)
