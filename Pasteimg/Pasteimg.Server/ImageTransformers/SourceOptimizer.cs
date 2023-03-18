@@ -12,7 +12,7 @@ namespace Pasteimg.Server.Transformers
         {
             FileInfo input = new FileInfo(path);
             using MagickImageCollection frames = new MagickImageCollection(input);
-            MagickFormat inputFormat = frames[0].Format;
+            string inputFormat = Path.GetExtension(path).TrimStart('.').ToLower();
             long originalLength = input.Length;
 
             TransformMethod(frames);
@@ -22,7 +22,7 @@ namespace Pasteimg.Server.Transformers
             FileInfo output = new FileInfo(path);
 
             long outputLength = output.Length;
-            if (inputFormat != outputFormat)
+            if (inputFormat != outputFormat.ToString().ToLower())
             {
                 File.Delete(path);
             }
