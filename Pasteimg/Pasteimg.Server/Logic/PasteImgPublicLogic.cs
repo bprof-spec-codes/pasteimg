@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Humanizer;
+using Microsoft.AspNetCore.Mvc;
 using Pasteimg.Server.Configurations;
 using Pasteimg.Server.Models.Entity;
 using Pasteimg.Server.Models.Error;
@@ -75,16 +76,6 @@ namespace Pasteimg.Server.Logic
             return logic.GetValidationConfiguration();
         }
 
-        public bool IsLockedOut(string uploadId, ISession session)
-        {
-            DateTime? lockout = GetSessionLockout(uploadId, session);
-            return lockout is not null && IsLockedOut(lockout.Value);
-        }
-
-        public bool IsLockedOut(DateTime lockout)
-        {
-            return (DateTime.Now - lockout).TotalMinutes < logic.Configuration.Visitor.LockoutTimeInMinutes;
-        }
 
         public void PostUpload(Upload upload, ISession session)
         {
@@ -95,50 +86,62 @@ namespace Pasteimg.Server.Logic
             }
         }
 
-        [HttpPost]
-        public void SetPassword(string uploadId, string password, ISession session)
+        private bool IsLockedOut(string uploadId, ISession session)
         {
+            return session.GetString(GetSessionAttemptsKey(uploadId)) is string attempts && 
+                attempts.Split(";").Length>=logic.Configuration.Visitor.MaxFailedAttempt;
+        }
+
+        [HttpPost]
+        public void SetPassword(string uploadId,string password,ISession session)
+        {
+           
             Upload upload = logic.GetUpload(uploadId);
-            if (upload.Password is not null)
+            if(upload.Password is null)
             {
-                DateTime? lockout = GetSessionLockout(uploadId, session);
-                if (lockout is null || !IsLockedOut(lockout.Value))
+                return;
+            }
+            if(IsLockedOut(uploadId,session))
+            {
+                throw new LockoutException(uploadId);
+            }
+
+            password = logic.CreateHash(password);
+            if(upload.Password==password)
+            {
+                session.SetString(uploadId, password);
+                session.Remove(GetSessionAttemptsKey(uploadId));
+            }
+            else
+            {
+                char sep = ';';
+                string? attemptsString = session.GetString(GetSessionAttemptsKey(uploadId));
+                DateTime now = DateTime.Now;
+                string formattedNow = now.ToString(DateTimeFormat, CultureInfo.CurrentCulture);
+                int lockoutTime = logic.Configuration.Visitor.LockoutTresholdInMinutes;
+                int maxAttempt = logic.Configuration.Visitor.MaxFailedAttempt;
+
+                if(attemptsString is null)
                 {
-                    if (lockout is not null)
-                    {
-                        RemoveSessionLockout(uploadId, session);
-                        RemoveSessionAttemptCount(uploadId, session);
-                    }
-
-                    password = logic.CreateHash(password);
-
-                    if (upload.Password == password)
-                    {
-                        session.SetString(uploadId, password);
-                        RemoveSessionAttemptCount(uploadId, session);
-                    }
-                    else
-                    {
-                        int? count = GetSessionAttemptCount(uploadId, session);
-                        count = count is null ? 1 : count.Value + 1;
-                        SetSessionAttemptCount(uploadId, count.Value, session);
-
-                        int maxAttempt = logic.Configuration.Visitor.MaxFailedAttempt;
-
-                        if (count >= maxAttempt)
-                        {
-                            SetSessionLockout(uploadId, session);
-                        }
-
-                        throw new WrongPasswordException(uploadId, maxAttempt - count.Value);
-                    }
+                    session.SetString(GetSessionAttemptsKey(uploadId), formattedNow);
                 }
                 else
                 {
-                    TimeSpan lockoutTime = TimeSpan.FromMinutes(logic.Configuration.Visitor.LockoutTimeInMinutes);
-                    throw new LockoutException(upload.Id, lockoutTime - (DateTime.Now - lockout.Value));
+                    DateTime lastTime = DateTime.ParseExact(attemptsString.Split(sep)[^1], DateTimeFormat, CultureInfo.CurrentCulture);
+                    if((now-lastTime).TotalMinutes>lockoutTime)
+                    {
+                        session.SetString(GetSessionAttemptsKey(uploadId), formattedNow);
+                    }
+                    else
+                    {
+                        session.SetString(GetSessionAttemptsKey(uploadId), attemptsString + sep + formattedNow);
+                    }
                 }
+
+                int remaining = maxAttempt - session.GetString(GetSessionAttemptsKey(uploadId)).Split(sep).Length;
+                throw new WrongPasswordException(uploadId, remaining);
             }
+
         }
 
         public void SetShowNsfw(bool value, ISession session)
@@ -162,33 +165,11 @@ namespace Pasteimg.Server.Logic
             }
             return image;
         }
+    
 
-        private int? GetSessionAttemptCount(string uploadId, ISession session)
+        private string GetSessionAttemptsKey(string uploadId)
         {
-            return session.GetInt32(GetSessionAttemptKey(uploadId));
-        }
-
-        private string GetSessionAttemptKey(string uploadId)
-        {
-            return uploadId + "_attempt";
-        }
-
-        private DateTime? GetSessionLockout(string uploadId, ISession session)
-        {
-            string? lockout = session.GetString(GetSessionLockoutKey(uploadId));
-            if (DateTime.TryParseExact(lockout, DateTimeFormat, CultureInfo.CurrentCulture, DateTimeStyles.None, out DateTime result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        private string GetSessionLockoutKey(string uploadId)
-        {
-            return uploadId + "_lockout";
+            return uploadId + "_attempts";
         }
 
         private string? GetSessionPassword(string uploadId, ISession session)
@@ -206,24 +187,5 @@ namespace Pasteimg.Server.Logic
             return upload;
         }
 
-        private void RemoveSessionAttemptCount(string uploadId, ISession session)
-        {
-            session.Remove(GetSessionAttemptKey(uploadId));
-        }
-
-        private void RemoveSessionLockout(string uploadId, ISession session)
-        {
-            session.Remove(GetSessionLockoutKey(uploadId));
-        }
-
-        private void SetSessionAttemptCount(string uploadId, int value, ISession session)
-        {
-            session.SetInt32(GetSessionAttemptKey(uploadId), value);
-        }
-
-        private void SetSessionLockout(string uploadId, ISession session)
-        {
-            session.SetString(GetSessionLockoutKey(uploadId), DateTime.Now.ToString(DateTimeFormat, CultureInfo.CurrentCulture));
-        }
     }
 }

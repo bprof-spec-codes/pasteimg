@@ -1,15 +1,14 @@
 ﻿using Pasteimg.Server.Models.Entity;
+using System.Net.Sockets;
 
 namespace Pasteimg.Server.Models.Error
 {
     public class LockoutException : PasteImgException
     {
-        public LockoutException(string id, TimeSpan remainingTime) : 
-            base(typeof(Upload), id,$"Too many attempts! Please try again in {Math.Ceiling(remainingTime.TotalMinutes)} minutes." )
+        public LockoutException(string id) : 
+            base(typeof(Upload), id, $"Resource access is locked out. Id: {id}")
         {
-            RemainingTime = remainingTime;
         }
 
-        public TimeSpan RemainingTime { get; }
     }
 }

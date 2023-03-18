@@ -8,6 +8,9 @@
 
 @if (Model.Error is not null)
 {
+    <h4 class="text-danger">
+        @Model.Error.Message
+    </h4>
     <p>
         <strong>Error type:</strong> <code>@(@Model.Error.GetType().Name)</code>
     </p>
@@ -32,12 +35,7 @@
                     <strong>Remaining attempt:</strong><code>@(wrongPass.RemainingAttempt)</code>
                 </p>
     }
-    else if(Model.Error is LockoutException lockout)
-    {
-        <p>
-            <strong>Remaining time:</strong><code>@(lockout.RemainingTime)</code>
-        </p>
-    }
+   
 
 }
 

@@ -9,7 +9,7 @@ namespace Pasteimg.Server.Configurations
         {
             Visitor = new VisitorConfiguration()
             {
-                LockoutTimeInMinutes = 10,
+                LockoutTresholdInMinutes = 10,
                 MaxFailedAttempt = 3
             },
             Validation = new ValidationConfiguration()
@@ -26,8 +26,8 @@ namespace Pasteimg.Server.Configurations
             Storage = new StorageConfiguration()
             {
                 SubDirectoryDivision = 4,
-                ThumbnailRoot = Path.Combine("images", "thumbnail"),
-                SourceRoot = Path.Combine("images", "source"),
+                ThumbnailRoot = Path.Combine("_wwwimages", "thumbnail"),
+                SourceRoot = Path.Combine("_wwwimages", "source"),
             },
             Transformation = new TransformationConfiguration()
             {
