@@ -1,8 +1,20 @@
 {
+  "Storage": {
+    "SourceRoot": "_wwwimages\\source",
+    "SubDirectoryDivision": 4,
+    "ThumbnailRoot": "_wwwimages\\thumbnail"
+  },
+  "Transformation": {
+    "Quality": 75,
+    "SourceOptimizerMaxHeight": 2000,
+    "SourceOptimizerMaxWidth": 2000,
+    "ThumbnailMaxHeight": 300,
+    "ThumbnailMaxWidth": 300
+  },
   "Validation": {
+    "DescriptionMaxLength": 120,
     "MaxFileSize": 10000000,
     "MaxImagePerUpload": 20,
-    "DescriptionMaxLength": 140,
     "SupportedFormats": [
       "jpg",
       "jpeg",
@@ -17,20 +29,8 @@
       "bmp"
     ]
   },
-  "Storage": {
-    "SubDirectoryDivision": 4,
-    "SourceRoot": "_wwwimages\\source",
-    "ThumbnailRoot": "_wwwimages\\thumbnail"
-  },
-  "Transformation": {
-    "Quality": 75,
-    "SourceOptimizerMaxWidth": 2000,
-    "SourceOptimizerMaxHeight": 2000,
-    "ThumbnailMaxWidth": 300,
-    "ThumbnailMaxHeight": 300
-  },
   "Visitor": {
-    "MaxFailedAttempt": 3,
-    "LockoutTimeInMinutes": 10
+    "LockoutTresholdInMinutes": 10,
+    "MaxFailedAttempt": 3
   }
 }
