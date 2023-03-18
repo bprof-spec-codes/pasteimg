@@ -8,8 +8,21 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Repository\IFileStorage1.cs" />
+    <None Remove="_wwwimages\site_image\404_thumb.jpg" />
+    <None Remove="_wwwimages\site_image\password_required_thumb.jpg" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="_wwwimages\site_image\404_thumb.jpg">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="_wwwimages\site_image\password_required_thumb.jpg">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
 
   <ItemGroup>
     <PackageReference Include="Magick.NET-Q8-AnyCPU" Version="12.3.0" />
@@ -26,8 +39,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\deb\images\" />
-    <Folder Include="wwwroot\deb\images_thumbnails\" />
     <Folder Include="wwwroot\deb\optimizer_input\" />
   </ItemGroup>
 
