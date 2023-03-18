@@ -3,9 +3,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Pasteimg.Server.Data;
 using Pasteimg.Server.Logic;
-using Pasteimg.Server.Models;
+using Pasteimg.Server.Models.Entity;
 using Pasteimg.Server.Repository;
-using Pasteimg.Server.Repository.IFileStorage;
+using Pasteimg.Server.Repository.FileStorages;
+using Pasteimg.Server.Transformers;
 using System.Diagnostics;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,15 +26,21 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddEntityFrameworkStores<ApplicationDbContext>();
+    .AddRoles<IdentityRole>()
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddDefaultTokenProviders()
+    .AddRoleManager<RoleManager<IdentityRole>>()
+    .AddUserManager<UserManager<IdentityUser>>();
 
 builder.Services.AddControllersWithViews();
-builder.Services.AddSingleton(builder.Environment);
 builder.Services.AddTransient<IRepository<Image>, Repository<Image>>();
 builder.Services.AddTransient<IRepository<Upload>, Repository<Upload>>();
-builder.Services.AddTransient<IRepository<OptimizationResult>, Repository<OptimizationResult>>();
-builder.Services.AddTransient<IImageFileStorageFactory, ImageFileStorageFactory>();
-builder.Services.AddTransient<IPasteImgLogic,DebugLogic>();
+builder.Services.AddTransient<IImageFileRepositoryFactory,ImageFileRepositoryFactory>();
+builder.Services.AddTransient<IWebImageTransformerFactory,WebImageTransformerFactory>();
+builder.Services.AddSingleton<IBackgroundTransformer, BackgroundTransformer > ();
+builder.Services.AddHostedService(factory => factory.GetRequiredService<IBackgroundTransformer>());
+builder.Services.AddTransient<IPasteImgLogic,PasteImgLogic>();
+builder.Services.AddTransient<IPasteImgPublicLogic,PasteImgPublicLogic>();
 builder.Services.AddSession();
 
 var app = builder.Build();
@@ -62,4 +69,5 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
+app.MapControllers();
 app.Run();
