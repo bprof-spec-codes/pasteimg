@@ -6,11 +6,39 @@
 <h1 class="text-danger">Error.</h1>
 <h2 class="text-danger">An error occurred while processing your request.</h2>
 
-@if (Model.ShowRequestId)
+@if (Model.Error is not null)
 {
     <p>
-        <strong>Request ID:</strong> <code>@Model.RequestId</code>
+        <strong>Error type:</strong> <code>@(@Model.Error.GetType().Name)</code>
     </p>
+    <p>
+        <strong>Entity type:</strong> <code>@(@Model.Error.EntityType?.Name)</code>
+    </p>
+    <p>
+        <strong>Requested Id:</strong><code>@(@Model.Error.Id)</code>
+    </p>
+    if(Model.Error is InvalidEntityException invalidEntity)
+    {
+        <p>
+            <strong>Property name:</strong><code>@(invalidEntity.PropertyName)</code>
+        </p>
+        <p>
+            <strong>Property Value:</strong><code>@(invalidEntity.Value)</code>
+        </p>
+    }
+    else if(Model.Error is WrongPasswordException wrongPass)
+    {
+                 <p>
+                    <strong>Remaining attempt:</strong><code>@(wrongPass.RemainingAttempt)</code>
+                </p>
+    }
+    else if(Model.Error is LockoutException lockout)
+    {
+        <p>
+            <strong>Remaining time:</strong><code>@(lockout.RemainingTime)</code>
+        </p>
+    }
+
 }
 
 <h3>Development Mode</h3>
