@@ -16,7 +16,6 @@ namespace Pasteimg.Server.Models.Entity
         [ValidateNever, StringLength(32, MinimumLength = 32)]
         public string Id { get; set; }
 
-        [NotMapped]
         public virtual IList<Image> Images { get; set; }
 
         public string? Password { get; set; }

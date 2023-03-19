@@ -4,7 +4,6 @@
     {
         string Root { get; }
         int SubDirectoryDivision { get; }
-        IReadOnlySet<string> SupportedFiles { get; }
 
         void ClearRoot();
 
@@ -17,19 +16,16 @@
 
     public class FileStorage : IFileStorage
     {
-        protected readonly HashSet<string> _supportedFiles;
 
         public FileStorage(string root, int subDirectoryDivision)
         {
             Root = root;
             SubDirectoryDivision = subDirectoryDivision;
-            _supportedFiles = new HashSet<string>();
             Directory.CreateDirectory(Root);
         }
 
         public string Root { get; }
         public int SubDirectoryDivision { get; }
-        public IReadOnlySet<string> SupportedFiles => _supportedFiles;
 
         public virtual void ClearRoot()
         {

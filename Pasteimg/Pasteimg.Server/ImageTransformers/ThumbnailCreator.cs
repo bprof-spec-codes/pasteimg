@@ -24,11 +24,11 @@ namespace Pasteimg.Server.Transformers
 
         private void TransformMethod(MagickImageCollection frames)
         {
-            Parallel.ForEach(frames, frame =>
+            foreach (var frame in frames)
             {
                 frame.Quality = Quality;
                 frame.Thumbnail(MaxWidth, MaxHeight);
-            });
+            }
         }
     }
 }

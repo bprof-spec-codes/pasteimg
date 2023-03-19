@@ -92,7 +92,6 @@ namespace Pasteimg.Server.Logic
                 attempts.Split(";").Length>=logic.Configuration.Visitor.MaxFailedAttempt;
         }
 
-        [HttpPost]
         public void SetPassword(string uploadId,string password,ISession session)
         {
            

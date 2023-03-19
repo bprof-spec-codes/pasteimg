@@ -17,7 +17,7 @@ namespace Pasteimg.Server.Models.Entity
 
         public bool NSFW { get; set; }
 
-        [NotMapped, JsonIgnore]
+        [JsonIgnore]
         public virtual Upload Upload { get; set; }
 
         [ValidateNever, StringLength(32, MinimumLength = 32)]

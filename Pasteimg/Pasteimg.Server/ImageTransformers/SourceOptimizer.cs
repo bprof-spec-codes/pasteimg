@@ -10,18 +10,14 @@ namespace Pasteimg.Server.Transformers
 
         public override string Transform(string path)
         {
-            FileInfo input = new FileInfo(path);
-            using MagickImageCollection frames = new MagickImageCollection(input);
+            using MagickImageCollection frames = new MagickImageCollection(path);
             string inputFormat = Path.GetExtension(path).TrimStart('.').ToLower();
-            long originalLength = input.Length;
 
             TransformMethod(frames);
             MagickFormat outputFormat = frames[0].Format;
             path = Path.ChangeExtension(path, outputFormat.ToString().ToLower());
             frames.Write(path);
-            FileInfo output = new FileInfo(path);
 
-            long outputLength = output.Length;
             if (inputFormat != outputFormat.ToString().ToLower())
             {
                 File.Delete(path);
@@ -40,13 +36,13 @@ namespace Pasteimg.Server.Transformers
         {
             var firstFrame = frames[0];
             var newSize = ClampSize(firstFrame.Width, firstFrame.Height);
-            Parallel.ForEach(frames, frame =>
+            foreach (var frame in frames)
             {
                 frame.Quality = Quality;
                 frame.AdaptiveResize(newSize.width, newSize.height);
                 frame.ColorFuzz = new Percentage(20);
                 frame.Strip();
-            });
+            }
             frames.Optimize();
         }
     }

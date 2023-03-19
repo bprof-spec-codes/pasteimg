@@ -2,7 +2,7 @@
 
 namespace Pasteimg.Server.Models.Error
 {
-    public class PasteImgErrorResult : ObjectResult
+    public class PasteImgErrorResult : BadRequestObjectResult
     {
         public PasteImgErrorResult(PasteImgException ex) : base(ex)
         {
