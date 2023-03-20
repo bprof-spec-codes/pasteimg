@@ -53,6 +53,15 @@
             if (FindFile(id) is string path)
             {
                 File.Delete(path);
+                if (SubDirectoryDivision>0)
+                {
+                    DirectoryInfo dir = Directory.GetParent(path);
+                    if(dir.GetFiles().Length==0)
+                    {
+                        dir.Delete();
+                    }
+                }
+
                 return true;
             }
             else
