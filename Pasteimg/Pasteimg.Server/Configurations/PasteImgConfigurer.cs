@@ -5,24 +5,21 @@ namespace Pasteimg.Server.Configurations
     public interface IPasteImgConfigurer
     {
         string DefaultPath { get; set; }
+
         PasteImgConfiguration ReadConfiguration();
+
         void WriteConfiguration(PasteImgConfiguration config);
     }
-    public class PasteImgConfigurer:IPasteImgConfigurer
+
+    public class PasteImgConfigurer : IPasteImgConfigurer
     {
-        public string DefaultPath { get; set; }="pasteImgLogic.json";
-        public void WriteConfiguration(PasteImgConfiguration config,string path)
-        {
-            File.WriteAllText(path, JsonConvert.SerializeObject(config, Formatting.Indented));
-        }
-        public void WriteConfiguration(PasteImgConfiguration config)
-        {
-            WriteConfiguration(config, DefaultPath);
-        }
+        public string DefaultPath { get; set; } = "pasteImgLogic.json";
+
         public PasteImgConfiguration? ReadConfiguration(string path)
         {
-           return JsonConvert.DeserializeObject<PasteImgConfiguration>(File.ReadAllText(path));
+            return JsonConvert.DeserializeObject<PasteImgConfiguration>(File.ReadAllText(path));
         }
+
         public PasteImgConfiguration ReadConfiguration()
         {
             try
@@ -36,6 +33,16 @@ namespace Pasteimg.Server.Configurations
                 WriteConfiguration(PasteImgConfiguration.Default);
                 return ReadConfiguration(DefaultPath);
             }
+        }
+
+        public void WriteConfiguration(PasteImgConfiguration config, string path)
+        {
+            File.WriteAllText(path, JsonConvert.SerializeObject(config, Formatting.Indented));
+        }
+
+        public void WriteConfiguration(PasteImgConfiguration config)
+        {
+            WriteConfiguration(config, DefaultPath);
         }
     }
 }

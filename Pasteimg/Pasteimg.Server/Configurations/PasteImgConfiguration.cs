@@ -1,35 +1,10 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.ObjectModel;
-using System.IO;
 
 namespace Pasteimg.Server.Configurations
 {
     public class PasteImgConfiguration
     {
-        public static void Validate(PasteImgConfiguration? config)
-        {
-            if (config is null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-            if (config.Visitor is null)
-            {
-                throw new ArgumentNullException(nameof(config.Visitor));
-            }
-            if (config.Validation.SupportedFormats is null)
-            {
-                throw new ArgumentNullException(nameof(config.Validation.SupportedFormats));
-            }
-            if (config.Validation.MaxFileSize <= 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(config.Validation.MaxFileSize));
-            }
-            if (config.Validation.MaxImagePerUpload <= 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(config.Validation.MaxImagePerUpload));
-            }
-        }
-
         public static PasteImgConfiguration Default { get; } = new PasteImgConfiguration()
         {
             Visitor = new VisitorConfiguration()
@@ -51,10 +26,10 @@ namespace Pasteimg.Server.Configurations
             Storage = new StorageConfiguration()
             {
                 SubDirectoryDivision = 4,
-                Root=new ReadOnlyCollection<string>(new string[] {"_wwwimages"}),
-                SourceFileClass="src",
-                TempFileClass="tmp",
-                ThumbnailFileClass="thb"
+                Root = new ReadOnlyCollection<string>(new string[] { "_wwwimages" }),
+                SourceFileClass = "src",
+                TempFileClass = "tmp",
+                ThumbnailFileClass = "thb"
             },
             Transformation = new TransformationConfiguration()
             {
@@ -66,6 +41,7 @@ namespace Pasteimg.Server.Configurations
                 ThumbnailMaxHeight = 300,
             }
         };
+
         public StorageConfiguration Storage { get; init; }
 
         public TransformationConfiguration Transformation { get; init; }
@@ -99,6 +75,29 @@ namespace Pasteimg.Server.Configurations
             }
             return config;
         }
-        
+
+        public static void Validate(PasteImgConfiguration? config)
+        {
+            if (config is null)
+            {
+                throw new ArgumentNullException(nameof(config));
+            }
+            if (config.Visitor is null)
+            {
+                throw new ArgumentNullException(nameof(config.Visitor));
+            }
+            if (config.Validation.SupportedFormats is null)
+            {
+                throw new ArgumentNullException(nameof(config.Validation.SupportedFormats));
+            }
+            if (config.Validation.MaxFileSize <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(config.Validation.MaxFileSize));
+            }
+            if (config.Validation.MaxImagePerUpload <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(config.Validation.MaxImagePerUpload));
+            }
+        }
     }
 }

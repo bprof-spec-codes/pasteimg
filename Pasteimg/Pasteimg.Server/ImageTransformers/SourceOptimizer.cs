@@ -8,7 +8,6 @@ namespace Pasteimg.Server.ImageTransformers
         {
         }
 
-
         protected override void TransformAnimated((int width, int height) newSize, MagickImageCollection frames)
         {
             foreach (var frame in frames)

@@ -7,11 +7,12 @@ namespace Pasteimg.Server.Models.Error
     /// </summary>
     public class WrongPasswordException : PasteImgException
     {
-        public WrongPasswordException(string id, int remainingAttempt) : 
+        public WrongPasswordException(string id, int remainingAttempt) :
             base(typeof(Upload), id, $"Password incorrect! Remaining attempt: {remainingAttempt}")
         {
             RemainingAttempt = remainingAttempt;
         }
+
         /// <summary>
         /// Hátralévő próbálkozások száma.
         /// </summary>

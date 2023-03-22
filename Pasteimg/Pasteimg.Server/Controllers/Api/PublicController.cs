@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Pasteimg.Server.Configurations;
 using Pasteimg.Server.Logic;
 using Pasteimg.Server.Models.Entity;

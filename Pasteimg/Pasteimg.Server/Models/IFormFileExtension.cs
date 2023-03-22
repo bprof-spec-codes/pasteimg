@@ -27,6 +27,7 @@ namespace Pasteimg.Server.Models
             }
             else return null;
         }
+
         /// <summary>
         /// FormFile tartalmát átalakítja byte tömbbé.
         /// </summary>
@@ -46,7 +47,6 @@ namespace Pasteimg.Server.Models
                 }
             }
             else return new byte[] { };
-            
         }
     }
 }

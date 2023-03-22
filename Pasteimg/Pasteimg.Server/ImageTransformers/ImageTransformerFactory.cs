@@ -5,16 +5,19 @@ namespace Pasteimg.Server.ImageTransformers
     public interface IImageTransformerFactory
     {
         IImageTransformer CreateSourceOptimizer();
+
         IImageTransformer CreateThumbnailCreator();
     }
 
     public class ImageTransformerFactory : IImageTransformerFactory
     {
-        TransformationConfiguration config;
+        private TransformationConfiguration config;
+
         public ImageTransformerFactory(PasteImgConfiguration configuration)
         {
-            this.config =configuration.Transformation;
+            this.config = configuration.Transformation;
         }
+
         public IImageTransformer CreateSourceOptimizer()
         {
             if (config.SourceOptimizerMaxWidth <= 0)

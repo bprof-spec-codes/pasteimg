@@ -11,6 +11,7 @@ namespace Pasteimg.Server.Models.Error
         {
             Exception = ex;
         }
+
         /// <summary>
         /// Becsomagolt kivétel.
         /// </summary>

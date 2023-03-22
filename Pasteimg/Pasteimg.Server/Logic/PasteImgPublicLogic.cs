@@ -1,6 +1,4 @@
-﻿using Humanizer;
-using Microsoft.AspNetCore.Mvc;
-using Pasteimg.Server.Configurations;
+﻿using Pasteimg.Server.Configurations;
 using Pasteimg.Server.Models.Entity;
 using Pasteimg.Server.Models.Error;
 using System.Globalization;
@@ -24,11 +22,11 @@ namespace Pasteimg.Server.Logic
 
         ValidationConfiguration GetValidationConfiguration();
 
-        void Upload(Upload upload, ISession session);
-
         void SetPassword(string uploadId, string password, ISession session);
 
         void SetShowNsfw(bool value, ISession session);
+
+        void Upload(Upload upload, ISession session);
     }
 
     public class PasteImgPublicLogic : IPasteImgPublicLogic
@@ -76,37 +74,20 @@ namespace Pasteimg.Server.Logic
             return logic.GetValidationConfiguration();
         }
 
-
-        public void Upload(Upload upload, ISession session)
+        public void SetPassword(string uploadId, string password, ISession session)
         {
-            logic.Upload(upload);
-            if (upload.Password != null)
-            {
-                session.SetString(upload.Id, upload.Password);
-            }
-        }
-
-        private bool IsLockedOut(string uploadId, ISession session)
-        {
-            return session.GetString(GetSessionAttemptsKey(uploadId)) is string attempts && 
-                attempts.Split(";").Length>=logic.Configuration.Visitor.MaxFailedAttempt;
-        }
-
-        public void SetPassword(string uploadId,string password,ISession session)
-        {
-           
             Upload upload = logic.GetUpload(uploadId);
-            if(upload.Password is null)
+            if (upload.Password is null)
             {
                 return;
             }
-            if(IsLockedOut(uploadId,session))
+            if (IsLockedOut(uploadId, session))
             {
                 throw new LockoutException(uploadId);
             }
 
             password = logic.CreateHash(password);
-            if(upload.Password==password)
+            if (upload.Password == password)
             {
                 session.SetString(uploadId, password);
                 session.Remove(GetSessionAttemptsKey(uploadId));
@@ -120,14 +101,14 @@ namespace Pasteimg.Server.Logic
                 int lockoutTime = logic.Configuration.Visitor.LockoutTresholdInMinutes;
                 int maxAttempt = logic.Configuration.Visitor.MaxFailedAttempt;
 
-                if(attemptsString is null)
+                if (attemptsString is null)
                 {
                     session.SetString(GetSessionAttemptsKey(uploadId), formattedNow);
                 }
                 else
                 {
                     DateTime lastTime = DateTime.ParseExact(attemptsString.Split(sep)[^1], DateTimeFormat, CultureInfo.CurrentCulture);
-                    if((now-lastTime).TotalMinutes>lockoutTime)
+                    if ((now - lastTime).TotalMinutes > lockoutTime)
                     {
                         session.SetString(GetSessionAttemptsKey(uploadId), formattedNow);
                     }
@@ -140,7 +121,6 @@ namespace Pasteimg.Server.Logic
                 int remaining = maxAttempt - session.GetString(GetSessionAttemptsKey(uploadId)).Split(sep).Length;
                 throw new WrongPasswordException(uploadId, remaining);
             }
-
         }
 
         public void SetShowNsfw(bool value, ISession session)
@@ -155,6 +135,15 @@ namespace Pasteimg.Server.Logic
             }
         }
 
+        public void Upload(Upload upload, ISession session)
+        {
+            logic.Upload(upload);
+            if (upload.Password != null)
+            {
+                session.SetString(upload.Id, upload.Password);
+            }
+        }
+
         private Image GetImageAndCheckPassword(string id, Func<string, Image> getImage, ISession session)
         {
             Image image = getImage(id);
@@ -164,7 +153,6 @@ namespace Pasteimg.Server.Logic
             }
             return image;
         }
-    
 
         private string GetSessionAttemptsKey(string uploadId)
         {
@@ -186,5 +174,10 @@ namespace Pasteimg.Server.Logic
             return upload;
         }
 
+        private bool IsLockedOut(string uploadId, ISession session)
+        {
+            return session.GetString(GetSessionAttemptsKey(uploadId)) is string attempts &&
+                attempts.Split(";").Length >= logic.Configuration.Visitor.MaxFailedAttempt;
+        }
     }
 }

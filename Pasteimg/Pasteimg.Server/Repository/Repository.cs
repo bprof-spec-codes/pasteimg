@@ -14,24 +14,29 @@ namespace Pasteimg.Server.Repository
         /// Elmenti az elemet.
         /// </summary>
         void Create(TEntity item);
+
         /// <summary>
         /// Törli az elemet azonosító kulcs alapján, ha létezik és visszatér a törölt elemmel.
         /// </summary>
         TEntity? Delete(params object[] id);
+
         /// <summary>
         /// Megkeresi az elemet azonosító kulcs alapján.
         /// </summary>
         TEntity? Read(params object[] id);
+
         /// <summary>
         /// Lekérdezi az eltárolt elemeket.
         /// </summary>
         IQueryable<TEntity> ReadAll();
+
         /// <summary>
         /// Frissíti az elem állapotát kulcs alapján, ha létezik és visszatér a frissített elemmel.
         /// </summary>
         /// <param name="entity"></param>
         TEntity? Update(Action<TEntity> updateAction, params object[] id);
     }
+
     public class Repository<TEntity> : IRepository<TEntity> where TEntity : class, IEntity
     {
         private DbContext context;

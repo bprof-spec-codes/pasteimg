@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Pasteimg.Server.Models.Entity
 {
@@ -15,19 +14,23 @@ namespace Pasteimg.Server.Models.Entity
         {
             Images = new List<Image>();
         }
+
         /// <summary>
         /// Feltöltés egyedi azonosító kulcsa.
         /// </summary>
         [ValidateNever, StringLength(32, MinimumLength = 32)]
         public string Id { get; set; }
+
         /// <summary>
         /// Feltöltéshez tartozó képeknek navigációs propertyje.
         /// </summary>
         public virtual IList<Image> Images { get; set; }
+
         /// <summary>
-        /// Feltöltő által megadott, hashelt jelszó. 
+        /// Feltöltő által megadott, hashelt jelszó.
         /// </summary>
         public string? Password { get; set; }
+
         /// <summary>
         /// Feltöltés időpontja.
         /// </summary>

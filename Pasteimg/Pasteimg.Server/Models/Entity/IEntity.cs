@@ -1,7 +1,7 @@
 ﻿namespace Pasteimg.Server.Models.Entity
 {
     /// <summary>
-    /// Alapvető interface-e az adatbázis entitásoknak. 
+    /// Alapvető interface-e az adatbázis entitásoknak.
     /// </summary>
     public interface IEntity
     {

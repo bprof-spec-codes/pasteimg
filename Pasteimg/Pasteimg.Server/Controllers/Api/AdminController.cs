@@ -46,6 +46,20 @@ namespace TestApi.Controllers
             }
         }
 
+        [HttpPut]
+        public ActionResult EditImage(string id, string? description, bool nsfw)
+        {
+            try
+            {
+                logic.EditImage(id, description, nsfw);
+                return Ok();
+            }
+            catch (PasteImgException ex)
+            {
+                return new PasteImgErrorResult(ex);
+            }
+        }
+
         [HttpGet]
         public ActionResult GetAllImage()
         {
@@ -93,6 +107,7 @@ namespace TestApi.Controllers
         {
             return GetContent(id, logic.GetUploadWithThumbnailFiles);
         }
+
         [HttpPost]
         public ActionResult PostUpload(Upload upload)
         {
@@ -101,25 +116,12 @@ namespace TestApi.Controllers
                 logic.Upload(upload);
                 return Ok();
             }
-            catch(PasteImgException ex)
+            catch (PasteImgException ex)
             {
                 return new PasteImgErrorResult(ex);
             }
         }
-        [HttpPut]
-        public ActionResult EditImage(string id, string? description, bool nsfw)
-        {
-            try
-            {
-                logic.EditImage(id, description, nsfw);
-                return Ok();
-            }
-            catch(PasteImgException ex)
-            {
-                return new PasteImgErrorResult(ex);
-            }
-        }
-       
+
         private ActionResult GetContent<T>(string id, Func<string, T> get)
         {
             try
