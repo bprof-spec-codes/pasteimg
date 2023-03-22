@@ -1,13 +1,15 @@
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Pasteimg.Server.Controllers;
 using Pasteimg.Server.Data;
+using Pasteimg.Server.ImageTransformers;
 using Pasteimg.Server.Logic;
 using Pasteimg.Server.Models.Entity;
 using Pasteimg.Server.Repository;
-using Pasteimg.Server.Repository.FileStorages;
-using Pasteimg.Server.Transformers;
 using System.Diagnostics;
+using Pasteimg.Server.Configurations;
+using Pasteimg.Server.ImageTransformers._Debug;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,14 +35,18 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
     .AddUserManager<UserManager<IdentityUser>>();
 
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddTransient<IPasteImgConfigurer, PasteImgConfigurer>();
+builder.Services.AddSingleton((provider) => provider.GetRequiredService<IPasteImgConfigurer>().ReadConfiguration());
+
+
 builder.Services.AddTransient<IRepository<Image>, Repository<Image>>();
 builder.Services.AddTransient<IRepository<Upload>, Repository<Upload>>();
-builder.Services.AddTransient<IImageFileRepositoryFactory,ImageFileRepositoryFactory>();
-builder.Services.AddTransient<IWebImageTransformerFactory,WebImageTransformerFactory>();
-builder.Services.AddSingleton<IBackgroundTransformer, BackgroundTransformer > ();
-builder.Services.AddHostedService(factory => factory.GetRequiredService<IBackgroundTransformer>());
+builder.Services.AddSingleton<IFileStorage, FileStorage > ();
+builder.Services.AddTransient<IImageTransformerFactory,ImageTransformerFactory>();
 builder.Services.AddTransient<IPasteImgLogic,PasteImgLogic>();
 builder.Services.AddTransient<IPasteImgPublicLogic,PasteImgPublicLogic>();
+builder.Services.AddSingleton<ImageTransformerTester>();
 builder.Services.AddSession();
 
 var app = builder.Build();
