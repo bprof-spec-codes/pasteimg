@@ -23,7 +23,7 @@ namespace Pasteimg.Server.Repository
 
         string GetFileName(string id, string? fileClass = null);
 
-        string GetPath(string id, string? fileClass = null, string? extension = null);
+        string GetPath(string id, string? extension = null, string? fileClass = null);
 
         void SaveFile(byte[] content, string id, string extension, string? fileClass = null);
     }
@@ -175,7 +175,7 @@ namespace Pasteimg.Server.Repository
             else return id + "_" + fileClass;
         }
 
-        public string GetPath(string id, string? fileClass = null, string? extension = null)
+        public string GetPath(string id, string? extension = null, string? fileClass = null)
         {
             return Path.Combine(GetDirectory(id), GetFileName(id, fileClass) + '.' + extension?.TrimStart('.') ?? "");
         }

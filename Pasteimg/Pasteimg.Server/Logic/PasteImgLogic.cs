@@ -244,8 +244,8 @@ namespace Pasteimg.Server.Logic
 
         private async Task FileProcessing(string id, byte[] content)
         {
-            thumbnailCreator.Transform(content, fileStorage.GetPath(id, Thumbnail));
-            sourceOptimizer.Transform(content, fileStorage.GetPath(id, Source));
+            thumbnailCreator.Transform(content, fileStorage.GetPath(id, fileClass: Thumbnail));
+            sourceOptimizer.Transform(content, fileStorage.GetPath(id, fileClass: Source));
             await TryDeleteTempFile(id).WaitAsync(TimeSpan.FromSeconds(10));
         }
 
