@@ -65,7 +65,7 @@ namespace TestApi.Controllers
         {
             try
             {
-                logic.PostUpload(upload, HttpContext.Session);
+                logic.Upload(upload, HttpContext.Session);
                 return Ok();
             }
             catch (InvalidEntityException ex)

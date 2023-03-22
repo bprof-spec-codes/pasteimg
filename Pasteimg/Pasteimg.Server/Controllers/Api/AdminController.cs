@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Pasteimg.Server.Logic;
+using Pasteimg.Server.Models.Entity;
 using Pasteimg.Server.Models.Error;
 
 namespace TestApi.Controllers
@@ -92,7 +93,33 @@ namespace TestApi.Controllers
         {
             return GetContent(id, logic.GetUploadWithThumbnailFiles);
         }
-
+        [HttpPost]
+        public ActionResult PostUpload(Upload upload)
+        {
+            try
+            {
+                logic.Upload(upload);
+                return Ok();
+            }
+            catch(PasteImgException ex)
+            {
+                return new PasteImgErrorResult(ex);
+            }
+        }
+        [HttpPut]
+        public ActionResult EditImage(string id, string? description, bool nsfw)
+        {
+            try
+            {
+                logic.EditImage(id, description, nsfw);
+                return Ok();
+            }
+            catch(PasteImgException ex)
+            {
+                return new PasteImgErrorResult(ex);
+            }
+        }
+       
         private ActionResult GetContent<T>(string id, Func<string, T> get)
         {
             try
