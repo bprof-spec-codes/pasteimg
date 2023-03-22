@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace Pasteimg.Tests
 {
     [TestFixture]
-    internal class PasteImgPulbicLogicTest
+    internal class PasteImgPublicLogicTest
     {
         [Test]
         public void GetImageTest()

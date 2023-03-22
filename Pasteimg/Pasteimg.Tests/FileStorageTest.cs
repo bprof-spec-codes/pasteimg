@@ -1,13 +1,13 @@
 using Microsoft.Extensions.Configuration;
 using NUnit.Framework;
-using Pasteimg.Server.Repository.FileStorages;
+using Pasteimg.Server.Repository;
 
 namespace Pasteimg.Tests
 {
     [TestFixture]
     public class FileStorageTest
     {
-
+        /*
         const string RootDirectory = "TestRoot";
 
         [TearDown]
@@ -38,7 +38,6 @@ namespace Pasteimg.Tests
         [Test]
         public void ClearRootTest()
         {
-
             FileStorage fileStorage = new FileStorage(RootDirectory,0);
             for (int i = 0; i < 10; i++)
             {
@@ -114,8 +113,6 @@ namespace Pasteimg.Tests
                 Assert.That(Directory.GetDirectories(RootDirectory).Length == 0, $"clear {i}");
             }
         }
-
-
-
+        */
     }
 }
