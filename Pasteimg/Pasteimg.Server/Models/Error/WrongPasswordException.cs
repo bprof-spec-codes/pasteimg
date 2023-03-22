@@ -2,6 +2,9 @@
 
 namespace Pasteimg.Server.Models.Error
 {
+    /// <summary>
+    /// A kivétel akkor dobódik, ha a kliens rossz jelszót adott meg védett tartalomhoz.
+    /// </summary>
     public class WrongPasswordException : PasteImgException
     {
         public WrongPasswordException(string id, int remainingAttempt) : 
@@ -9,7 +12,9 @@ namespace Pasteimg.Server.Models.Error
         {
             RemainingAttempt = remainingAttempt;
         }
-
+        /// <summary>
+        /// Hátralévő próbálkozások száma.
+        /// </summary>
         public int RemainingAttempt { get; }
     }
 }

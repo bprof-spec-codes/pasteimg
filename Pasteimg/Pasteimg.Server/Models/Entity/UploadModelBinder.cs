@@ -2,8 +2,14 @@
 
 namespace Pasteimg.Server.Models.Entity
 {
+    /// <summary>
+    /// Feltöltés egyéni adatkötő osztálya, ami képes megoldani elemekkel dinamikusan bővített formok adatkötését.
+    /// </summary>
     public class UploadModelBinder : IModelBinder
     {
+        /// <summary>
+        /// Adatkötésért felelő aszinkron metódus.
+        /// </summary>
         public Task BindModelAsync(ModelBindingContext bindingContext)
         {
             if (bindingContext.ValueProvider is CompositeValueProvider provider)

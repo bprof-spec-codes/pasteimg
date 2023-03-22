@@ -1,5 +1,8 @@
 ﻿namespace Pasteimg.Server.Models.Error
 {
+    /// <summary>
+    /// A kivétel akkor dobódik, ha a keresett tartalom nem található.
+    /// </summary>
     public class NotFoundException : PasteImgException
     {
         public NotFoundException(Type? entityType, string id) 
