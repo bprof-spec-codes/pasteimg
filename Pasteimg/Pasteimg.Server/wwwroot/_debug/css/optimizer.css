@@ -1,0 +1,12 @@
+﻿img{
+    width:100px
+}
+table{
+    width:100%;
+}
+table, td{
+    border:1px solid black
+}
+td{
+    min-width:25px
+}
