@@ -1,9 +1,11 @@
-﻿namespace Pasteimg.Server.Transformers
+﻿namespace Pasteimg.Server.ImageTransformers
 {
+
     public interface IImageTransformer
     {
+        ImageInfo GetImageInfo(byte[] content);
+        ImageInfo GetImageInfo(string path);
         byte[] Transform(byte[] content);
-
-        string Transform(string path);
+        string Transform(byte[] content, string outputPath);
     }
 }

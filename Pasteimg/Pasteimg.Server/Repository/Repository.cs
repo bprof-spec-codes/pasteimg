@@ -4,19 +4,34 @@ using Pasteimg.Server.Models.Entity;
 
 namespace Pasteimg.Server.Repository
 {
+    /// <summary>
+    ///Perzisztens adattárolásért felelős interface.
+    /// </summary>
+    /// <typeparam name="TEntity"></typeparam>
     public interface IRepository<TEntity> where TEntity : class, IEntity
     {
+        /// <summary>
+        /// Elmenti az elemet.
+        /// </summary>
         void Create(TEntity item);
-
+        /// <summary>
+        /// Törli az elemet azonosító kulcs alapján, ha létezik és visszatér a törölt elemmel.
+        /// </summary>
         TEntity? Delete(params object[] id);
-
+        /// <summary>
+        /// Megkeresi az elemet azonosító kulcs alapján.
+        /// </summary>
         TEntity? Read(params object[] id);
-
+        /// <summary>
+        /// Lekérdezi az eltárolt elemeket.
+        /// </summary>
         IQueryable<TEntity> ReadAll();
-
-        void Update(Action<TEntity> updateAction, params object[] id);
+        /// <summary>
+        /// Frissíti az elem állapotát kulcs alapján, ha létezik és visszatér a frissített elemmel.
+        /// </summary>
+        /// <param name="entity"></param>
+        TEntity? Update(Action<TEntity> updateAction, params object[] id);
     }
-
     public class Repository<TEntity> : IRepository<TEntity> where TEntity : class, IEntity
     {
         private DbContext context;
@@ -53,7 +68,7 @@ namespace Pasteimg.Server.Repository
             return context.Set<TEntity>();
         }
 
-        public void Update(Action<TEntity> updateAction, params object[] id)
+        public TEntity? Update(Action<TEntity> updateAction, params object[] id)
         {
             TEntity? entity = Read(id);
             if (entity != null)
@@ -61,6 +76,7 @@ namespace Pasteimg.Server.Repository
                 updateAction(entity);
                 context.SaveChanges();
             }
+            return entity;
         }
     }
 }

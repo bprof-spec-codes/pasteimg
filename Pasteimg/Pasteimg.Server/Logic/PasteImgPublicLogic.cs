@@ -24,7 +24,7 @@ namespace Pasteimg.Server.Logic
 
         ValidationConfiguration GetValidationConfiguration();
 
-        void PostUpload(Upload upload, ISession session);
+        void Upload(Upload upload, ISession session);
 
         void SetPassword(string uploadId, string password, ISession session);
 
@@ -77,9 +77,9 @@ namespace Pasteimg.Server.Logic
         }
 
 
-        public void PostUpload(Upload upload, ISession session)
+        public void Upload(Upload upload, ISession session)
         {
-            logic.PostUpload(upload);
+            logic.Upload(upload);
             if (upload.Password != null)
             {
                 session.SetString(upload.Id, upload.Password);

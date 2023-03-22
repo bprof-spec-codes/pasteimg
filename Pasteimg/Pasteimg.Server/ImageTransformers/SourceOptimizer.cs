@@ -1,6 +1,6 @@
 ﻿using ImageMagick;
 
-namespace Pasteimg.Server.Transformers
+namespace Pasteimg.Server.ImageTransformers
 {
     public class SourceOptimizer : WebImageTransformer
     {
@@ -8,41 +8,27 @@ namespace Pasteimg.Server.Transformers
         {
         }
 
-        public override string Transform(string path)
+
+        protected override void TransformAnimated((int width, int height) newSize, MagickImageCollection frames)
         {
-            using MagickImageCollection frames = new MagickImageCollection(path);
-            string inputFormat = Path.GetExtension(path).TrimStart('.').ToLower();
-
-            TransformMethod(frames);
-            MagickFormat outputFormat = frames[0].Format;
-            path = Path.ChangeExtension(path, outputFormat.ToString().ToLower());
-            frames.Write(path);
-
-            if (inputFormat != outputFormat.ToString().ToLower())
-            {
-                File.Delete(path);
-            }
-            return path;
-        }
-
-        public override byte[] Transform(byte[] content)
-        {
-            using MagickImageCollection frames = new MagickImageCollection(content);
-            TransformMethod(frames);
-            return frames.ToByteArray();
-        }
-
-        private void TransformMethod(MagickImageCollection frames)
-        {
-            var firstFrame = frames[0];
-            var newSize = ClampSize(firstFrame.Width, firstFrame.Height);
             foreach (var frame in frames)
             {
-                frame.Quality = Quality;
-                frame.AdaptiveResize(newSize.width, newSize.height);
-                frame.ColorFuzz = new Percentage(20);
                 frame.Strip();
+                frame.Quality = Quality;
+                frame.Sample(newSize.width, newSize.height);
+                frame.ColorFuzz = new Percentage(15);
             }
+            frames.OptimizePlus();
+        }
+
+        protected override void TransformStatic((int width, int height) newSize, MagickImageCollection frames)
+        {
+            var firstFrame = frames[0];
+            firstFrame.Strip();
+            firstFrame.Quality = Quality;
+            firstFrame.Format = MagickFormat.WebP;
+            firstFrame.Sample(newSize.width, newSize.height);
+            firstFrame.ColorFuzz = new Percentage(15);
             frames.Optimize();
         }
     }

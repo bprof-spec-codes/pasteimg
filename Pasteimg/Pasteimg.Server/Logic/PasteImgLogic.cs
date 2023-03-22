@@ -3,8 +3,7 @@ using Pasteimg.Server.Models;
 using Pasteimg.Server.Models.Entity;
 using Pasteimg.Server.Models.Error;
 using Pasteimg.Server.Repository;
-using Pasteimg.Server.Repository.FileStorages;
-using Pasteimg.Server.Transformers;
+using Pasteimg.Server.ImageTransformers;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -15,52 +14,50 @@ namespace Pasteimg.Server.Logic
         PasteImgConfiguration Configuration { get; }
 
         string? CreateHash(string? password);
-
         void DeleteImage(string id);
-
         void DeleteUpload(string id);
-
+        Image EditImage(string id, string? description, bool nsfw);
         IEnumerable<Image> GetAllImage();
-
         IEnumerable<Upload> GetAllUpload();
-
         Image GetImage(string id);
-
         Image GetImageWithSourceFile(string id);
-
         Image GetImageWithThumbnailFile(string id);
-
         Upload GetUpload(string id);
-
         Upload GetUploadWithSourceFiles(string id);
-
         Upload GetUploadWithThumbnailFiles(string id);
-
         ValidationConfiguration GetValidationConfiguration();
-
-        void PostUpload(Upload upload);
+        void Upload(Upload upload);
     }
 
     public class PasteImgLogic : IPasteImgLogic
     {
-        protected readonly IBackgroundTransformer backgroundTransformer;
-        protected readonly IImageFileRepository imageRepository;
-        protected readonly WebImageTransformer sourceOptimizer;
-        protected readonly WebImageTransformer thumbnailCreator;
-        protected readonly IRepository<Upload> uploadRepository;
+        private string Source { get; }
+        private string Thumbnail { get; }
+        private string Temp { get; }
+        private string ContentType { get; } = "image";
 
-        public PasteImgLogic(IRepository<Upload> uploadRepository,
-                             IImageFileRepositoryFactory fileStorageFactory,
-                             IWebImageTransformerFactory transformerFactory,
-                             IBackgroundTransformer backgroundTransformer)
+        protected readonly IImageTransformer sourceOptimizer;
+        protected readonly IImageTransformer thumbnailCreator;
+        protected readonly IRepository<Upload> uploadRepository;
+        protected readonly IRepository<Image> imageRepository;
+        protected readonly IFileStorage fileStorage;
+        public PasteImgLogic(PasteImgConfiguration configuration,
+                             IRepository<Upload> uploadRepository,
+                             IRepository<Image> imageRepository,
+                             IImageTransformerFactory transformerFactory,
+                             IFileStorage fileStorage)
 
         {
-            Configuration = ReadConfiguration();
+            Configuration = configuration;
+            Source = configuration.Storage.SourceFileClass;
+            Thumbnail = configuration.Storage.ThumbnailFileClass;
+            Temp = configuration.Storage.TempFileClass;
+
+            this.imageRepository = imageRepository;
             this.uploadRepository = uploadRepository;
-            this.backgroundTransformer = backgroundTransformer;
-            imageRepository = fileStorageFactory.CreateImageFileRepository(Configuration.Storage);
-            thumbnailCreator = transformerFactory.CreateThumbnailCreator(Configuration.Transformation);
-            sourceOptimizer = transformerFactory.CreateSourceOptimizer(Configuration.Transformation);
+            this.fileStorage = fileStorage;
+            thumbnailCreator = transformerFactory.CreateThumbnailCreator();
+            sourceOptimizer = transformerFactory.CreateSourceOptimizer();
         }
 
         public PasteImgConfiguration Configuration { get; }
@@ -100,6 +97,8 @@ namespace Pasteimg.Server.Logic
             {
                 throw new NotFoundException(typeof(Image), id);
             }
+            fileStorage.DeleteFileWithAllClass(id);
+
         }
 
         public virtual void DeleteUpload(string id)
@@ -109,6 +108,7 @@ namespace Pasteimg.Server.Logic
                 foreach (var item in upload.Images)
                 {
                     imageRepository.Delete(item.Id);
+                    fileStorage.DeleteFileWithAllClass(id);
                 }
             }
             else
@@ -137,20 +137,29 @@ namespace Pasteimg.Server.Logic
 
             return image;
         }
-
-        public Image GetImageWithSourceFile(string id)
+        private IFormFile GetFile(string id, string fileClass)
+        {
+            if (fileStorage.FindFile(id, ContentType, fileClass) is IFormFile file)
+            {
+                return file;
+            }
+            else if (fileStorage.FindFile(id, ContentType, Temp) is IFormFile temp)
+            {
+                return temp;
+            }
+            else
+            {
+                return new FormFile(Stream.Null, 0, 0, "null", "null");
+            }
+        }
+        private Image GetImageWithFile(string id, string fileClass)
         {
             Image image = GetImage(id);
-            image.Content = imageRepository.FindSourceFile(id);
+            image.Content = GetFile(id, fileClass);
             return image;
         }
-
-        public Image GetImageWithThumbnailFile(string id)
-        {
-            Image image = GetImage(id);
-            image.Content = imageRepository.FindThumbnailFile(id);
-            return image;
-        }
+        public Image GetImageWithSourceFile(string id) => GetImageWithFile(id, Source);
+        public Image GetImageWithThumbnailFile(string id) => GetImageWithFile(id, Thumbnail);
 
         public Upload GetUpload(string id)
         {
@@ -161,32 +170,60 @@ namespace Pasteimg.Server.Logic
             }
             return upload;
         }
-
-        public Upload GetUploadWithSourceFiles(string id)
+        private Upload GetUploadWithFiles(string id, string fileClass)
         {
             Upload upload = GetUpload(id);
-            FillUploadWithFiles(upload, imageRepository.FindSourceFile);
+            foreach (var item in upload.Images)
+            {
+                item.Content = GetFile(id, fileClass);
+            }
             return upload;
         }
-
-        public Upload GetUploadWithThumbnailFiles(string id)
-        {
-            Upload upload = GetUpload(id);
-            FillUploadWithFiles(upload, imageRepository.FindThumbnailFile);
-            return upload;
-        }
+        public Upload GetUploadWithSourceFiles(string id) => GetUploadWithFiles(id, Source);
+        public Upload GetUploadWithThumbnailFiles(string id) => GetUploadWithFiles(id, Thumbnail);
 
         public ValidationConfiguration GetValidationConfiguration()
         {
             return Configuration.Validation;
         }
 
-        public void PostUpload(Upload upload)
+        public void Upload(Upload upload)
         {
-            ValidateUpload(upload);
-            SetUpload(upload);
-            SetImages(upload);
-            uploadRepository.Create(upload);
+            try
+            {
+                ValidateUpload(upload);
+                SetUpload(upload);
+                SetImages(upload);
+                uploadRepository.Create(upload);
+            }
+            catch (PasteImgException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw new SomethingWrongException(ex, null, null);
+            }
+        }
+
+        public Image EditImage(string id, string? description, bool nsfw)
+        {
+
+            if (description is not null && description.Length > Configuration.Validation.MaxImagePerUpload)
+            {
+                throw new InvalidEntityException(typeof(Image), nameof(Image.Description), description, id);
+            }
+
+            Image? image = imageRepository.Update((i) =>
+            {
+                i.Description = description;
+                i.NSFW = nsfw;
+            }, id);
+            if (image is null)
+            {
+                throw new NotFoundException(typeof(Image), id);
+            }
+            return image;
         }
 
         protected virtual void ValidateUpload(Upload upload)
@@ -220,17 +257,6 @@ namespace Pasteimg.Server.Logic
             }
         }
 
-        private void FillUploadWithFiles(Upload? upload, Func<string, IFormFile?> find)
-        {
-            if (upload is not null)
-            {
-                foreach (var item in upload.Images)
-                {
-                    item.Content = find(item.Id);
-                }
-            }
-        }
-
         private string GenerateId(IEnumerable<string> repositoryKeys)
         {
             string id;
@@ -251,20 +277,27 @@ namespace Pasteimg.Server.Logic
             return ids;
         }
 
-        private PasteImgConfiguration ReadConfiguration()
+        private async Task TryDeleteTempFile(string id)
         {
-            string configPath = Path.Combine("Properties", "pasteImgLogic.json");
-            try
+            do
             {
-                return PasteImgConfiguration.ReadConfiguration(configPath);
+                try
+                {
+                    fileStorage.DeleteFile(id, Temp);
+                }
+                catch (IOException)
+                { }
+                await Task.Delay(10);
             }
-            catch
-            {
-                PasteImgConfiguration.WriteConfiguration(configPath, PasteImgConfiguration.Default);
-                return PasteImgConfiguration.ReadConfiguration(configPath);
-            }
+            while (fileStorage.FindPath(id, Temp) is not null);
         }
+        private async Task FileProcessing(string id, byte[] content)
+        {
 
+            thumbnailCreator.Transform(content, fileStorage.GetPath(id, Thumbnail));
+            sourceOptimizer.Transform(content, fileStorage.GetPath(id, Source));
+            await TryDeleteTempFile(id).WaitAsync(TimeSpan.FromSeconds(10));
+        }
         private void SetImages(Upload upload)
         {
             int count = upload.Images.Count;
@@ -274,9 +307,9 @@ namespace Pasteimg.Server.Logic
                 Image image = upload.Images[i];
                 image.Id = ids[i];
                 image.UploadID = upload.Id;
-                imageRepository.Create(image, thumbnailCreator: thumbnailCreator);
-                backgroundTransformer.EnqueueRequest
-                    (new BackgroundTransformationRequest(imageRepository.GetSourcePath(image.Id), sourceOptimizer));
+                byte[] content = image.Content.ToArray();
+                fileStorage.SaveFile(content, image.Id, Path.GetExtension(image.Content.FileName), Temp);
+                _ = Task.Run(async () => await FileProcessing(image.Id, content));
             }
         }
 
