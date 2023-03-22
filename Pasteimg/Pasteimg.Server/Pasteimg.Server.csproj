@@ -7,22 +7,6 @@
     <UserSecretsId>aspnet-Pasteimg.Server-6FEDC0A3-2D81-4E1C-9C00-D15365EF51FE</UserSecretsId>
   </PropertyGroup>
 
-  <ItemGroup>
-    <None Remove="_wwwimages\site_image\404_thumb.jpg" />
-    <None Remove="_wwwimages\site_image\password_required_thumb.jpg" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="_wwwimages\site_image\404_thumb.jpg">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="_wwwimages\site_image\password_required_thumb.jpg">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-  </ItemGroup>
-
 
   <ItemGroup>
     <PackageReference Include="Magick.NET-Q8-AnyCPU" Version="12.3.0" />
@@ -38,8 +22,21 @@
     <PackageReference Include="System.Drawing.Common" Version="7.0.0" />
   </ItemGroup>
 
+
   <ItemGroup>
-    <Folder Include="wwwroot\deb\optimizer_input\" />
+    <Folder Include="Logger\" />
+    <Folder Include="_wwwimages\" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <None Include="wwwroot\_debug\test_input\sample_gif.gif" />
+    <None Include="wwwroot\_debug\test_input\sample_gif_animated.gif" />
+    <None Include="wwwroot\_debug\test_input\sample_gif_animated_big.gif" />
+    <None Include="wwwroot\_debug\test_input\sample_jpeg.jpeg" />
+    <None Include="wwwroot\_debug\test_input\sample_jpg.jpg" />
+    <None Include="wwwroot\_debug\test_input\sample_png_nontransparent.png" />
+    <None Include="wwwroot\_debug\test_input\sample_png_transparent.png" />
   </ItemGroup>
 
 </Project>
