@@ -1,13 +1,18 @@
 {
   "Storage": {
-    "SourceRoot": "_wwwimages\\source",
-    "SubDirectoryDivision": 4,
-    "ThumbnailRoot": "_wwwimages\\thumbnail"
+    "Root": [
+      "_wwwimages"
+    ],
+    "SourceFileClass": "src",
+    "TempFileClass": "tmp",
+    "ThumbnailFileClass": "thb",
+    "SubDirectoryDivision": 4
   },
   "Transformation": {
-    "Quality": 75,
+    "SourceQuality": 75,
     "SourceOptimizerMaxHeight": 2000,
     "SourceOptimizerMaxWidth": 2000,
+    "ThumbnailQuality": 90,
     "ThumbnailMaxHeight": 300,
     "ThumbnailMaxWidth": 300
   },
