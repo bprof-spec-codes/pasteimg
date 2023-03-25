@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Pasteimg.Server.Configurations;
-using Pasteimg.Server.Logic;
-using Pasteimg.Server.Models.Entity;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;

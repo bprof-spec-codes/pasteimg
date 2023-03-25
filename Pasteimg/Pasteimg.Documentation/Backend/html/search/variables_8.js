@@ -1,0 +1,5 @@
+var searchData=
+[
+  ['logger_0',['logger',['../class_pasteimg_1_1_backend_1_1_controllers_1_1_debug_view_controller.html#a759dbc9d2c05e282d03d97da2eaed2ad',1,'Pasteimg.Backend.Controllers.DebugViewController.logger()'],['../class_pasteimg_1_1_backend_1_1_controllers_1_1___debug_1_1_image_transformation_test_controller.html#ae34156f1cd6d2a3ebeb31485e903e782',1,'Pasteimg.Backend.Controllers._Debug.ImageTransformationTestController.logger()']]],
+  ['logic_1',['logic',['../class_pasteimg_1_1_backend_1_1_controllers_1_1_debug_view_controller.html#ad40135b3f1d8707084d9cfce883facc7',1,'Pasteimg.Backend.Controllers.DebugViewController.logic()'],['../class_pasteimg_1_1_backend_1_1_controllers_api_1_1_admin_controller.html#aa91c5484a0fb0e7196251268c6632985',1,'Pasteimg.Backend.ControllersApi.AdminController.logic()'],['../class_pasteimg_1_1_backend_1_1_controllers_api_1_1_public_controller.html#a478a74d54b17ed79b0bb955b34db148f',1,'Pasteimg.Backend.ControllersApi.PublicController.logic()'],['../class_pasteimg_1_1_backend_1_1_logic_1_1_paste_img_public_logic.html#adee643e5b8d43ce91fd8e02ba66b637e',1,'Pasteimg.Backend.Logic.PasteImgPublicLogic.logic()']]]
+];

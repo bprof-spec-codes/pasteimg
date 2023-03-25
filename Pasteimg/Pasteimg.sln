@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32922.545
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pasteimg.Server", "Pasteimg.Server\Pasteimg.Server.csproj", "{EE0229F7-90E3-4B5D-81F2-1ED59E3FC30F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pasteimg.Tests", "Pasteimg.Tests\Pasteimg.Tests.csproj", "{5A8D499F-747B-4D94-9C3C-7BDA95ADBDB3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pasteimg.Tests", "Pasteimg.Tests\Pasteimg.Tests.csproj", "{5A8D499F-747B-4D94-9C3C-7BDA95ADBDB3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pasteimg.Backend", "Pasteimg.Backend\Pasteimg.Backend.csproj", "{B2D74E7A-4F20-42CF-8DCA-04F8FE597425}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Pasteimg.Documentation", "Pasteimg.Documentation\Pasteimg.Documentation.shproj", "{8B8228E1-D958-407F-A3CB-A12D2DE23DD0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,19 +15,22 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{EE0229F7-90E3-4B5D-81F2-1ED59E3FC30F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EE0229F7-90E3-4B5D-81F2-1ED59E3FC30F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EE0229F7-90E3-4B5D-81F2-1ED59E3FC30F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EE0229F7-90E3-4B5D-81F2-1ED59E3FC30F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5A8D499F-747B-4D94-9C3C-7BDA95ADBDB3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5A8D499F-747B-4D94-9C3C-7BDA95ADBDB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5A8D499F-747B-4D94-9C3C-7BDA95ADBDB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5A8D499F-747B-4D94-9C3C-7BDA95ADBDB3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B2D74E7A-4F20-42CF-8DCA-04F8FE597425}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B2D74E7A-4F20-42CF-8DCA-04F8FE597425}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B2D74E7A-4F20-42CF-8DCA-04F8FE597425}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B2D74E7A-4F20-42CF-8DCA-04F8FE597425}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B380C5E8-011F-4D1B-92ED-D4357E7F3280}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		Pasteimg.Documentation\Pasteimg.Documentation.projitems*{8b8228e1-d958-407f-a3cb-a12d2de23dd0}*SharedItemsImports = 13
 	EndGlobalSection
 EndGlobal

@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Pasteimg.Server\Pasteimg.Server.csproj" />
+    <ProjectReference Include="..\Pasteimg.Backend\Pasteimg.Backend.csproj" />
   </ItemGroup>
 
 </Project>
