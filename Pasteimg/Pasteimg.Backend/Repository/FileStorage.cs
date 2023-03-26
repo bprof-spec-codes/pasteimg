@@ -100,10 +100,10 @@
     ///             <strong>GetPath: </strong>
     ///         </para>
     ///         <para><code><see cref="Root"/>: 'root' </code></para>
-    ///         <para><code><see cref="SubDirectoryDivision"/>: '5' </code></para>
+    ///         <para><code><see cref="SubDirectoryDivision"/>: 5 </code></para>
     ///         <para><code><paramref name="id"/>: 'testtest' </code></para>
-    ///         <para><code><paramref name="extension"/>: 'exe' </code></para>
-    ///         <para><code><paramref name="fileClass"/>: 'main' </code></para>
+    ///         <para><code><paramref name="extension"/>: exe </code></para>
+    ///         <para><code><paramref name="fileClass"/>: main </code></para>
     ///         <para><strong>Output: </strong><code>"/root/testt/testtest_main.exe"</code></para>
     ///         <para>
     ///             <strong>GetPath</strong>
@@ -111,8 +111,8 @@
     ///         <para><code><see cref="Root"/>: 'base' </code></para>
     ///         <para><code><see cref="SubDirectoryDivision"/>: 2 </code></para>
     ///         <para><code><paramref name="id"/>: 'example' </code></para>
-    ///         <para><code><paramref name="extension"/>: 'null' </code></para>
-    ///         <para><code><paramref name="fileClass"/>: 'null' </code></para>
+    ///         <para><code><paramref name="extension"/>: null </code></para>
+    ///         <para><code><paramref name="fileClass"/>: null </code></para>
     ///         <para><strong>Output: </strong><code>'/base/ex/example'</code></para>
     ///     </example>
     /// </summary>
@@ -241,7 +241,7 @@
             string directory = GetDirectory(id);
             if (Directory.Exists(directory))
             {
-                string[] files = Directory.GetFiles(GetDirectory(id), GetFileName(id, fileClass) + ".*");
+                string[] files = Directory.GetFiles(directory, GetFileName(id, fileClass) + ".*");
                 if (files.Length > 0)
                 {
                     return files[0];
@@ -264,7 +264,7 @@
             string directory = GetDirectory(id);
             if (Directory.Exists(directory))
             {
-                string[] files = Directory.GetFiles(GetDirectory(id), id + "*");
+                string[] files = Directory.GetFiles(directory, id + "*");
                 if (files.Length > 0)
                 {
                     return files;

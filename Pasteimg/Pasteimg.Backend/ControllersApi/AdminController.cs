@@ -179,7 +179,7 @@ namespace Pasteimg.Backend.ControllersApi
         }
 
         /// <summary>
-        /// Gets an upload by ID wit.
+        /// Gets an upload by ID without files.
         /// </summary>
         /// <param name="id">The ID of the upload to retrieve.</param>
         /// <returns>
