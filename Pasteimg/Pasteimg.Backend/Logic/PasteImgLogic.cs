@@ -215,7 +215,11 @@ namespace Pasteimg.Backend.Logic
             {
                 throw new NotFoundException(typeof(Image), id);
             }
-            fileStorage.DeleteFileWithAllClass(id);
+            _ = Task.Run(async () =>
+            {
+                await TryDeleteFile(id, SourceFileClass,10).WaitAsync(TimeSpan.FromSeconds(5));
+                await TryDeleteFile(id, ThumbnailFileClass,10).WaitAsync(TimeSpan.FromSeconds(5));
+            });
         }
 
         /// <summary>
@@ -230,7 +234,11 @@ namespace Pasteimg.Backend.Logic
                 foreach (var item in upload.Images)
                 {
                     imageRepository.Delete(item.Id);
-                    fileStorage.DeleteFileWithAllClass(id);
+                    _ = Task.Run(async () =>
+                    {
+                        await TryDeleteFile(item.Id, SourceFileClass, 10).WaitAsync(TimeSpan.FromSeconds(5));
+                        await TryDeleteFile(item.Id, ThumbnailFileClass, 10).WaitAsync(TimeSpan.FromSeconds(5));
+                    });
                 }
             }
             else
@@ -424,7 +432,7 @@ namespace Pasteimg.Backend.Logic
         {
             thumbnailCreator.Transform(content, fileStorage.GetPath(id, fileClass: ThumbnailFileClass));
             sourceOptimizer.Transform(content, fileStorage.GetPath(id, fileClass: SourceFileClass));
-            await TryDeleteTempFile(id).WaitAsync(TimeSpan.FromSeconds(10));
+            await TryDeleteFile(id,TempFileClass,10).WaitAsync(TimeSpan.FromSeconds(5));
         }
 
         /// <summary>
@@ -467,7 +475,9 @@ namespace Pasteimg.Backend.Logic
         /// <returns>An <see cref="IFormFile"/> containing the image data.</returns>
         private IFormFile GetFile(string id, string fileClass)
         {
-            string path = null;
+            string path;
+            string unavaliable= "unavaliable.webp";
+
             if (fileStorage.FindPath(id, fileClass) is string filePath)
             {
                 path = filePath;
@@ -478,11 +488,21 @@ namespace Pasteimg.Backend.Logic
             }
             else
             {
-                path = "unavaliable.webp";
+                path = unavaliable;
             }
 
-            var mstream = new MemoryStream(File.ReadAllBytes(path));
-            return new FormFile(mstream, 0, mstream.Length, Path.GetFileNameWithoutExtension(path), Path.GetFileName(path))
+            MemoryStream stream;
+            try
+            {
+                stream = new MemoryStream(File.ReadAllBytes(path));
+            }
+            catch(IOException)
+            {
+                stream = new MemoryStream(File.ReadAllBytes(unavaliable));
+            }
+
+
+            return new FormFile(stream, 0, stream.Length, Path.GetFileNameWithoutExtension(path), Path.GetFileName(path))
             {
                 Headers = new HeaderDictionary(),
                 ContentType = $"image/{Path.GetExtension(path).TrimStart('.')}"
@@ -553,22 +573,24 @@ namespace Pasteimg.Backend.Logic
         }
 
         /// <summary>
-        /// Asynchronously attempts to delete the temporary file for an image until the file is deleted or a timeout occurs.
+        /// Asynchronously attempts to delete file for an image until the file is deleted or a timeout occurs.
         /// </summary>
-        /// <param name="id">The unique identifier for the image whose temporary file should be deleted.</param>
-        private async Task TryDeleteTempFile(string id)
+        /// <param name="id">The unique identifier for the image whose file should be deleted.</param>
+        /// <param name="fileClass">The class or type of the file to be deleted.</param>
+        /// <param name="polling">The time interval (in milliseconds) at which to check if the file has been deleted.</param>
+        private async Task TryDeleteFile(string id,string fileClass,int polling)
         {
             do
             {
                 try
                 {
-                    fileStorage.DeleteFile(id, TempFileClass);
+                    fileStorage.DeleteFile(id, fileClass);
                 }
                 catch (IOException)
                 { }
-                await Task.Delay(10);
+                await Task.Delay(polling);
             }
-            while (fileStorage.FindPath(id, TempFileClass) is not null);
+            while (fileStorage.FindPath(id, fileClass) is not null);
         }
 
         /// <summary>
