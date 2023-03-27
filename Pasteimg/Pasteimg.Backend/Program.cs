@@ -46,12 +46,19 @@ builder.Services.AddTransient<IPasteImgPublicLogic, PasteImgPublicLogic>();
 builder.Services.AddSingleton<ImageTransformerTester>();
 builder.Services.AddSession();
 
+//swagger setup https://www.codeguru.com/dotnet/swagger-asp-net-2/
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 else
 {
