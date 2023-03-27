@@ -11,6 +11,78 @@ namespace Pasteimg.Backend.Configurations
     {
         /// <summary>
         /// Gets the default configuration for the Pasteimg server application.
+        /// <list type="bullet">
+        /// <item>
+        /// <see cref="Visitor"/>
+        /// <list type="bullet">
+        /// <item>
+        ///     LockoutTresholdInMinutes: 10
+        /// </item>
+        /// <item>
+        ///     MaxFailedAttempt: 3
+        /// </item>
+        /// </list>
+        /// </item>
+        /// <item>
+        /// <see cref="Validation"/>
+        /// <list type="bullet">
+        /// <item>
+        ///    DescriptionMaxLength: 150
+        /// </item>
+        /// <item>
+        ///     MaxFileSize: 10000000 
+        /// </item>
+        /// <item>
+        ///    MaxImagePerUpload: 20 
+        /// </item>
+        /// <item>
+        ///     SupportedFormats: jpg, jpeg, jpe, jif, jfif, jfi, gif, png, apng, webp, bmp
+        /// </item>
+        /// <item>
+        ///     PasswordMaxLength: 12
+        /// </item>
+        /// </list>
+        /// </item>
+        /// <item>
+        /// <see cref="Storage"/>
+        /// <list type="bullet">
+        /// <item>
+        ///     SubDirectoryDivision: 4
+        /// </item>
+        /// <item>
+        ///     Root: "_wwwimages"
+        /// </item>
+        /// </list>
+        /// </item>
+        /// <item>
+        /// <see cref="Source"/>
+        /// <list type="bullet">
+        /// <item>
+        ///   MaxHeight: 2000
+        /// </item>
+        /// <item> 
+        ///     MaxWidth: 2000
+        /// </item>
+        /// <item>
+        ///     Quality: 75
+        /// </item>
+        /// </list>
+        /// </item>
+        /// <item>
+        /// <see cref="Thumbnail"/>
+        /// <list type="bullet">
+        /// <item>
+        ///     MaxHeight: 300
+        /// </item>
+        /// <item> 
+        ///     MaxWidth: 300
+        /// </item>
+        /// <item>
+        ///     Quality: 90
+        /// </item>
+        /// </list>
+        /// </item>
+        /// </list>
         /// </summary>
         public static PasteImgConfiguration Default { get; } = new PasteImgConfiguration()
         {
