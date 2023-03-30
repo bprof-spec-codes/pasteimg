@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Session;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.Memory;
 using Pasteimg.Backend.Configurations;
 using Pasteimg.Backend.Data;
 using Pasteimg.Backend.ImageTransformers;
-using Pasteimg.Backend.ImageTransformers._Debug;
 using Pasteimg.Backend.Logic;
 using Pasteimg.Backend.Models.Entity;
 using Pasteimg.Backend.Repository;
@@ -11,9 +13,11 @@ using Pasteimg.Backend.Repository;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-/*builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(connectionString));*/
+
+builder.Services.AddControllers();
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
@@ -22,62 +26,39 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
            .EnableDetailedErrors(true);
 });
 
-builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddRoles<IdentityRole>()
+builder.Services.AddIdentity<IdentityUser,IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders()
     .AddRoleManager<RoleManager<IdentityRole>>()
     .AddUserManager<UserManager<IdentityUser>>();
 
-builder.Services.AddControllersWithViews();
+builder.Services.AddSession();
 
 builder.Services.AddTransient<IPasteImgConfigurer, PasteImgConfigurer>();
 builder.Services.AddSingleton((provider) => provider.GetRequiredService<IPasteImgConfigurer>().ReadConfiguration());
 builder.Services.AddSingleton((provider) => provider.GetRequiredService<PasteImgConfiguration>().Storage);
+builder.Services.AddSingleton((provider) => provider.GetRequiredService<PasteImgConfiguration>().Session);
 
 builder.Services.AddTransient<IRepository<Image>, Repository<Image>>();
 builder.Services.AddTransient<IRepository<Upload>, Repository<Upload>>();
 builder.Services.AddSingleton<IFileStorage, FileStorage>();
 builder.Services.AddTransient<IImageTransformerFactory, ImageTransformerFactory>();
 builder.Services.AddTransient<IPasteImgLogic, PasteImgLogic>();
+builder.Services.AddSingleton<IDistributedCache, MemoryDistributedCache>();
+builder.Services.AddSingleton<ISessionHandler, SessionHandler>();
 builder.Services.AddTransient<IPasteImgPublicLogic, PasteImgPublicLogic>();
-builder.Services.AddSingleton<ImageTransformerTester>();
-builder.Services.AddSession();
-
-//swagger setup https://www.codeguru.com/dotnet/swagger-asp-net-2/
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseMigrationsEndPoint();
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-else
-{
-    app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
-}
-
-app.UseHttpsRedirection();
-app.UseStaticFiles();
 app.UseSession();
-app.UseRouting();
-
 app.UseAuthentication();
 app.UseAuthorization();
-
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
-app.MapRazorPages();
+app.UseCookiePolicy();
 app.MapControllers();
+
 app.Run();

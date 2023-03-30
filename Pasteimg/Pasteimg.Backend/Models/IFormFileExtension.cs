@@ -9,26 +9,6 @@ namespace Pasteimg.Backend.Models
     public static class IFormFileExtension
     {
         /// <summary>
-        /// Get a collection of uploaded files from the specified <see cref="IValueProvider"></see>.
-        /// </summary>
-        /// <param name="provider">An IValueProvider instance.</param>
-        /// <returns>A collection of uploaded files, or null if no files were uploaded.</returns>
-        public static IFormFileCollection? GetFiles(this IValueProvider? provider)
-        {
-            if (provider is FormValueProvider formValueProvider)
-            {
-                return (formValueProvider.GetType()
-                        .GetField("_values", BindingFlags.NonPublic | BindingFlags.Instance)?
-                        .GetValue(formValueProvider) as FormCollection)?.Files;
-            }
-            else if (provider is CompositeValueProvider compositeProvider)
-            {
-                return GetFiles(compositeProvider.FirstOrDefault(vp => vp is FormValueProvider));
-            }
-            else return null;
-        }
-
-        /// <summary>
         /// Read the content of an IFormFile into a byte array.
         /// </summary>
         /// <param name="file">An IFormFile instance.</param>

@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Pasteimg.Backend.Models;
+using Pasteimg.Backend.Models.Entity;
+using System.Reflection;
 
-namespace Pasteimg.Backend.Models.Entity
+namespace Pasteimg.Backend.Models
 {
     /// <summary>
     /// A custom model binder for the <see cref="Upload"/>, which extracts data from Form and binds it to model.
@@ -31,12 +34,17 @@ namespace Pasteimg.Backend.Models.Entity
                     images[imageKey.Key].Description = description;
                     images[imageKey.Key].NSFW = nsfw;
                 }
-                var files = provider.GetFiles();
+                var files = GetFiles(provider);
                 foreach (var item in files)
                 {
                     if (TryGetIndex(item.Name, out string index))
                     {
-                        images[index].Content = item;
+                        images[index].Content = new Content()
+                        {
+                            Data = item.ToArray(),
+                            ContentType = item.ContentType,
+                            FileName = item.FileName
+                        };
                     }
                 }
                 Upload model = new Upload();
@@ -65,6 +73,21 @@ namespace Pasteimg.Backend.Models.Entity
                 return left >= 0 && right >= 0;
             }
             else return false;
+        }
+
+        private IFormFileCollection? GetFiles(IValueProvider? provider)
+        {
+            if (provider is FormValueProvider formValueProvider)
+            {
+                return (formValueProvider.GetType()
+                        .GetField("_values", BindingFlags.NonPublic | BindingFlags.Instance)?
+                        .GetValue(formValueProvider) as FormCollection)?.Files;
+            }
+            else if (provider is CompositeValueProvider compositeProvider)
+            {
+                return GetFiles(compositeProvider.FirstOrDefault(vp => vp is FormValueProvider));
+            }
+            else return null;
         }
     }
 }

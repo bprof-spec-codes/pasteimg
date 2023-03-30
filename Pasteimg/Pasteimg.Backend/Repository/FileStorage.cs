@@ -1,4 +1,6 @@
-﻿namespace Pasteimg.Backend.Repository
+﻿using System.Net;
+
+namespace Pasteimg.Backend.Repository
 {
     /// <summary>
     /// Interface for a file storage implementation.
@@ -340,7 +342,7 @@
             Directory.CreateDirectory(GetDirectory(id));
             WriteFile(content, id, extension, fileClass);
         }
-
+      
         /// <summary>
         /// Writes the specified byte array to a file with the given ID, extension and file class (if any) in the file storage.
         /// </summary>

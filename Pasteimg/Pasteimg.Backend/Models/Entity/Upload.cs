@@ -8,7 +8,6 @@ namespace Pasteimg.Backend.Models.Entity
     /// <summary>
     /// Represents an upload entity in the data model.
     /// </summary>
-    [ModelBinder(typeof(UploadModelBinder))]
     public class Upload : IEntity
     {
         /// <summary>
