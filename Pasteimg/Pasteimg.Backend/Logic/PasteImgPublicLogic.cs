@@ -1,128 +1,78 @@
-﻿using Pasteimg.Backend.Configurations;
+﻿using Microsoft.AspNetCore.Session;
+using Pasteimg.Backend.Configurations;
 using Pasteimg.Backend.Models.Entity;
 using Pasteimg.Backend.Models.Error;
 using System.Globalization;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace Pasteimg.Backend.Logic
 {
-    /// <summary>
-    /// Interface for managing the public logic of PasteImg.
-    /// </summary>
     public interface IPasteImgPublicLogic
     {
-        /// <summary>
-        /// Enters a password for an upload into the session, and tracks failed attempts.
-        /// </summary>
-        /// <param name="uploadId">The ID of the upload to enter the password for.</param>
-        /// <param name="password">The password to enter.</param>
-        /// <param name="session">The session to store the password in.</param>
-        void EnterPassword(string uploadId, string password, ISession session);
-
-        /// <summary>
-        /// Retrieves an image with the given identifier without file, and checks if a password is required and entered correctly by the user.
-        /// </summary>
-        /// <param name="id">The unique identifier for the image to be retrieved.</param>
-        /// <param name="session">The session associated with the current user.</param>
-        /// <returns>The image with the given identifier and if the password (if set) is entered correctly by the user.</returns>
-        Image GetImage(string id, ISession session);
-
-        /// <summary>
-        /// Retrieves an image with the given identifier  with the attached source file, and checks if a password is required and entered correctly by the user.
-        /// </summary>
-        /// <param name="id">The unique identifier for the image to be retrieved.</param>
-        /// <param name="session">The session associated with the current user.</param>
-        /// <returns>The image with the given identifier, with attached source file and if the password (if set) is entered correctly by the user.</returns>
-        Image GetImageWithSourceFile(string id, ISession session);
-
-        /// <summary>
-        /// Retrieves an image with the given identifier with the attached thumbnail file, and checks if a password is required and entered correctly by the user.
-        /// </summary>
-        /// <param name="id">The unique identifier for the image to be retrieved.</param>
-        /// <param name="session">The session associated with the current user.</param>
-        /// <returns>The image with the given identifier, with attached thumbnail file and if the password (if set) is entered correctly by the user.</returns>
-        Image GetImageWithThumbnailFile(string id, ISession session);
-
-        /// <summary>
-        /// Retrieves the upload with the given identifier without associated files, and checks if a password is required and entered correctly by the user.
-        /// </summary>
-        /// <param name="id">The unique identifier for the upload to be retrieved.</param>
-        /// <param name="session">The session associated with the current user.</param>
-        /// <returns>The upload with the given identifier and if the password (if set) is entered correctly by the user.</returns>
-        Upload GetUpload(string id, ISession session);
-
-        /// <summary>
-        /// Retrieves the upload with the given identifier and all associated source files, and checks if a password is required and entered correctly by the user.
-        /// </summary>
-        /// <param name="id">The unique identifier for the upload to be retrieved.</param>
-        /// <param name="session">The session associated with the current user.</param>
-        /// <returns>The upload with the given identifier and all associated source files, if the password (if set) is entered correctly by the user.</returns>
-        Upload GetUploadWithSourceFiles(string id, ISession session);
-
-        /// <summary>
-        /// Retrieves the upload with the given identifier and all associated thumbnail files, and checks if a password is required and entered correctly by the user.
-        /// </summary>
-        /// <param name="id">The unique identifier for the upload to be retrieved.</param>
-        /// <param name="session">The session associated with the current user.</param>
-        /// <returns>The upload with the given identifier and all associated thumbnail files, if the password (if set) is entered correctly by the user.</returns>
-        Upload GetUploadWithThumbnailFiles(string id, ISession session);
-
-        /// <summary>
-        /// Gets the validation configuration.
-        /// </summary>
+        string CreateSession();
+        void EnterPassword(string uploadId, string password, string? sessionKey);
+        Image GetImage(string id, string? sessionKey);
+        Image GetImageWithSourceFile(string id, string? sessionKey);
+        Image GetImageWithThumbnailFile(string id, string? sessionKey);
+        Upload GetUpload(string id, string? sessionKey);
+        Upload GetUploadWithSourceFiles(string id, string? sessionKey);
+        Upload GetUploadWithThumbnailFiles(string id, string? sessionKey);
         ValidationConfiguration GetValidationConfiguration();
-
-        /// <summary>
-        /// Stores the uploaded images, if modelstate is valid.
-        /// </summary>
-        /// <param name="upload">The object containing the images to be uploaded.</param>
-        /// <param name="session">The session associated with the current user.</param>
-        void PostUpload(Upload upload, ISession session);
-
-        /// <summary>
-        /// Sets whether NSFW content should be shown for the current session.
-        /// </summary>
-        /// <param name="value">True if NSFW content should be shown, false otherwise.</param>
-        /// <param name="session">The session associated with the current user.</param>
-        void SetShowNsfw(bool value, ISession session);
+        string PostUpload(Upload upload, string? sessionKey);
     }
 
     public class PasteImgPublicLogic : IPasteImgPublicLogic
     {
         private const string DateTimeFormat = @"MM/dd/yyyy HH:mm";
         private IPasteImgLogic logic;
-
-        public PasteImgPublicLogic(IPasteImgLogic logic)
+        private ISessionHandler sessionHandler;
+        public PasteImgPublicLogic(IPasteImgLogic logic, ISessionHandler sessionHandler)
         {
             this.logic = logic;
+            this.sessionHandler = sessionHandler;
+        }
+
+        public string CreateSession()
+        {
+            return sessionHandler.CreateNewSession();
         }
 
         /// <inheritdoc/>
         /// <exception cref="LockoutException"></exception>
         /// <exception cref="WrongPasswordException"></exception>
         /// <exception cref="NotFoundException"></exception>
-        public void EnterPassword(string uploadID, string password, ISession session)
+        public void EnterPassword(string uploadId, string password, string? sessionKey)
         {
-            Upload upload = logic.GetUpload(uploadID);
+            ISession? session = sessionHandler.GetSession(sessionKey);
+            if (session is null)
+            {
+                return;
+            }
+
+            Upload upload = logic.GetUpload(uploadId);
             if (upload.Password is null)
             {
                 return;
             }
-            if (IsLockedOut(uploadID, session))
+
+            if (IsLockedOut(uploadId, session))
             {
-                throw new LockoutException(uploadID);
+                throw new LockoutException() { UploadId = uploadId };
             }
 
             password = logic.CreateHash(password);
             if (upload.Password == password)
             {
-                session.SetString(uploadID, password);
-                session.Remove(GetSessionAttemptsKey(uploadID));
+
+                session.SetString(uploadId, password);
+                session.Remove(GetSessionAttemptsKey(uploadId));
+                session.CommitAsync().Wait();
             }
             else
             {
                 char sep = ';';
-                string? attemptsString = session.GetString(GetSessionAttemptsKey(uploadID));
+                string? attemptsString = session.GetString(GetSessionAttemptsKey(uploadId));
                 DateTime now = DateTime.Now;
                 string formattedNow = now.ToString(DateTimeFormat, CultureInfo.CurrentCulture);
                 int lockoutTime = logic.Configuration.Visitor.LockoutTresholdInMinutes;
@@ -130,72 +80,73 @@ namespace Pasteimg.Backend.Logic
 
                 if (attemptsString is null)
                 {
-                    session.SetString(GetSessionAttemptsKey(uploadID), formattedNow);
+                    session.SetString(GetSessionAttemptsKey(uploadId), formattedNow);
                 }
                 else
                 {
                     DateTime lastTime = DateTime.ParseExact(attemptsString.Split(sep)[^1], DateTimeFormat, CultureInfo.CurrentCulture);
                     if ((now - lastTime).TotalMinutes > lockoutTime)
                     {
-                        session.SetString(GetSessionAttemptsKey(uploadID), formattedNow);
+                        session.SetString(GetSessionAttemptsKey(uploadId), formattedNow);
                     }
                     else
                     {
-                        session.SetString(GetSessionAttemptsKey(uploadID), attemptsString + sep + formattedNow);
+                        session.SetString(GetSessionAttemptsKey(uploadId), attemptsString + sep + formattedNow);
                     }
                 }
 
-                int remaining = maxAttempt - session.GetString(GetSessionAttemptsKey(uploadID)).Split(sep).Length;
-                throw new WrongPasswordException(uploadID, remaining);
+                int remaining = maxAttempt - session.GetString(GetSessionAttemptsKey(uploadId)).Split(sep).Length;
+                session.CommitAsync().Wait();
+                throw new WrongPasswordException(remaining) { UploadId = uploadId };
             }
         }
 
         /// <inheritdoc/>
         /// <exception cref="NotFoundException"></exception>
         /// <exception cref="PasswordRequiredException"></exception>
-        public Image GetImage(string id, ISession session)
+        public Image GetImage(string id, string? sessionKey)
         {
-            return GetImageAndCheckPassword(id, logic.GetImage, session);
+            return GetImageAndCheckPassword(id, logic.GetImage, sessionKey);
         }
 
         /// <inheritdoc/>
         /// <exception cref="NotFoundException"></exception>
         /// <exception cref="PasswordRequiredException"></exception>
-        public Image GetImageWithSourceFile(string id, ISession session)
+        public Image GetImageWithSourceFile(string id, string? sessionKey)
         {
-            return GetImageAndCheckPassword(id, logic.GetImageWithSourceFile, session);
+            return GetImageAndCheckPassword(id, logic.GetImageWithSourceFile, sessionKey);
         }
 
         /// <inheritdoc/>
         /// <exception cref="NotFoundException"></exception>
         /// <exception cref="PasswordRequiredException"></exception>
-        public Image GetImageWithThumbnailFile(string id, ISession session)
+        public Image GetImageWithThumbnailFile(string id, string? sessionKey)
         {
-            return GetImageAndCheckPassword(id, logic.GetImageWithThumbnailFile, session);
+            return GetImageAndCheckPassword(id, logic.GetImageWithThumbnailFile, sessionKey);
         }
 
         /// <inheritdoc/>
         /// <exception cref="NotFoundException"></exception>
         /// <exception cref="PasswordRequiredException"></exception>
-        public Upload GetUpload(string id, ISession session)
+        public Upload GetUpload(string id, string? sessionKey)
         {
-            return GetUploadAndCheckPassword(id, logic.GetUpload, session);
+            return GetUploadAndCheckPassword(id, logic.GetUpload, sessionKey);
         }
 
         /// <inheritdoc/>
         /// <exception cref="NotFoundException"></exception>
         /// <exception cref="PasswordRequiredException"></exception>
-        public Upload GetUploadWithSourceFiles(string id, ISession session)
+        public Upload GetUploadWithSourceFiles(string id, string? sessionKey)
         {
-            return GetUploadAndCheckPassword(id, logic.GetUploadWithSourceFiles, session);
+            return GetUploadAndCheckPassword(id, logic.GetUploadWithSourceFiles, sessionKey);
         }
 
         /// <inheritdoc/>
         /// <exception cref="NotFoundException"></exception>
         /// <exception cref="PasswordRequiredException"></exception>
-        public Upload GetUploadWithThumbnailFiles(string id, ISession session)
+        public Upload GetUploadWithThumbnailFiles(string id, string? sessionKey)
         {
-            return GetUploadAndCheckPassword(id, logic.GetUploadWithThumbnailFiles, session);
+            return GetUploadAndCheckPassword(id, logic.GetUploadWithThumbnailFiles, sessionKey);
         }
 
         /// <inheritdoc/>
@@ -207,27 +158,31 @@ namespace Pasteimg.Backend.Logic
         /// <inheritdoc/>
         /// <exception cref="InvalidEntityException"></exception>
         /// <exception cref="SomethingWrongException"></exception>
-        public void PostUpload(Upload upload, ISession session)
+        public string PostUpload(Upload upload, string? sessionKey)
         {
-            logic.PostUpload(upload);
-            if (upload.Password != null)
+            try
             {
-                session.SetString(upload.Id, upload.Password);
+                ISession? session = sessionHandler.GetSession(sessionKey);
+                string uploadId = logic.PostUpload(upload);
+
+                if (session is not null && upload.Password is not null)
+                {
+                    session.SetString(upload.Id, upload.Password);
+                }
+                session.CommitAsync().Wait();
+                return uploadId;
             }
+            catch (PasteImgException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw new SomethingWrongException(ex, ex.Message);
+            }
+
         }
 
-        /// <inheritdoc/>
-        public void SetShowNsfw(bool value, ISession session)
-        {
-            if (value)
-            {
-                session.SetString("nsfw", "");
-            }
-            else
-            {
-                session.Remove("nsfw");
-            }
-        }
 
         /// <summary>
         /// Retrieves an image and checks whether a password is required for it. If a password is required and the session does
@@ -239,12 +194,14 @@ namespace Pasteimg.Backend.Logic
         /// <returns>The retrieved image.</returns>
         /// <exception cref="NotFoundException"></exception>
         /// <exception cref="PasswordRequiredException"></exception>
-        private Image GetImageAndCheckPassword(string id, Func<string, Image> getImage, ISession session)
+        private Image GetImageAndCheckPassword(string id, Func<string, Image> getImage, string? sessionKey)
         {
             Image image = getImage(id);
-            if (image.Upload.Password is not null && image.Upload.Password != GetSessionPassword(image.Upload.Id, session))
+            ISession? session = sessionHandler.GetSession(sessionKey);
+            if (image.Upload.Password is not null && 
+                (session is null || image.Upload.Password != GetSessionPassword(image.Upload.Id, session)))
             {
-                throw new PasswordRequiredException(typeof(Image), image.Upload.Id, image.Id);
+                throw new PasswordRequiredException() { ImageId = id, UploadId = image.UploadId };
             }
             return image;
         }
@@ -265,9 +222,9 @@ namespace Pasteimg.Backend.Logic
         /// <param name="uploadID">The upload ID associated with the password to retrieve.</param>
         /// <param name="session">The session object to retrieve the password from.</param>
         /// <returns>The password associated with the upload ID, or null if it does not exist.</returns>
-        private string? GetSessionPassword(string uploadID, ISession session)
+        private string? GetSessionPassword(string uploadID, ISession? session)
         {
-            return session.GetString(uploadID);
+            return session?.GetString(uploadID);
         }
 
         /// <summary>
@@ -280,12 +237,14 @@ namespace Pasteimg.Backend.Logic
         /// <returns>The retrieved upload.</returns>
         /// <exception cref="NotFoundException"></exception>
         /// <exception cref="PasswordRequiredException"></exception>
-        private Upload GetUploadAndCheckPassword(string id, Func<string, Upload> getUpload, ISession session)
+        private Upload GetUploadAndCheckPassword(string id, Func<string, Upload> getUpload, string? sessionKey)
         {
+            ISession? session = sessionHandler.GetSession(sessionKey);
             Upload upload = getUpload(id);
-            if (upload.Password is not null && upload.Password != GetSessionPassword(upload.Id, session))
+            if (upload.Password is not null &&
+                (session is null||upload.Password != GetSessionPassword(upload.Id, session)))
             {
-                throw new PasswordRequiredException(typeof(Upload), upload.Id, null);
+                throw new PasswordRequiredException() { UploadId = id };
             }
             return upload;
         }
@@ -296,10 +255,18 @@ namespace Pasteimg.Backend.Logic
         /// <param name="uploadID">The upload ID to check for lockout status.</param>
         /// <param name="session">The current session that containing lockout status information.</param>
         /// <returns>True if the upload ID is locked out for current session, false otherwise.</returns>
-        private bool IsLockedOut(string uploadID, ISession session)
+        private bool IsLockedOut(string uploadID, ISession? session)
         {
-            return session.GetString(GetSessionAttemptsKey(uploadID)) is string attempts &&
+            if (session is null)
+            {
+                return false;
+            }
+            else
+            {
+                return session.GetString(GetSessionAttemptsKey(uploadID)) is string attempts &&
                 attempts.Split(";").Length >= logic.Configuration.Visitor.MaxFailedAttempt;
+
+            }
         }
     }
 }

@@ -1,4 +1,7 @@
-﻿using Pasteimg.Backend.Configurations;
+﻿using Microsoft.AspNetCore.Session;
+using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Win32.SafeHandles;
+using Pasteimg.Backend.Configurations;
 using Pasteimg.Backend.ImageTransformers;
 using Pasteimg.Backend.Models;
 using Pasteimg.Backend.Models.Entity;
@@ -18,6 +21,7 @@ namespace Pasteimg.Backend.Logic
         /// Configuration object for the current Pasteimg instance.
         /// </summary>
         PasteImgConfiguration Configuration { get; }
+        ISessionStore SessionStore { get; }
 
         /// <summary>
         /// Creates a hash for the given password.
@@ -99,11 +103,7 @@ namespace Pasteimg.Backend.Logic
         /// <returns>The upload with the specified ID, including its thumbnail files.</returns>
         Upload GetUploadWithThumbnailFiles(string id);
 
-        /// <summary>
-        /// Stores the uploaded images, if modelstate is valid.
-        /// </summary>
-        /// <param name="upload">The object containing the images to be uploaded.</param>
-        void PostUpload(Upload upload);
+        string PostUpload(Upload upload);
     }
 
     /// <summary>
@@ -116,7 +116,7 @@ namespace Pasteimg.Backend.Logic
         protected readonly ImageTransformer sourceOptimizer;
         protected readonly ImageTransformer thumbnailCreator;
         protected readonly IRepository<Upload> uploadRepository;
-
+        public ISessionStore SessionStore { get; }
         /// <summary>
         /// Initializes a new instance of the <see cref="PasteImgLogic"/> class with the specified dependencies.
         /// </summary>
@@ -129,7 +129,8 @@ namespace Pasteimg.Backend.Logic
                              IRepository<Upload> uploadRepository,
                              IRepository<Image> imageRepository,
                              IImageTransformerFactory transformerFactory,
-                             IFileStorage fileStorage)
+                             IFileStorage fileStorage
+                            )
 
         {
             ValidateConfiguration(configuration);
@@ -213,7 +214,10 @@ namespace Pasteimg.Backend.Logic
             Image? image = imageRepository.Delete(id);
             if (image is null)
             {
-                throw new NotFoundException(typeof(Image), id);
+                throw new NotFoundException()
+                {
+                    ImageId=id
+                };
             }
             _ = Task.Run(async () =>
             {
@@ -243,7 +247,10 @@ namespace Pasteimg.Backend.Logic
             }
             else
             {
-                throw new NotFoundException(typeof(Upload), id);
+                throw new NotFoundException()
+                {
+                    UploadId = id
+                };
             }
         }
 
@@ -258,9 +265,13 @@ namespace Pasteimg.Backend.Logic
         /// <exception cref="NotFoundException"/>
         public Image EditImage(string id, string? description, bool nsfw)
         {
-            if (description is not null && description.Length > Configuration.Validation.MaxImagePerUpload)
+            int maxLength = Configuration.Validation.DescriptionMaxLength;
+            if (description is not null && description.Length > maxLength)
             {
-                throw new InvalidEntityException(typeof(Image), nameof(Image.Description), description, id);
+                throw new InvalidEntityException(nameof(description), description.Length,$"Description is too long! Max length: {maxLength}")
+                { 
+                    ImageId=id
+                };
             }
 
             Image? image = imageRepository.Update((img) =>
@@ -270,7 +281,10 @@ namespace Pasteimg.Backend.Logic
             }, id);
             if (image is null)
             {
-                throw new NotFoundException(typeof(Image), id);
+                throw new NotFoundException()
+                {
+                    ImageId=id
+                };
             }
             return image;
         }
@@ -304,7 +318,10 @@ namespace Pasteimg.Backend.Logic
             Image? image = imageRepository.Read(id);
             if (image is null)
             {
-                throw new NotFoundException(typeof(Image), id);
+                throw new NotFoundException()
+                {
+                    ImageId = id
+                };
             }
 
             return image;
@@ -337,7 +354,10 @@ namespace Pasteimg.Backend.Logic
             Upload? upload = uploadRepository.Read(id);
             if (upload is null)
             {
-                throw new NotFoundException(typeof(Upload), id);
+                throw new NotFoundException()
+                {
+                    UploadId = id
+                };
             }
             return upload;
         }
@@ -364,7 +384,7 @@ namespace Pasteimg.Backend.Logic
         /// <param name="upload">The upload to process.</param>
         /// <exception cref="InvalidEntityException"/>
         /// <exception cref="SomethingWrongException"/>
-        public void PostUpload(Upload upload)
+        public string PostUpload(Upload upload)
         {
             try
             {
@@ -372,6 +392,7 @@ namespace Pasteimg.Backend.Logic
                 SetUpload(upload);
                 SetImages(upload);
                 uploadRepository.Create(upload);
+                return upload.Id;
             }
             catch (InvalidEntityException)
             {
@@ -379,7 +400,7 @@ namespace Pasteimg.Backend.Logic
             }
             catch (Exception ex)
             {
-                throw new SomethingWrongException(ex, null, null);
+                throw new SomethingWrongException(ex);
             }
         }
 
@@ -390,39 +411,82 @@ namespace Pasteimg.Backend.Logic
         /// <exception cref="InvalidEntityException"></exception>
         protected virtual void ValidateUpload(Upload upload)
         {
-            if (upload.Images.Count == 0 || upload.Images.Count > Configuration.Validation.MaxImagePerUpload)
+            int maxImage = Configuration.Validation.MaxImagePerUpload;
+            if(upload.Images.Count==0)
             {
-                throw new InvalidEntityException(typeof(Upload), nameof(upload.Images.Count), upload.Images.Count);
+                throw new InvalidEntityException(nameof(upload.Images.Count), upload.Images.Count, $"Upload does not contain images!");
             }
-            if (!string.IsNullOrEmpty(upload.Password) && upload.Password.Length > Configuration.Validation.PasswordMaxLength)
+            if (upload.Images.Count > maxImage)
             {
-                throw new InvalidEntityException(typeof(Upload), nameof(upload.Password), upload.Password);
+                throw new InvalidEntityException
+                    (nameof(upload.Images.Count), upload.Images.Count,$"Too many images! Maximum image/upload: {maxImage}");
             }
-
-            foreach (var item in upload.Images)
+            int passwordMax = Configuration.Validation.PasswordMaxLength;
+            if (!string.IsNullOrEmpty(upload.Password) && upload.Password.Length > passwordMax)
             {
-                if (item.Content is null)
-                {
-                    throw new InvalidEntityException(typeof(Image), nameof(item.Content), item.Content);
-                }
-
-                if (item.Content.Length > Configuration.Validation.MaxFileSize)
-                {
-                    throw new InvalidEntityException(typeof(Image), nameof(item.Content.Length), item.Content.Length);
-                }
-
-                if (!Configuration.Validation.SupportedFormats.Contains(Path.GetExtension(item.Content.FileName).TrimStart('.').ToLower()))
-                {
-                    throw new InvalidEntityException(typeof(Image), nameof(item.Content.ContentType), item.Content.ContentType);
-                }
-
-                if (item.Description != null && Configuration.Validation.DescriptionMaxLength < item.Description.Length)
-                {
-                    throw new InvalidEntityException(typeof(Image), nameof(item.Description), item.Description.Length);
-                }
+                throw new InvalidEntityException
+                    (nameof(upload.Password), upload.Password,$"Password is too long! Max length: {passwordMax}");
             }
         }
+        private void ValidateImage(Image image)
+        {
+            if (image.Content is null)
+            {
+                throw new InvalidEntityException
+                    (nameof(image.Content), image.Content, "One image is empty!");
+            }
 
+            if (image.Content.Data.Length==0)
+            {
+                throw new InvalidEntityException
+                    (nameof(image.Content), image.Content.Data.Length, $"'{image.Content.FileName}' is empty!")
+                {
+                    ImageId = image.Content.FileName
+                };
+            }
+
+            long maxFileSize = Configuration.Validation.MaxFileSize;
+            if (image.Content.Data.Length > Configuration.Validation.MaxFileSize)
+            {
+                throw new InvalidEntityException
+                    (nameof(image.Content), image.Content.Data.Length, $"'{image.Content.FileName}' is too big! Max file size: {maxFileSize}.")
+                {
+                    ImageId=image.Content.FileName
+                };
+            }
+            int maxLength = Configuration.Validation.DescriptionMaxLength;
+            if (image.Description is not null && image.Description.Length > maxLength)
+            {
+                throw new InvalidEntityException(nameof(image.Description), image.Description.Length, $"Description of '{image.Content.FileName}' is too long! Max length: {maxLength}")
+                {
+                    ImageId = image.Content.FileName
+                };
+            }
+            try
+            {
+                ImageInfo info = sourceOptimizer.GetImageInfo(image.Content.Data);
+                var supportedFormats = Configuration.Validation.SupportedFormats;
+                if (!supportedFormats.Contains(info.Format))
+                {
+                    throw new InvalidEntityException
+                        (nameof(image.Content.ContentType), info.Format, $"'{image.Content.FileName}' is not among the supported formats! Supported formats: {string.Join(',', supportedFormats)}")
+                    {
+                        ImageId=image.Content.FileName
+                    };
+                }
+            }
+            catch(Exception)
+            {
+                throw new InvalidEntityException(nameof(image.Content), null, $"Something is wrong with '{image.Content.FileName}'!")
+                {
+                    ImageId = image.Content.FileName
+                };
+            }
+         
+
+            
+           
+        }
         /// <summary>
         /// Asynchronously creates optimized versions of an image and deletes its temporary file.
         /// </summary>
@@ -473,7 +537,7 @@ namespace Pasteimg.Backend.Logic
         /// <param name="id">The unique identifier for the image file to be retrieved.</param>
         /// <param name="fileClass">The file class of the image file to be retrieved.</param>
         /// <returns>An <see cref="IFormFile"/> containing the image data.</returns>
-        private IFormFile GetFile(string id, string fileClass)
+        private Content GetFile(string id, string fileClass)
         {
             string path;
             string unavaliable= "unavaliable.webp";
@@ -491,22 +555,15 @@ namespace Pasteimg.Backend.Logic
                 path = unavaliable;
             }
 
-            MemoryStream stream;
+            Content content;
             try
             {
-                stream = new MemoryStream(File.ReadAllBytes(path));
+                return new Content(path, $"image/{Path.GetExtension(path).TrimStart('.')}");
             }
             catch(IOException)
             {
-                stream = new MemoryStream(File.ReadAllBytes(unavaliable));
+                return new Content(unavaliable, $"image/{Path.GetExtension(path).TrimStart('.')}");
             }
-
-
-            return new FormFile(stream, 0, stream.Length, Path.GetFileNameWithoutExtension(path), Path.GetFileName(path))
-            {
-                Headers = new HeaderDictionary(),
-                ContentType = $"image/{Path.GetExtension(path).TrimStart('.')}"
-            };
         }
 
         /// <summary>
@@ -553,11 +610,11 @@ namespace Pasteimg.Backend.Logic
             for (int i = 0; i < count; i++)
             {
                 Image image = upload.Images[i];
+                ValidateImage(image);
                 image.Id = ids[i];
-                image.UploadID = upload.Id;
-                byte[] content = image.Content.ToArray();
-                fileStorage.SaveFile(content, image.Id, Path.GetExtension(image.Content.FileName), TempFileClass);
-                _ = Task.Run(async () => await FileProcessing(image.Id, content));
+                image.UploadId = upload.Id;
+                fileStorage.SaveFile(image.Content.Data, image.Id, Path.GetExtension(image.Content.FileName), TempFileClass);
+                _ = Task.Run(async () => await FileProcessing(image.Id, image.Content.Data));
             }
         }
 

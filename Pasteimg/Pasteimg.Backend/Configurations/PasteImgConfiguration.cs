@@ -1,4 +1,5 @@
 ﻿using Pasteimg.Backend.ImageTransformers;
+using Pasteimg.Backend.Logic;
 using Pasteimg.Backend.Repository;
 using System.Collections.ObjectModel;
 
@@ -119,6 +120,11 @@ namespace Pasteimg.Backend.Configurations
                 MaxHeight = 300,
                 MaxWidth = 300,
                 Quality = 90
+            },
+            Session=new SessionSettings()
+            {
+                IdleTimeout=TimeSpan.FromMinutes(60),
+                IOTimeout=TimeSpan.FromSeconds(30)
             }
         };
 
@@ -146,5 +152,7 @@ namespace Pasteimg.Backend.Configurations
         /// Gets or sets the visitor configuration.
         /// </summary>
         public VisitorConfiguration Visitor { get; init; }
+
+        public SessionSettings Session { get; init; }
     }
 }

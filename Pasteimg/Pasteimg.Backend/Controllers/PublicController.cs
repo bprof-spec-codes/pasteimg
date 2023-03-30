@@ -1,11 +1,15 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Mvc;
 using Pasteimg.Backend.Configurations;
 using Pasteimg.Backend.Logic;
 using Pasteimg.Backend.Models.Entity;
 using Pasteimg.Backend.Models.Error;
+using System.Runtime.CompilerServices;
 
-namespace Pasteimg.Backend.ControllersApi
+namespace Pasteimg.Backend.Controllers
 {
+
+
     /// <summary>
     /// Provides public API endpoints for accessing image and upload content.
     /// </summary>
@@ -14,7 +18,6 @@ namespace Pasteimg.Backend.ControllersApi
     public class PublicController : ControllerBase
     {
         private readonly IPasteImgPublicLogic logic;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="PublicController"/> class.
         /// </summary>
@@ -23,7 +26,21 @@ namespace Pasteimg.Backend.ControllersApi
         {
             this.logic = logic;
         }
-
+        [HttpGet]
+        public ActionResult CreateSession()
+        {
+            return Ok(logic.CreateSession());
+        }
+        
+        private string? GetSessionKey()
+        {
+            string[]? auth=HttpContext.Request.Headers.Authorization.FirstOrDefault(s => s.ToLower().Contains("basic"))?.Split(' ');
+            if (auth is not null && auth.Length == 2 && !string.IsNullOrWhiteSpace(auth[1]))
+            {
+                return auth[1];
+            }
+            else return null;
+        }
         /// <summary>
         /// Enters the password for an upload into the session, and tracks failed attempts.
         /// </summary>
@@ -42,12 +59,12 @@ namespace Pasteimg.Backend.ControllersApi
         {
             try
             {
-                logic.EnterPassword(uploadId, password, HttpContext.Session);
+                logic.EnterPassword(uploadId,password,GetSessionKey());
                 return Ok();
             }
             catch (PasteImgException ex)
             {
-                return new PasteImgErrorResult(ex);
+                return ex.GetErrorResult();
             }
         }
 
@@ -179,19 +196,19 @@ namespace Pasteimg.Backend.ControllersApi
         /// </list>
         /// </returns>
         [HttpPost]
-        public ActionResult PostUpload([FromForm] Upload upload)
+        public ActionResult PostUpload([FromBody] Upload upload)
         {
             try
-            {
-                logic.PostUpload(upload, HttpContext.Session);
-                return Ok();
+             {
+               string uploadId=logic.PostUpload(upload,GetSessionKey());
+                return Ok(uploadId);
             }
-            catch (InvalidEntityException ex)
+            catch (PasteImgException ex)
             {
-                return new PasteImgErrorResult(ex);
+                return ex.GetErrorResult();
             }
         }
-
+      
         /// <summary>
         /// Sets whether NSFW content should be shown for the current session.
         /// </summary>
@@ -202,12 +219,6 @@ namespace Pasteimg.Backend.ControllersApi
         /// </list>
         /// </returns>
 
-        [HttpPost("{value}")]
-        public ActionResult SetShowNsfw(bool value)
-        {
-            logic.SetShowNsfw(value, HttpContext.Session);
-            return Ok();
-        }
 
         /// <summary>
         /// Retrieves content of type T associated with a given id using the provided "get" function.
@@ -218,15 +229,16 @@ namespace Pasteimg.Backend.ControllersApi
         /// <returns>
         /// An HTTP actionresult containing the retrieved content.
         /// </returns>
-        private ActionResult GetContent<T>(string id, Func<string, ISession, T> get)
+        private ActionResult GetContent<T>(string id, Func<string,string?,T> get)
         {
             try
             {
-                return Ok(get(id, HttpContext.Session));
+                return Ok(get(id,GetSessionKey()));
             }
             catch (PasteImgException ex)
             {
-                return new PasteImgErrorResult(ex);
+                var result = ex.GetErrorResult();
+                return result;
             }
         }
     }

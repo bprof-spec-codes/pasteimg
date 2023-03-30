@@ -1,14 +1,14 @@
 {
+  "Source": {
+    "MaxHeight": 2000,
+    "MaxWidth": 2000,
+    "Quality": 75
+  },
   "Storage": {
     "Root": [
       "_wwwimages"
     ],
     "SubDirectoryDivision": 4
-  },
-  "Source": {
-    "MaxHeight": 2000,
-    "MaxWidth": 2000,
-    "Quality": 75
   },
   "Thumbnail": {
     "MaxHeight": 300,
@@ -19,6 +19,7 @@
     "DescriptionMaxLength": 120,
     "MaxFileSize": 10000000,
     "MaxImagePerUpload": 20,
+    "PasswordMaxLength": 12,
     "SupportedFormats": [
       "jpg",
       "jpeg",
@@ -31,11 +32,14 @@
       "apng",
       "webp",
       "bmp"
-    ],
-    "PasswordMaxLength": 12
+    ]
   },
   "Visitor": {
     "LockoutTresholdInMinutes": 10,
     "MaxFailedAttempt": 3
+  },
+  "Session": {
+    "IdleTimeout": "01:00:00",
+    "IOTimeout": "00:00:30"
   }
 }

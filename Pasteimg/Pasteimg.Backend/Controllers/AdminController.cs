@@ -1,15 +1,17 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 using Pasteimg.Backend.Logic;
 using Pasteimg.Backend.Models.Entity;
 using Pasteimg.Backend.Models.Error;
+using Microsoft.AspNetCore.Authorization;
+using System.Data;
+using Pasteimg.Backend.Configurations;
 
-namespace Pasteimg.Backend.ControllersApi
+namespace Pasteimg.Backend.Controllers
 {
     /// <summary>
     /// Provides API endpoints for admin functions related to the PasteImg service.
     /// </summary>
-    /// <seealso cref="Microsoft.AspNetCore.Mvc.ControllerBase" />
     [Route("api/[controller]/[action]")]
     [ApiController]
     [Authorize(Roles = "Admin")]
@@ -46,7 +48,7 @@ namespace Pasteimg.Backend.ControllersApi
             }
             catch (PasteImgException ex)
             {
-                return new PasteImgErrorResult(ex);
+                return ex.GetErrorResult();
             }
         }
 
@@ -70,7 +72,7 @@ namespace Pasteimg.Backend.ControllersApi
             }
             catch (PasteImgException ex)
             {
-                return new PasteImgErrorResult(ex);
+                return ex.GetErrorResult();
             }
         }
 
@@ -97,7 +99,7 @@ namespace Pasteimg.Backend.ControllersApi
             }
             catch (PasteImgException ex)
             {
-                return new PasteImgErrorResult(ex);
+                return ex.GetErrorResult();
             }
         }
 
@@ -242,13 +244,17 @@ namespace Pasteimg.Backend.ControllersApi
         {
             try
             {
-                logic.PostUpload(upload);
-                return Ok();
+                return Ok(logic.PostUpload(upload));
             }
             catch (PasteImgException ex)
             {
-                return new PasteImgErrorResult(ex);
+                return ex.GetErrorResult();
             }
+        }
+        [HttpGet]
+        public ActionResult GetConfiguration()
+        {
+            return Ok(logic.Configuration);
         }
 
         /// <summary>
@@ -268,7 +274,7 @@ namespace Pasteimg.Backend.ControllersApi
             }
             catch (PasteImgException ex)
             {
-                return new PasteImgErrorResult(ex);
+                return ex.GetErrorResult();
             }
         }
     }
