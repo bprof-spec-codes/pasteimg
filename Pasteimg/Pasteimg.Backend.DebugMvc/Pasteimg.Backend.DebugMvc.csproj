@@ -1,0 +1,45 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>aspnet-Pasteimg.Backend.DebugMvc-6FEDC0A3-2D81-4E1C-9C00-D15365EF51FE</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+	  <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.14" />
+	  <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.14" />
+	  <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="6.0.14" />
+	  <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="6.0.14" />
+	  <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+	  <PackageReference Include="Magick.NET-Q8-AnyCPU" Version="12.3.0" />
+	  <PackageReference Include="Magick.NET.Core" Version="12.3.0" />
+	  <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="6.0.14" />
+	  <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.14" />
+	  <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.14" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <Folder Include="Models\" />
+    <Folder Include="wwwroot\site\" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <None Include="wwwroot\test_input\sample_gif.gif" />
+    <None Include="wwwroot\test_input\sample_gif_animated.gif" />
+    <None Include="wwwroot\test_input\sample_gif_animated_big.gif" />
+    <None Include="wwwroot\test_input\sample_jpeg.jpeg" />
+    <None Include="wwwroot\test_input\sample_jpg.jpg" />
+    <None Include="wwwroot\test_input\sample_png_nontransparent.png" />
+    <None Include="wwwroot\test_input\sample_png_transparent.png" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <ProjectReference Include="..\Pasteimg.Backend\Pasteimg.Backend.csproj" />
+  </ItemGroup>
+
+</Project>

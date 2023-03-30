@@ -1,0 +1,6 @@
+﻿*[data-blur-nsfw] {
+    filter: blur(10px)
+}
+img {
+    max-height: 300px;
+}

@@ -1,0 +1,46 @@
+﻿@model Image
+@section Styles{
+    <link href="~/css/image.css" rel="stylesheet" /> 
+}
+@section Scripts{
+    <script src="~/js/image.js"></script>
+}
+<div>
+ 
+    <label for="show-nsfw">Show NSFW</label>
+    <input id="show-nsfw" name="show-nsfw" @(Context.Session.GetString("nsfw") is not null?"checked":"") type="checkbox" onclick="onShowNsfwChanged(this)"/>
+    <div class="align-content-center">
+            @{
+                string source = Url.ActionLink("Source", "Public", new { id= Model.Id });
+                string sourceFile = Url.ActionLink("SourceFile", "Public", new { id= Model.Id });
+             }
+        <div class="card" s">
+                <div class="card-header  text-center">
+                    <div class="card-img h-50">
+                    @if (Model.NSFW)
+                    {
+                        <img class="nsfw" @(Context.Session.GetString("nsfw") is null?"data-blur-nsfw":"") src="@sourceFile" style="max-height:500px">
+                    }
+                    else
+                    {
+                        <img class="" src="@sourceFile" style="max-height:500px;">
+                    }
+                </div>
+            </div>
+            @if (Model.Description?.Length > 0 == true)
+            {
+                <div class="card-body">
+                    <p class="card-text">
+                        @Model.Description
+                    </p>
+                </div>
+            }
+            <div class="card-footer">
+                <div class="overflow-auto">
+                    <label>Share: </label>
+                    <textarea class="d-block w-100" style="resize:none;" disabled>@source</textarea>
+                </div>
+            </div>
+        </div>
+     </div> 
+</div>
