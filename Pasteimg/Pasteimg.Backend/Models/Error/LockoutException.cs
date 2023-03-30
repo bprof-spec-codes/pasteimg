@@ -10,10 +10,14 @@ namespace Pasteimg.Backend.Models.Error
         /// <summary>
         ///  Initializes a new instance of the <see cref="LockoutException"/> class with the specified parameters.
         /// </summary>
-        /// <param name="id"> The Id of the entity the exception is related to.</param>
-        public LockoutException(string id) :
-            base(typeof(Upload), id, $"Resource access is locked out. Id: {id}")
+        /// <param name="uploadId"> The Id of the upload the exception is related to.</param>
+        public LockoutException() :
+            base(message:$"Resource access is locked out.")
         {
+        }
+        protected override PasteImgErrorStatusCode GetStatusCode()
+        {
+            return PasteImgErrorStatusCode.Lockout;
         }
     }
 }

@@ -1,47 +1,29 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Collections.ObjectModel;
 using System.Net;
+using System.Text.Json.Serialization;
 
 namespace Pasteimg.Backend.Models.Error
 {
-    /// <summary>
-    /// Represents a custom error result that wraps a <see cref="PasteImgException"/> as a HttpResponse.
-    /// </summary>
-    public class PasteImgErrorResult : ObjectResult
+    public enum PasteImgErrorStatusCode
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="PasteImgErrorResult"/> class with the specified exception.
-        /// </summary>
-        /// <param name="ex">The PasteImgException instance to wrap.</param>
-        public PasteImgErrorResult(PasteImgException ex) : base(ex)
+        NotFound = HttpStatusCode.NotFound,
+        SomethingWrong = HttpStatusCode.InternalServerError,
+        PasswordRequired = 452,
+        WrongPassword = 453,
+        Lockout = 454,
+        InvalidEntity = 455
+    }
+    public class ErrorDetails
+    {
+        public string Message { get; set; }
+        public PasteImgErrorStatusCode StatusCode { get; set; }
+        public Dictionary<string,string> KeyValues { get; set; }
+    }
+    public class PasteImgErrorResult : BadRequestObjectResult
+    {
+        public PasteImgErrorResult(ErrorDetails details):base(details)
         {
-            Exception = ex;
-            StatusCode = GetStatusCode(ex);
-        }
-
-        /// <summary>
-        /// Gets the wrapped PasteImgException instance.
-        /// </summary>
-        public PasteImgException Exception { get; }
-
-        /// <summary>
-        /// Gets the HTTP status code based on the type of PasteImgException thrown.
-        /// </summary>
-        /// <param name="ex">The PasteImgException to determine the status code for.</param>
-        /// <returns>The HTTP status code.</returns>
-        private int GetStatusCode(PasteImgException ex)
-        {
-            if (ex is NotFoundException)
-            {
-                return (int)HttpStatusCode.NotFound;
-            }
-            else if (ex is SomethingWrongException)
-            {
-                return (int)HttpStatusCode.InternalServerError;
-            }
-            else
-            {
-                return (int)HttpStatusCode.BadRequest;
-            }
         }
     }
 }

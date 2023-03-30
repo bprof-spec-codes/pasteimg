@@ -5,27 +5,39 @@
     /// </summary>
     public class PasteImgException : Exception
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="PasteImgException"/> class with the specified parameters.
-        /// </summary>
-        /// <param name="entityType">The type of entity the exception is related to.</param>
-        /// <param name="id"> The Id of the entity the exception is related to.</param>
-        /// <param name="message">The error message associated with the exception.</param>
-        /// <param name="innerException">The inner exception associated with this exception.</param>
-        public PasteImgException(Type? entityType = null, string? id = null, string? message = null, Exception? innerException = null) : base(message, innerException)
+      
+        public PasteImgException(string? message = null, Exception? innerException = null) : base(message, innerException)
+        { }
+
+        public string? UploadId { get; init; }
+        public string? ImageId { get; init; }
+        protected virtual PasteImgErrorStatusCode GetStatusCode()
         {
-            Id = id;
-            EntityType = entityType;
+            return PasteImgErrorStatusCode.SomethingWrong;
+        }
+        protected virtual void SetErrorDetails(ErrorDetails details)
+        {
+            
+           AddValueIfNotNull(details,nameof(UploadId), UploadId);
+           AddValueIfNotNull(details,nameof(ImageId), ImageId);
         }
 
-        /// <summary>
-        /// Gets the type of entity the exception is related to.
-        /// </summary>
-        public Type? EntityType { get; }
-
-        /// <summary>
-        /// Gets the Id of the entity the exception is related to.
-        /// </summary>
-        public string? Id { get; }
+        public PasteImgErrorResult GetErrorResult()
+        {
+            ErrorDetails details = new ErrorDetails();
+            details.Message = Message;
+            details.StatusCode = GetStatusCode();
+            details.KeyValues = new Dictionary<string, string>();
+            SetErrorDetails(details);
+            PasteImgErrorResult error = new PasteImgErrorResult(details);
+            return error;
+        }
+        protected void AddValueIfNotNull(ErrorDetails details,string key, object? value)
+        {
+            if(value is not null)
+            {
+                details.KeyValues.Add(key, value.ToString());
+            }
+        }
     }
 }
