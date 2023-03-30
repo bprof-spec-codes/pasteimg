@@ -9,7 +9,6 @@ using System.Runtime.CompilerServices;
 namespace Pasteimg.Backend.Controllers
 {
 
-
     /// <summary>
     /// Provides public API endpoints for accessing image and upload content.
     /// </summary>
@@ -32,14 +31,19 @@ namespace Pasteimg.Backend.Controllers
             return Ok(logic.CreateSession());
         }
         
-        private string? GetSessionKey()
+        private string? GetSessionKey(string? authorizationHeader)
         {
-            string[]? auth=HttpContext.Request.Headers.Authorization.FirstOrDefault(s => s.ToLower().Contains("basic"))?.Split(' ');
-            if (auth is not null && auth.Length == 2 && !string.IsNullOrWhiteSpace(auth[1]))
+            if(authorizationHeader is null)
             {
-                return auth[1];
+                return null;
             }
-            else return null;
+            string[] keyValue = authorizationHeader.Split(' ');
+            if (keyValue.Length != 2 && keyValue[0].ToLower()!="basic"&&!string.IsNullOrWhiteSpace(keyValue[1]))
+            {
+                return null;
+            }
+
+            return keyValue[1];
         }
         /// <summary>
         /// Enters the password for an upload into the session, and tracks failed attempts.
@@ -54,12 +58,12 @@ namespace Pasteimg.Backend.Controllers
         ///     <item><strong>BadRequest 400:</strong> Session is locked out for this resource access.</item>
         /// </list>
         /// </returns>
-        [HttpPost("{uploadId},{password}")]
-        public ActionResult EnterPassword(string uploadId, string password)
+        [HttpPost("{uploadId}")]
+        public ActionResult EnterPassword(string uploadId, [FromBody] string password, [FromHeader(Name = "Authorization")] string? authorization)
         {
             try
             {
-                logic.EnterPassword(uploadId,password,GetSessionKey());
+                logic.EnterPassword(uploadId,password,GetSessionKey(authorization));
                 return Ok();
             }
             catch (PasteImgException ex)
@@ -80,9 +84,9 @@ namespace Pasteimg.Backend.Controllers
         /// </list>
         /// </returns>
         [HttpGet("{id}")]
-        public ActionResult GetImage(string id)
+        public ActionResult GetImage(string id, [FromHeader(Name = "Authorization")] string? authorization)
         {
-            return GetContent(id, logic.GetImage);
+            return GetContent(id,authorization, logic.GetImage);
         }
 
         /// <summary>
@@ -97,9 +101,9 @@ namespace Pasteimg.Backend.Controllers
         /// </list>
         /// </returns>
         [HttpGet("{id}")]
-        public ActionResult GetImageWithSourceFile(string id)
+        public ActionResult GetImageWithSourceFile(string id, [FromHeader(Name = "Authorization")] string? authorization)
         {
-            return GetContent(id, logic.GetImageWithSourceFile);
+            return GetContent(id,authorization, logic.GetImageWithSourceFile);
         }
 
         /// <summary>
@@ -114,9 +118,9 @@ namespace Pasteimg.Backend.Controllers
         /// </list>
         /// </returns>
         [HttpGet("{id}")]
-        public ActionResult GetImageWithThumbnailFile(string id)
+        public ActionResult GetImageWithThumbnailFile(string id, [FromHeader(Name = "Authorization")] string? authorization)
         {
-            return GetContent(id, logic.GetImageWithThumbnailFile);
+            return GetContent(id,authorization, logic.GetImageWithThumbnailFile);
         }
 
         /// <summary>
@@ -131,9 +135,9 @@ namespace Pasteimg.Backend.Controllers
         /// </list>
         /// </returns>
         [HttpGet("{id}")]
-        public ActionResult GetUpload(string id)
+        public ActionResult GetUpload(string id, [FromHeader(Name = "Authorization")] string? authorization)
         {
-            return GetContent(id, logic.GetUpload);
+            return GetContent(id,authorization, logic.GetUpload);
         }
 
         /// <summary>
@@ -148,9 +152,9 @@ namespace Pasteimg.Backend.Controllers
         /// </list>
         /// </returns>
         [HttpGet("{id}")]
-        public ActionResult GetUploadWithSourceFiles(string id)
+        public ActionResult GetUploadWithSourceFiles(string id, [FromHeader(Name = "Authorization")] string? authorization)
         {
-            return GetContent(id, logic.GetUploadWithSourceFiles);
+            return GetContent(id,authorization, logic.GetUploadWithSourceFiles);
         }
 
         /// <summary>
@@ -165,9 +169,9 @@ namespace Pasteimg.Backend.Controllers
         /// </list>
         /// </returns>
         [HttpGet("{id}")]
-        public ActionResult GetUploadWithThumbnailFiles(string id)
+        public ActionResult GetUploadWithThumbnailFiles(string id, [FromHeader(Name = "Authorization")] string? authorization)
         {
-            return GetContent(id, logic.GetUploadWithThumbnailFiles);
+            return GetContent(id,authorization, logic.GetUploadWithThumbnailFiles);
         }
 
         /// <summary>
@@ -196,11 +200,11 @@ namespace Pasteimg.Backend.Controllers
         /// </list>
         /// </returns>
         [HttpPost]
-        public ActionResult PostUpload([FromBody] Upload upload)
+        public ActionResult PostUpload([FromBody] Upload upload, [FromHeader(Name = "Authorization")] string? authorization)
         {
             try
              {
-               string uploadId=logic.PostUpload(upload,GetSessionKey());
+               string uploadId=logic.PostUpload(upload,GetSessionKey(authorization));
                 return Ok(uploadId);
             }
             catch (PasteImgException ex)
@@ -229,11 +233,11 @@ namespace Pasteimg.Backend.Controllers
         /// <returns>
         /// An HTTP actionresult containing the retrieved content.
         /// </returns>
-        private ActionResult GetContent<T>(string id, Func<string,string?,T> get)
+        private ActionResult GetContent<T>(string id,string? authorization, Func<string,string?,T> get)
         {
             try
             {
-                return Ok(get(id,GetSessionKey()));
+                return Ok(get(id,GetSessionKey(authorization)));
             }
             catch (PasteImgException ex)
             {

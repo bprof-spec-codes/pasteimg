@@ -93,7 +93,7 @@ namespace Pasteimg.Backend.DebugMvc.Controllers
         public IActionResult SubmitPassword(string uploadId, string? imageId, string? password)
         {
             SetSession();
-            var response = client.PostAsJsonAsync($"{api}/Public/EnterPassword/{uploadId},{password??"_"}", "").Result;
+            var response = client.PostAsJsonAsync($"{api}/Public/EnterPassword/{uploadId}", password).Result;
             if(response.IsSuccessStatusCode)
             {
                 if(imageId is null)
@@ -143,7 +143,12 @@ namespace Pasteimg.Backend.DebugMvc.Controllers
         {
             try
             {
-                ErrorDetails errorDetails = response.Content.ReadFromJsonAsync<ErrorDetails>().Result;
+                ErrorDetails? errorDetails = response.Content.ReadFromJsonAsync<ErrorDetails?>().Result;
+                if(errorDetails is null||errorDetails.KeyValues is null)
+                {
+                    throw new NullReferenceException(nameof(errorDetails));
+                }
+
                 if (errorDetails.StatusCode == PasteImgErrorStatusCode.PasswordRequired)
                 {
                     return View("AskPassword", errorDetails);
