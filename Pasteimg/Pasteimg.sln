@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pasteimg.Backend", "Pasteim
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pasteimg.Backend.DebugMvc", "Pasteimg.Backend.DebugMvc\Pasteimg.Backend.DebugMvc.csproj", "{5CACB49A-9F4D-4EC5-925F-9D24E795CFFC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pasteimg.Frontend", "Pasteimg.Frontend\Pasteimg.Frontend.csproj", "{D02EF73E-1DA6-45F9-A66E-6D54F8EBFB0A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,6 +31,10 @@ Global
 		{5CACB49A-9F4D-4EC5-925F-9D24E795CFFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5CACB49A-9F4D-4EC5-925F-9D24E795CFFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5CACB49A-9F4D-4EC5-925F-9D24E795CFFC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D02EF73E-1DA6-45F9-A66E-6D54F8EBFB0A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D02EF73E-1DA6-45F9-A66E-6D54F8EBFB0A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D02EF73E-1DA6-45F9-A66E-6D54F8EBFB0A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D02EF73E-1DA6-45F9-A66E-6D54F8EBFB0A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
