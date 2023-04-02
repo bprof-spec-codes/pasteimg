@@ -1,6 +1,5 @@
 ﻿
 using Pasteimg.Backend.Logic;
-using Pasteimg.Backend.Models.Entity;
 using Pasteimg.Backend.Repository;
 using System;
 using System.Collections.Generic;

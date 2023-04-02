@@ -25,7 +25,6 @@
 var NAVTREE =
 [
   [ "Pasteimg", "index.html", [
-    [ "The MIT License (MIT)", "md__pasteimg__backend_wwwroot_lib_jquery_validation__l_i_c_e_n_s_e.html", null ],
     [ "Packages", "namespaces.html", [
       [ "Packages", "namespaces.html", "namespaces_dup" ],
       [ "Package Functions", "namespacemembers.html", [
@@ -39,7 +38,7 @@ var NAVTREE =
       [ "Class Hierarchy", "hierarchy.html", "hierarchy" ],
       [ "Class Members", "functions.html", [
         [ "All", "functions.html", "functions_dup" ],
-        [ "Functions", "functions_func.html", null ],
+        [ "Functions", "functions_func.html", "functions_func" ],
         [ "Variables", "functions_vars.html", null ],
         [ "Properties", "functions_prop.html", null ]
       ] ]
@@ -57,10 +56,10 @@ var NAVTREE =
 
 var NAVTREEINDEX =
 [
-"00000000000000___create_identity_schema_8_designer_8cs.html",
-"class_pasteimg_1_1_backend_1_1_controllers_api_1_1_public_controller.html#abe36e6ef9d3bc38e88e155cb49fe549b",
-"class_pasteimg_1_1_backend_1_1_models_1_1_entity_1_1_upload.html#a6a167daee84a2471f5f1e19f56728e78",
-"interface_pasteimg_1_1_backend_1_1_logic_1_1_i_paste_img_public_logic.html#a4edd819a1ec1ff2a9153735b40768274"
+"20230402021542___first_migration_8_designer_8cs.html",
+"class_pasteimg_1_1_backend_1_1_image_transformers_1_1_image_transformer.html#ae3428e1fe565cccc9c296564aff5f024",
+"class_pasteimg_1_1_backend_1_1_logic_1_1_paste_img_logic.html#abc107da2aa25018f362159e2ab5660a4",
+"functions_g.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

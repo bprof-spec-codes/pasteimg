@@ -1,6 +1,5 @@
 var dir_5f0ad5d87bf34a69b4e96381f5a884a2 =
 [
-    [ "_Debug", "dir_7aae81475634f6ac8224ede82712ceff.html", "dir_7aae81475634f6ac8224ede82712ceff" ],
     [ "ImageInfo.cs", "_image_info_8cs.html", "_image_info_8cs" ],
     [ "ImageTransformer.cs", "_image_transformer_8cs.html", [
       [ "Pasteimg.Backend.ImageTransformers.IImageTransformer", "interface_pasteimg_1_1_backend_1_1_image_transformers_1_1_i_image_transformer.html", "interface_pasteimg_1_1_backend_1_1_image_transformers_1_1_i_image_transformer" ],

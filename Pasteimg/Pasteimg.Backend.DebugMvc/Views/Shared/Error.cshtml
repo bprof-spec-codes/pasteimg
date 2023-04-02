@@ -1,4 +1,4 @@
-﻿@model ErrorDetails
+﻿@model ErrorModel
 @{
     ViewData["Title"] = "Error";
 }
@@ -6,10 +6,15 @@
 <h1 class="text-danger">Error.</h1>
 <h2 class="text-danger">An error occurred while processing your request.</h2>
 <h4 class="text-danger">
-    @Model.Message
+    Message: @Model.Message
 </h4>
-
-    @foreach (var item in Model.KeyValues)
+<h6 class="text-dange">
+    StatusCode: @Model.StatusCode
+</h6>
+<h6>
+    ErrorId: @Model.ErrorId
+</h6>
+    @foreach (var item in Model.Details)
     {
     <p class="text-danger">
         @item.Key: @item.Value;

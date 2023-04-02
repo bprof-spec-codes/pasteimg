@@ -1,64 +1,55 @@
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Session;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Caching.Memory;
 using Pasteimg.Backend.Configurations;
 using Pasteimg.Backend.Data;
 using Pasteimg.Backend.ImageTransformers;
 using Pasteimg.Backend.Logic;
-using Pasteimg.Backend.Models.Entity;
+using Pasteimg.Backend.Logic.Exceptions;
+using Pasteimg.Backend.Models;
 using Pasteimg.Backend.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
-
 // Add services to the container.
-
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
+builder.Services.AddSingleton<IPasswordHasher, PasswordHasher>();
+
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.AddDbContext<PasteImgDbContext>(options =>
 {
-    options.UseInMemoryDatabase("test")
-           .UseLazyLoadingProxies(true)
-           .EnableDetailedErrors(true);
+    options.UseSqlServer(connectionString)
+           .UseLazyLoadingProxies();
 });
+builder.Services.AddTransient<IPasteImgConfigurer, PasteImgConfigurer>()
+                .AddSingleton((provider) => provider.GetRequiredService<IPasteImgConfigurer>().ReadConfiguration())
+                .AddSingleton((provider) => provider.GetRequiredService<PasteImgConfiguration>().Storage)
+                .AddSingleton((provider) => provider.GetRequiredService<PasteImgConfiguration>().Session);
+builder.Services.AddSingleton<HttpErrorMapper>();
+builder.Services.AddTransient<IRepository<Image>, Repository<Image>>()
+                .AddTransient<IRepository<Upload>, Repository<Upload>>()
+                .AddTransient<IRepository<Admin>, Repository<Admin>>()
+                .AddSingleton<IFileStorage, FileStorage>()
+                .AddTransient<IImageTransformerFactory, ImageTransformerFactory>()
+                .AddTransient<IPasteImgLogic, PasteImgLogic>()
+                .AddSingleton<IDistributedCache, MemoryDistributedCache>()
+                .AddTransient<ISessionStore, DistributedSessionStore>()
+                .AddTransient<ISessionHandler, SessionHandler>()
+                .AddTransient<IPublicLogic, PublicLogic>()
+                .AddTransient<IAdminLogic, AdminLogic>();
 
-builder.Services.AddIdentity<IdentityUser,IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddEntityFrameworkStores<ApplicationDbContext>()
-    .AddDefaultTokenProviders()
-    .AddRoleManager<RoleManager<IdentityRole>>()
-    .AddUserManager<UserManager<IdentityUser>>();
-
-builder.Services.AddSession();
-
-builder.Services.AddTransient<IPasteImgConfigurer, PasteImgConfigurer>();
-builder.Services.AddSingleton((provider) => provider.GetRequiredService<IPasteImgConfigurer>().ReadConfiguration());
-builder.Services.AddSingleton((provider) => provider.GetRequiredService<PasteImgConfiguration>().Storage);
-builder.Services.AddSingleton((provider) => provider.GetRequiredService<PasteImgConfiguration>().Session);
-
-builder.Services.AddTransient<IRepository<Image>, Repository<Image>>();
-builder.Services.AddTransient<IRepository<Upload>, Repository<Upload>>();
-builder.Services.AddSingleton<IFileStorage, FileStorage>();
-builder.Services.AddTransient<IImageTransformerFactory, ImageTransformerFactory>();
-builder.Services.AddTransient<IPasteImgLogic, PasteImgLogic>();
-builder.Services.AddSingleton<IDistributedCache, MemoryDistributedCache>();
-builder.Services.AddSingleton<ISessionHandler, SessionHandler>();
-builder.Services.AddTransient<IPasteImgPublicLogic, PasteImgPublicLogic>();
 var app = builder.Build();
-
+app.UseExceptionHandler("/error");
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-app.UseSession();
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseCookiePolicy();
 app.MapControllers();
-
 app.Run();

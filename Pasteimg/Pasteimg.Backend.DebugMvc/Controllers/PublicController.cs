@@ -4,8 +4,7 @@ using Newtonsoft.Json;
 using Pasteimg.Backend.Controllers;
 using Pasteimg.Backend.Logic;
 using Pasteimg.Backend.Models;
-using Pasteimg.Backend.Models.Entity;
-using Pasteimg.Backend.Models.Error;
+using Pasteimg.Backend.Logic.Exceptions;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -15,30 +14,30 @@ namespace Pasteimg.Backend.DebugMvc.Controllers
 {
     public class PublicController : Controller
     {
-        HttpClient client;
+        private readonly HttpClient client;
         private readonly ILogger<HomeController> logger;
         const string api = "https://localhost:7063/api";
 
-        public PublicController(ILogger<HomeController> logger)
+        public PublicController(ILogger<HomeController> logger,HttpClient client)
         {
             this.logger = logger;
-            client = new HttpClient();
+           this.client=client;
        
         
         }
-        private void SetSession()
+        private async Task SetSessionAsync()
         {
             if (HttpContext?.Session is not null)
             {
-                string? sessionKey = HttpContext?.Session.GetString("sessionKey");
-                if (sessionKey is null)
+                string apiKey = "API-SESSION-KEY";
+                string? apiKeyValue = HttpContext?.Session.GetString(apiKey);
+                if (apiKeyValue is null)
                 {
-                    sessionKey = client.GetAsync($"{api}/Public/CreateSession")
-                               .Result.Content.ReadAsStringAsync().Result;
-                    HttpContext.Session.SetString("sessionKey", sessionKey);
+                    var response = await client.GetAsync($"{api}/Public/CreateSessionKey");
+                        apiKeyValue=await response.Content.ReadAsStringAsync();
+                    HttpContext.Session.SetString(apiKey, apiKeyValue);
                 }
-
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", sessionKey);
+                client.DefaultRequestHeaders.Add(apiKey, apiKeyValue);
             }
         }
 
@@ -49,51 +48,50 @@ namespace Pasteimg.Backend.DebugMvc.Controllers
         }
 
         [HttpGet]
-        public IActionResult Images(string id)
+        public async Task<IActionResult> Images(string id)
         {
-            SetSession(); 
-            var response = client.GetAsync($"{api}/Public/GetUpload/{id}").Result;
+            await SetSessionAsync(); 
+            var response = await client.GetAsync($"{api}/Public/GetUpload/{id}");
             if (response.StatusCode==HttpStatusCode.OK)
             {
-                Upload upload = response.Content.ReadFromJsonAsync<Upload>().Result;
+                Upload upload =await response.Content.ReadFromJsonAsync<Upload>();
 
                 return View(upload);
             }
             else
             {
-                return Error(response);
+                return await Error(response);
             }
         }
 
    
         [HttpGet]
-        public IActionResult Source(string id)
+        public async Task<IActionResult> Source(string id)
         {
-            SetSession();
-            var response = client.GetAsync($"{api}/Public/GetImage/{id}").Result;
+            await SetSessionAsync();
+            var response =await client.GetAsync($"{api}/Public/GetImage/{id}");
             if (response.StatusCode == HttpStatusCode.OK)
             {
-                Image image = response.Content.ReadFromJsonAsync<Image>().Result;
+                Image image = await response.Content.ReadFromJsonAsync<Image>();
                 return View(image);
             }
             else
             {
-                return Error(response);
+                return await Error(response);
             }
         }
 
         [HttpGet]
-        public IActionResult SourceFile(string id)
+        public async Task<IActionResult> SourceFile(string id)
         {
-            SetSession();
-            return GetFile($"{api}/Public/GetImageWithSourceFile/{id}");
+            return await GetFile($"{api}/Public/GetImageWithSourceFile/{id}");
         }
 
         [HttpPost]
-        public IActionResult SubmitPassword(string uploadId, string? imageId, string? password)
+        public async Task<IActionResult> SubmitPassword(string uploadId, string? imageId, string? password)
         {
-            SetSession();
-            var response = client.PostAsJsonAsync($"{api}/Public/EnterPassword/{uploadId}", password).Result;
+            await SetSessionAsync();
+            var response =await client.PostAsJsonAsync($"{api}/Public/EnterPassword/{uploadId}", password);
             if(response.IsSuccessStatusCode)
             {
                 if(imageId is null)
@@ -107,78 +105,81 @@ namespace Pasteimg.Backend.DebugMvc.Controllers
             }
             else
             {
-                return Error(response);
+                return await Error(response);
             }
         }
 
         [HttpPost]
-        public IActionResult SubmitUpload([ModelBinder(typeof(UploadModelBinder))]Upload upload)
+        public async Task<IActionResult> SubmitUpload([ModelBinder(typeof(UploadModelBinder))]Upload upload)
         {
-            SetSession();
-            var response =client.PostAsJsonAsync($"{api}/Public/PostUpload", upload).Result;
-            string responseContent = response.Content.ReadAsStringAsync().Result;
+            await SetSessionAsync();
+            var response =await client.PostAsJsonAsync($"{api}/Public/PostUpload", upload);
+            string responseContent = await response.Content.ReadAsStringAsync();
             if(response.IsSuccessStatusCode)
             {
                 return RedirectToAction(nameof(Images), new { id = responseContent });
             }
             else
             {
-                return Error(response);
+                return await Error(response);
             }
         }
        
         [HttpGet]
-        public IActionResult ThumbnailFile(string id)
+        public async Task<IActionResult> ThumbnailFile(string id)
         {
-            return GetFile($"{api}/Public/GetImageWithThumbnailFile/{id}");
+            return await GetFile($"{api}/Public/GetImageWithThumbnailFile/{id}");
         }
 
-        public IActionResult Upload()
+        public async Task<IActionResult> Upload()
         {
-            SetSession();
+            await SetSessionAsync();
             return View(new Upload());
         }
-
-        private IActionResult Error(HttpResponseMessage response)
+        private bool ThatException(ErrorModel model,Type exceptionType)
+        {
+            return model.Name == exceptionType.Name.ToLower().Replace("exception", "");
+        }
+        private async Task<IActionResult> Error(HttpResponseMessage response)
         {
             try
             {
-                ErrorDetails? errorDetails = response.Content.ReadFromJsonAsync<ErrorDetails?>().Result;
-                if(errorDetails is null||errorDetails.KeyValues is null)
+                ErrorModel? error = await response.Content.ReadFromJsonAsync<ErrorModel?>();
+                if(error is null||error is null)
                 {
-                    throw new NullReferenceException(nameof(errorDetails));
+                    throw new NullReferenceException(nameof(error));
                 }
 
-                if (errorDetails.StatusCode == PasteImgErrorStatusCode.PasswordRequired)
+                if (error.Name=="passwordrequired")
                 {
-                    return View("AskPassword", errorDetails);
+                    return View("AskPassword", error);
                 }
                 else
                 {
-                    return View("Error", errorDetails);
+                    return View("Error", error);
                 }
             }
             catch
             {
 
-                return StatusCode((int)response.StatusCode, response.Content.ReadAsStringAsync().Result);
+                return StatusCode((int)response.StatusCode,await  response.Content.ReadAsStringAsync());
             }
         
         }
 
-        private IActionResult GetFile(string uri)
+        private async Task<IActionResult> GetFile(string uri)
         {
-            SetSession();
-            var response = client.GetAsync(uri).Result;
+            await SetSessionAsync();
+            var response = await client.GetAsync(uri);
             if (response.StatusCode == HttpStatusCode.OK)
             {
-                Image image = response.Content.ReadFromJsonAsync<Image>().Result;
+                Image image =await response.Content.ReadFromJsonAsync<Image>();
 
                 return File(image.Content.Data,image.Content.ContentType);
             }
             else
             {
-                return Error(response);
+                return await Error(response);
             }
         }
     }

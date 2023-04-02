@@ -1,4 +1,7 @@
 var searchData=
 [
-  ['lockoutexception_0',['LockoutException',['../class_pasteimg_1_1_backend_1_1_models_1_1_error_1_1_lockout_exception.html#a376a509036cc2763cce707617b457319',1,'Pasteimg::Backend::Models::Error::LockoutException']]]
+  ['lockoutexception_0',['LockoutException',['../class_pasteimg_1_1_backend_1_1_logic_1_1_exceptions_1_1_lockout_exception.html#a7dfc82166ac421aeb4f0b62499792df4',1,'Pasteimg::Backend::Logic::Exceptions::LockoutException']]],
+  ['logiccontroller_1',['LogicController',['../class_pasteimg_1_1_backend_1_1_controllers_1_1_logic_controller.html#a7cd53dd3142bc8478401702ccdda173f',1,'Pasteimg::Backend::Controllers::LogicController']]],
+  ['login_2',['Login',['../class_pasteimg_1_1_backend_1_1_controllers_1_1_admin_controller.html#af2451d7cf22737379ba17ad0d6f062ca',1,'Pasteimg.Backend.Controllers.AdminController.Login()'],['../interface_pasteimg_1_1_backend_1_1_logic_1_1_i_admin_logic.html#a25f3f360d422c48d03cd1dc4f47816af',1,'Pasteimg.Backend.Logic.IAdminLogic.Login()'],['../class_pasteimg_1_1_backend_1_1_logic_1_1_admin_logic.html#a896085f8225b59d09661580f9e943a78',1,'Pasteimg.Backend.Logic.AdminLogic.Login()']]],
+  ['logout_3',['Logout',['../class_pasteimg_1_1_backend_1_1_controllers_1_1_admin_controller.html#aef5754b24de1278ef9450392e2f4c33c',1,'Pasteimg.Backend.Controllers.AdminController.Logout()'],['../interface_pasteimg_1_1_backend_1_1_logic_1_1_i_admin_logic.html#acf2531e8ee9f4422d1ab0b2fe58a8ee0',1,'Pasteimg.Backend.Logic.IAdminLogic.Logout()'],['../class_pasteimg_1_1_backend_1_1_logic_1_1_admin_logic.html#a92cdd19d58bcdc0246870b5d43636533',1,'Pasteimg.Backend.Logic.AdminLogic.Logout()']]]
 ];

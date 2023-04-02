@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['results_0',['results',['../class_pasteimg_1_1_backend_1_1_image_transformers_1_1___debug_1_1_image_transformer_tester.html#a94cac0e03e36acf74f5a8c3bf3c63a95',1,'Pasteimg::Backend::ImageTransformers::_Debug::ImageTransformerTester']]],
-  ['resultslock_1',['resultsLock',['../class_pasteimg_1_1_backend_1_1_image_transformers_1_1___debug_1_1_image_transformer_tester.html#a725b23f28e1c175628895d0da66fc392',1,'Pasteimg::Backend::ImageTransformers::_Debug::ImageTransformerTester']]]
+  ['mappedexceptions_0',['mappedExceptions',['../class_pasteimg_1_1_backend_1_1_logic_1_1_exceptions_1_1_http_error_mapper.html#a7fffcad412ac279974a943125bf023d3',1,'Pasteimg::Backend::Logic::Exceptions::HttpErrorMapper']]],
+  ['mapper_1',['mapper',['../class_pasteimg_1_1_backend_1_1_controllers_1_1_error_controller.html#aa31218a9fe6406fbf337605d0cfda3f2',1,'Pasteimg.Backend.Controllers.ErrorController.mapper()'],['../class_pasteimg_1_1_backend_1_1_controllers_1_1_public_controller.html#a5a0ca665dcd6e3e37fe30c93dfa7c252',1,'Pasteimg.Backend.Controllers.PublicController.mapper()']]]
 ];

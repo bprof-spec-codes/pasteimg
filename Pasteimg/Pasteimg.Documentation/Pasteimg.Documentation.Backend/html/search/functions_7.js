@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['handleaction_0',['HandleAction',['../class_pasteimg_1_1_backend_1_1_controllers_1_1_debug_view_controller.html#a0cb6267e3e4d86c9ee7d49563d164a68',1,'Pasteimg::Backend::Controllers::DebugViewController']]],
-  ['homecontroller_1',['HomeController',['../class_pasteimg_1_1_backend_1_1_controllers_1_1_home_controller.html#a1a3ea3be87fde7b23bfc7169a136ae28',1,'Pasteimg::Backend::Controllers::HomeController']]]
+  ['httperrorattribute_0',['HttpErrorAttribute',['../class_pasteimg_1_1_backend_1_1_logic_1_1_exceptions_1_1_http_error_attribute.html#a68785a61e10f6317459ca8778b913d2b',1,'Pasteimg::Backend::Logic::Exceptions::HttpErrorAttribute']]]
 ];

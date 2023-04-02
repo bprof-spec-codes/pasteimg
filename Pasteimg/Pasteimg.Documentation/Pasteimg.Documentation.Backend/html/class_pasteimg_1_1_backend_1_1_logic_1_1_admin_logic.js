@@ -1,0 +1,25 @@
+var class_pasteimg_1_1_backend_1_1_logic_1_1_admin_logic =
+[
+    [ "AdminLogic", "class_pasteimg_1_1_backend_1_1_logic_1_1_admin_logic.html#a820310169bf308a810f45e149cbed739", null ],
+    [ "CheckIsAdmin", "class_pasteimg_1_1_backend_1_1_logic_1_1_admin_logic.html#a7c4d75b3fe358b91a9770c39b18c054a", null ],
+    [ "CreateSession", "class_pasteimg_1_1_backend_1_1_logic_1_1_admin_logic.html#a8b2dce8e030a74df17589963d2d993df", null ],
+    [ "DeleteImage", "class_pasteimg_1_1_backend_1_1_logic_1_1_admin_logic.html#abb809820170f35fc3020ad128432e8cc", null ],
+    [ "DeleteUpload", "class_pasteimg_1_1_backend_1_1_logic_1_1_admin_logic.html#add0edc766b6c4a70a5f071fbfe1eab21", null ],
+    [ "EditImage", "class_pasteimg_1_1_backend_1_1_logic_1_1_admin_logic.html#a2fe8269570ed3cf66eaad5eca1a0f7ec", null ],
+    [ "GetAllImage", "class_pasteimg_1_1_backend_1_1_logic_1_1_admin_logic.html#a28af49dcf861e62b45dee7e1a4b4ef42", null ],
+    [ "GetAllUpload", "class_pasteimg_1_1_backend_1_1_logic_1_1_admin_logic.html#ae771e8a7b87628a871ed833a944dd2ce", null ],
+    [ "GetConfiguration", "class_pasteimg_1_1_backend_1_1_logic_1_1_admin_logic.html#add6dbdbfde37d73bb4950c9dbf5b30bd", null ],
+    [ "GetImage", "class_pasteimg_1_1_backend_1_1_logic_1_1_admin_logic.html#a48060b9942c56300e5b4827ef9fa3020", null ],
+    [ "GetImageWithSourceFile", "class_pasteimg_1_1_backend_1_1_logic_1_1_admin_logic.html#ac3fa0a36500bc730e667735ebf642485", null ],
+    [ "GetImageWithThumbnailFile", "class_pasteimg_1_1_backend_1_1_logic_1_1_admin_logic.html#a736ee78d03072e2bd0497054d3c59cd2", null ],
+    [ "GetUpload", "class_pasteimg_1_1_backend_1_1_logic_1_1_admin_logic.html#ae1ec0b4ce6ec2838d230e6087258f897", null ],
+    [ "GetUploadWithSourceFiles", "class_pasteimg_1_1_backend_1_1_logic_1_1_admin_logic.html#a00a0c7c928fd5f28a53121dcf135a20f", null ],
+    [ "GetUploadWithThumbnailFiles", "class_pasteimg_1_1_backend_1_1_logic_1_1_admin_logic.html#a9978666c5f16388daa41e5cf6fa1ded3", null ],
+    [ "Login", "class_pasteimg_1_1_backend_1_1_logic_1_1_admin_logic.html#a896085f8225b59d09661580f9e943a78", null ],
+    [ "Logout", "class_pasteimg_1_1_backend_1_1_logic_1_1_admin_logic.html#a92cdd19d58bcdc0246870b5d43636533", null ],
+    [ "Admin", "class_pasteimg_1_1_backend_1_1_logic_1_1_admin_logic.html#aea7a28ac25325634eb14e662f18f5811", null ],
+    [ "adminRepository", "class_pasteimg_1_1_backend_1_1_logic_1_1_admin_logic.html#ac6a2916e7cc666313ac0cf4c0320c50c", null ],
+    [ "logic", "class_pasteimg_1_1_backend_1_1_logic_1_1_admin_logic.html#abbe01b3e3522d34ec1a4cbfcf6ac5696", null ],
+    [ "sessionHandler", "class_pasteimg_1_1_backend_1_1_logic_1_1_admin_logic.html#a5c12f89a8ae8b4bbef03a14d650b0c84", null ],
+    [ "Configuration", "class_pasteimg_1_1_backend_1_1_logic_1_1_admin_logic.html#ac555260f0d389946885b26696d2cc394", null ]
+];

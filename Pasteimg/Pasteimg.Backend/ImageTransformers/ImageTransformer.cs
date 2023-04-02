@@ -42,6 +42,7 @@ namespace Pasteimg.Backend.ImageTransformers
         /// <param name="content">The byte content of the image.</param>
         /// <returns>The transformed image as a byte array.</returns>
         byte[] Transform(byte[] content);
+
         /// <summary>
         /// Transforms an image from its byte content and saves it to a file.
         /// </summary>
@@ -98,8 +99,8 @@ namespace Pasteimg.Backend.ImageTransformers
         /// <inheritdoc/>
         public virtual ImageInfo GetImageInfo(byte[] content)
         {
-                var magickInfo = MagickImageInfo.ReadCollection(content).First();
-                return new ImageInfo(magickInfo.Width, magickInfo.Height, content.LongLength, magickInfo.Format.ToString().ToLower(), null);
+            var magickInfo = MagickImageInfo.ReadCollection(content).First();
+            return new ImageInfo(magickInfo.Width, magickInfo.Height, content.LongLength, magickInfo.Format.ToString().ToLower(), null);
         }
 
         /// <inheritdoc/>
@@ -117,6 +118,7 @@ namespace Pasteimg.Backend.ImageTransformers
             TransformMethod(frames);
             return frames.ToByteArray();
         }
+
         /// <inheritdoc/>
 
         public string Transform(byte[] content, string outputPath)
@@ -128,6 +130,7 @@ namespace Pasteimg.Backend.ImageTransformers
             frames.Write(path);
             return path;
         }
+
         /// <summary>
         /// Clamps the size of an image to the maximum dimensions specified when the image transformer was instantiated.
         /// </summary>

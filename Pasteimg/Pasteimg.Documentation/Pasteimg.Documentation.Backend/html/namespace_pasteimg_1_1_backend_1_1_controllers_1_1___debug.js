@@ -1,4 +1,0 @@
-var namespace_pasteimg_1_1_backend_1_1_controllers_1_1___debug =
-[
-    [ "ImageTransformationTestController", "class_pasteimg_1_1_backend_1_1_controllers_1_1___debug_1_1_image_transformation_test_controller.html", "class_pasteimg_1_1_backend_1_1_controllers_1_1___debug_1_1_image_transformation_test_controller" ]
-];
