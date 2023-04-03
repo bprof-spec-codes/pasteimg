@@ -10,7 +10,7 @@ namespace Pasteimg.Backend.Logic.Exceptions
         /// <summary>
         /// Gets or sets the dictionary of key-value pairs that provide additional details about the error.
         /// </summary>
-        public Dictionary<string, string>? Details { get; set; }
+        public Dictionary<string,object>? Details { get; set; }
         /// <summary>
         /// Gets or sets the unique identifier of the error.
         /// </summary>

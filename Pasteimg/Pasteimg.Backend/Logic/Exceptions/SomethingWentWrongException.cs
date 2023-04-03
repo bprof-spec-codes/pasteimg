@@ -19,6 +19,6 @@ namespace Pasteimg.Backend.Logic.Exceptions
         /// Gets additional information about the exception.
         /// </summary>
         [HttpErrorDetail]
-        public IReadOnlyDictionary<string, string>? AdditionalInformation { get; init; }
+        public Dictionary<string, string>? AdditionalInformation { get; init; }
     }
 }

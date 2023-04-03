@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 using Pasteimg.Backend.Logic.Exceptions;
+using System.Security.AccessControl;
 
 namespace Pasteimg.Backend.Controllers
 {
@@ -15,7 +17,7 @@ namespace Pasteimg.Backend.Controllers
     {
         private readonly IWebHostEnvironment environment;
         private readonly HttpErrorMapper mapper;
-        public ErrorController(IWebHostEnvironment environment,HttpErrorMapper mapper)
+        public ErrorController(IWebHostEnvironment environment, HttpErrorMapper mapper)
         {
             this.mapper = mapper;
             this.environment = environment;
@@ -46,31 +48,35 @@ namespace Pasteimg.Backend.Controllers
                 StatusCode = (int)model.StatusCode
             };
         }
+     
         /// <summary>
         /// Creates the details dictionary for the given exception.
         /// </summary>
         /// <param name="ex">The exception to create the details for.</param>
         /// <param name="map">The HttpErrorMap to use for details.</param>
         /// <returns>A dictionary of details.</returns>
-        private Dictionary<string, string> CreateDetails(Exception ex, HttpErrorMap map)
+        private Dictionary<string,object> CreateDetails(Exception ex, HttpErrorMap map)
         {
-            Dictionary<string, string> details = new Dictionary<string, string>();
+            Dictionary<string,object> details = new Dictionary<string, object>();
             foreach (var propName in map.Details.Keys)
             {
                 string? customName = map.Details[propName].CustomName;
                 object? value = map.ValueGetters[propName](ex);
                 if (value is not null)
                 {
-                    if (value is IReadOnlyDictionary<string, string> dict)
+                    string name = customName ?? propName;
+                    if(details.ContainsKey(name))
                     {
-                        foreach (var item in dict)
+                        name = propName + "-" + name;
+                        if(details.ContainsKey(name))
                         {
-                            details.Add(customName ?? propName + " " + item.Key, item.Value);
+                            name = map.Name + "-" + name;
                         }
                     }
-                    else
+
+                    if(!details.ContainsKey(name))
                     {
-                        details.Add(customName ?? propName, value.ToString());
+                        details.Add(name, value);
                     }
                 }
             }
