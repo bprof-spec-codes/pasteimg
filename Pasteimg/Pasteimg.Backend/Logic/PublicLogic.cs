@@ -245,6 +245,7 @@ namespace Pasteimg.Backend.Logic
             {
                 throw new PasswordRequiredException() { UploadId = id };
             }
+            upload.Password = null;
             return upload;
         }
 

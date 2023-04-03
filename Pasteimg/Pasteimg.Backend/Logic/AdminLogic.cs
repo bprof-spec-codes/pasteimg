@@ -212,7 +212,7 @@ namespace Pasteimg.Backend.Logic
                 throw new SessionKeyMissingException();
             }
 
-            Admin? admin = adminRepository.ReadAll().FirstOrDefault(u => u.Email == loginModel.Email);
+            Admin? admin = adminRepository.Read(loginModel.Email);
             if (admin is null)
             {
                 throw new FailedLoginException();
