@@ -1,21 +1,14 @@
 var searchData=
 [
-  ['up_0',['Up',['../class_pasteimg_1_1_backend_1_1_data_1_1_migrations_1_1_create_identity_schema.html#a138f173d4e5e813a1f597b1d92416d27',1,'Pasteimg::Backend::Data::Migrations::CreateIdentitySchema']]],
-  ['update_1',['Update',['../interface_pasteimg_1_1_backend_1_1_repository_1_1_i_repository.html#ad1565f3711bca1810872d4f3c56bd92c',1,'Pasteimg.Backend.Repository.IRepository.Update()'],['../class_pasteimg_1_1_backend_1_1_repository_1_1_repository.html#a30779f1d456c0a25ce3ace5161b58c1e',1,'Pasteimg.Backend.Repository.Repository.Update()']]],
-  ['upload_2',['Upload',['../class_pasteimg_1_1_backend_1_1_models_1_1_entity_1_1_upload.html',1,'Pasteimg.Backend.Models.Entity.Upload'],['../class_pasteimg_1_1_backend_1_1_models_1_1_entity_1_1_image.html#a53f6da49af699f020f19147fc7597419',1,'Pasteimg.Backend.Models.Entity.Image.Upload()'],['../class_pasteimg_1_1_backend_1_1_controllers_1_1_debug_view_controller.html#a238f4b03f94a882efdec138fea8b16f5',1,'Pasteimg.Backend.Controllers.DebugViewController.Upload()'],['../class_pasteimg_1_1_backend_1_1_models_1_1_entity_1_1_upload.html#a6a167daee84a2471f5f1e19f56728e78',1,'Pasteimg.Backend.Models.Entity.Upload.Upload()']]],
-  ['upload_2ecs_3',['Upload.cs',['../_upload_8cs.html',1,'']]],
-  ['uploadconfiguration_4',['UploadConfiguration',['../class_pasteimg_1_1_backend_1_1_data_1_1_configurations_1_1_upload_configuration.html',1,'Pasteimg::Backend::Data::Configurations']]],
-  ['uploadconfiguration_2ecs_5',['UploadConfiguration.cs',['../_upload_configuration_8cs.html',1,'']]],
-  ['uploadid_6',['UploadID',['../class_pasteimg_1_1_backend_1_1_models_1_1_entity_1_1_image.html#a8f1ccd5867d2111f7cd3765cfb0312fb',1,'Pasteimg::Backend::Models::Entity::Image']]],
-  ['uploadmodelbinder_7',['UploadModelBinder',['../class_pasteimg_1_1_backend_1_1_models_1_1_entity_1_1_upload_model_binder.html',1,'Pasteimg::Backend::Models::Entity']]],
-  ['uploadmodelbinder_2ecs_8',['UploadModelBinder.cs',['../_upload_model_binder_8cs.html',1,'']]],
-  ['uploadrepository_9',['uploadRepository',['../class_pasteimg_1_1_backend_1_1_logic_1_1_paste_img_logic.html#aeec093c0b2381b45dcc4189b8a79c48a',1,'Pasteimg::Backend::Logic::PasteImgLogic']]],
-  ['uploads_10',['Uploads',['../class_pasteimg_1_1_backend_1_1_data_1_1_application_db_context.html#adf869ea65177afb088c8b1343878ad48',1,'Pasteimg::Backend::Data::ApplicationDbContext']]],
-  ['useauthentication_11',['UseAuthentication',['../_program_8cs.html#a6435d8beeff4999dc0b0c6d60a86a4e2',1,'Program.cs']]],
-  ['useauthorization_12',['UseAuthorization',['../_program_8cs.html#af6f72d752b2e73aa0292f74bd13237ab',1,'Program.cs']]],
-  ['usehsts_13',['UseHsts',['../_program_8cs.html#a8c2c34f600427906d008e9ce976831ec',1,'Program.cs']]],
-  ['usehttpsredirection_14',['UseHttpsRedirection',['../_program_8cs.html#aa4d447fc3129a3aa301d736b8bd04ae9',1,'Program.cs']]],
-  ['userouting_15',['UseRouting',['../_program_8cs.html#a94c810d266751293a2d511a720a5625f',1,'Program.cs']]],
-  ['usesession_16',['UseSession',['../_program_8cs.html#a5c33896bff93d8072abd01914b8370f8',1,'Program.cs']]],
-  ['usestaticfiles_17',['UseStaticFiles',['../_program_8cs.html#a906a3ce545279a7a73941f1d7b64d7cf',1,'Program.cs']]]
+  ['validateconfiguration_0',['ValidateConfiguration',['../class_pasteimg_1_1_backend_1_1_logic_1_1_paste_img_logic.html#a11363cb8f5eecba975ebd6c7c539f985',1,'Pasteimg::Backend::Logic::PasteImgLogic']]],
+  ['validateimage_1',['ValidateImage',['../class_pasteimg_1_1_backend_1_1_logic_1_1_paste_img_logic.html#a208c6f820d3a85df8f0bfb2d603cea07',1,'Pasteimg::Backend::Logic::PasteImgLogic']]],
+  ['validatemaps_2',['ValidateMaps',['../class_pasteimg_1_1_backend_1_1_logic_1_1_exceptions_1_1_http_error_mapper.html#ac9fd429eb580a94e80b5aa7da53d15ce',1,'Pasteimg::Backend::Logic::Exceptions::HttpErrorMapper']]],
+  ['validateupload_3',['ValidateUpload',['../class_pasteimg_1_1_backend_1_1_logic_1_1_paste_img_logic.html#a4ea25acdc9f70601a44428bbbb7639b1',1,'Pasteimg::Backend::Logic::PasteImgLogic']]],
+  ['validation_4',['Validation',['../class_pasteimg_1_1_backend_1_1_configurations_1_1_paste_img_configuration.html#a20aa3e0e878bbafb414ff9978b2b6879',1,'Pasteimg::Backend::Configurations::PasteImgConfiguration']]],
+  ['validationconfiguration_5',['ValidationConfiguration',['../class_pasteimg_1_1_backend_1_1_configurations_1_1_validation_configuration.html',1,'Pasteimg::Backend::Configurations']]],
+  ['validationconfiguration_2ecs_6',['ValidationConfiguration.cs',['../_validation_configuration_8cs.html',1,'']]],
+  ['valuegetters_7',['ValueGetters',['../class_pasteimg_1_1_backend_1_1_logic_1_1_exceptions_1_1_http_error_map.html#aba5b7b490f99d9eed4f300ec312f1868',1,'Pasteimg::Backend::Logic::Exceptions::HttpErrorMap']]],
+  ['visitor_8',['Visitor',['../class_pasteimg_1_1_backend_1_1_configurations_1_1_paste_img_configuration.html#aba537902040b4b914e6628802c80acc1',1,'Pasteimg::Backend::Configurations::PasteImgConfiguration']]],
+  ['visitorconfiguration_9',['VisitorConfiguration',['../class_pasteimg_1_1_backend_1_1_configurations_1_1_visitor_configuration.html',1,'Pasteimg::Backend::Configurations']]],
+  ['visitorconfiguration_2ecs_10',['VisitorConfiguration.cs',['../_visitor_configuration_8cs.html',1,'']]]
 ];

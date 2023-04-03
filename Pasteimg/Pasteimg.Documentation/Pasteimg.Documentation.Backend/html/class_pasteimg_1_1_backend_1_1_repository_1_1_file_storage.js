@@ -11,6 +11,7 @@ var class_pasteimg_1_1_backend_1_1_repository_1_1_file_storage =
     [ "GetPath", "class_pasteimg_1_1_backend_1_1_repository_1_1_file_storage.html#a4cd249f8b5582c0ef5afc1765102d732", null ],
     [ "SaveFile", "class_pasteimg_1_1_backend_1_1_repository_1_1_file_storage.html#a6a212ad2c7e91679ba7e0c1d817ab7ba", null ],
     [ "WriteFile", "class_pasteimg_1_1_backend_1_1_repository_1_1_file_storage.html#a060686a618981e81e4b7fc617296217a", null ],
+    [ "Bin", "class_pasteimg_1_1_backend_1_1_repository_1_1_file_storage.html#aa2ab6bcbad9f6ecff48d1840a00776b7", null ],
     [ "Root", "class_pasteimg_1_1_backend_1_1_repository_1_1_file_storage.html#aaeeeea6bdcc330e74b2837546d6f5b41", null ],
     [ "SubDirectoryDivision", "class_pasteimg_1_1_backend_1_1_repository_1_1_file_storage.html#a4f838713cd30cd31f69c49e22ad86cf8", null ]
 ];

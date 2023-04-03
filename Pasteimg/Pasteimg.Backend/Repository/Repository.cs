@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Pasteimg.Backend.Data;
-using Pasteimg.Backend.Models.Entity;
 
 namespace Pasteimg.Backend.Repository
 {
@@ -8,7 +7,7 @@ namespace Pasteimg.Backend.Repository
     /// A generic repository interface that provides methods to create, read, update, and delete entities that implement the <see cref="IEntity"/> interface.
     /// </summary>
     /// <typeparam name="TEntity">The type of entity to perform CRUD operations on.</typeparam>
-    public interface IRepository<TEntity> where TEntity : class, IEntity
+    public interface IRepository<TEntity> where TEntity : class
     {
         /// <summary>
         /// Adds a new entity to the database and saves changes.
@@ -20,8 +19,14 @@ namespace Pasteimg.Backend.Repository
         /// Removes an entity from the database by its id and returns the deleted entity. Returns null if the entity does not exist in the database.
         /// </summary>
         /// <param name="id">The id of the entity to delete from the database.</param>
-        /// <returns>The deleted entity, or null if the entity does not exist in the database.</returns>
-        TEntity? Delete(params object[] id);
+        void Delete(params object[] id);
+        /// <summary>
+        /// Removes an entity from the database and saves changes.
+        /// </summary>
+        /// <param name="entity">The entity to delete from the database.</param>
+        void Delete(TEntity entity);
+
+
 
         /// <summary>
         /// Retrieves an entity from the database by its id. Returns null if the entity does not exist in the database.
@@ -43,43 +48,49 @@ namespace Pasteimg.Backend.Repository
         /// <param name="id">The id of the entity to update in the database.</param>
         /// <returns>The updated entity, or null if the entity does not exist in the database.</returns>
         TEntity? Update(Action<TEntity> updateAction, params object[] id);
+
     }
 
     /// <summary>
     /// A generic repository implementation using Entity Framework Core.
     /// </summary>
-    public class Repository<TEntity> : IRepository<TEntity> where TEntity : class, IEntity
+    public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
     {
         private DbContext context;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Repository{TEntity}"/> class with the specified <see cref="ApplicationDbContext"/>.
+        /// Initializes a new instance of the <see cref="Repository{TEntity}"/> class with the specified <see cref="PasteImgDbContext"/>.
         /// </summary>
         /// <param name="context">The application database context to use for data access.</param>
-        public Repository(ApplicationDbContext context)
+        public Repository(PasteImgDbContext context)
         {
             this.context = context;
         }
 
         /// <inheritdoc/>
-        public void Create(TEntity item)
+        public void Create(TEntity entity)
         {
-            context.Set<TEntity>().Add(item);
+            context.Set<TEntity>().Add(entity);
             context.SaveChanges();
         }
 
-        /// <inheritdoc/>
-        public TEntity? Delete(params object[] id)
+
+        public void Delete(TEntity? entity)
         {
-            TEntity? entity = Read(id);
-            if (entity != null)
+            if (entity is not null)
             {
                 context.Set<TEntity>().Remove(entity);
                 context.SaveChanges();
             }
-            return entity;
         }
 
+        /// <inheritdoc/>
+        public void Delete(params object[] id)
+        {
+            Delete(Read(id));
+        }
+
+ 
         /// <inheritdoc/>
         public TEntity? Read(params object[] id)
         {
@@ -92,6 +103,8 @@ namespace Pasteimg.Backend.Repository
             return context.Set<TEntity>();
         }
 
+  
+
         /// <inheritdoc/>
         public TEntity? Update(Action<TEntity> updateAction, params object[] id)
         {
@@ -103,5 +116,7 @@ namespace Pasteimg.Backend.Repository
             }
             return entity;
         }
+
+     
     }
 }

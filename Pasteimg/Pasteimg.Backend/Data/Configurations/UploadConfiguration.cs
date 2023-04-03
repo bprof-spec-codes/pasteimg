@@ -1,14 +1,16 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Pasteimg.Backend.Models.Entity;
+using Pasteimg.Backend.Models;
 
 namespace Pasteimg.Backend.Data.Configurations
 {
+
     /// <summary>
-    /// Represents the configuration for the Upload entity in the Pasteimg application's database context.
+    /// Configuration for the <see cref="Upload"/> entity.
     /// </summary>
     public class UploadConfiguration : IEntityTypeConfiguration<Upload>
     {
+        /// <inheritdoc/>
         public void Configure(EntityTypeBuilder<Upload> builder)
         {
             builder.HasKey(u => u.Id);

@@ -1,281 +1,102 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
 using Pasteimg.Backend.Logic;
-using Pasteimg.Backend.Models.Entity;
-using Pasteimg.Backend.Models.Error;
-using Microsoft.AspNetCore.Authorization;
-using System.Data;
-using Pasteimg.Backend.Configurations;
+using Pasteimg.Backend.Models;
 
 namespace Pasteimg.Backend.Controllers
 {
     /// <summary>
-    /// Provides API endpoints for admin functions related to the PasteImg service.
+    /// Controller for Admin API endpoints.
     /// </summary>
     [Route("api/[controller]/[action]")]
     [ApiController]
-    [Authorize(Roles = "Admin")]
-    public class AdminController : ControllerBase
+    public class AdminController : LogicController<IAdminLogic>
     {
-        private readonly IPasteImgLogic logic;
-
+     
+        public AdminController(IAdminLogic logic) : base(logic)
+        { }
         /// <summary>
-        /// Initializes a new instance of the AdminController class with the specified IPasteImgLogic instance.
-        /// </summary>
-        /// <param name="logic">An IPasteImgLogic instance to use for handling administrative requests.</param>
-        public AdminController(IPasteImgLogic logic)
-        {
-            this.logic = logic;
-        }
-
-        /// <summary>
-        /// Deletes the image with the given ID.
+        /// Deletes an image with the specified ID.
         /// </summary>
         /// <param name="id">The ID of the image to delete.</param>
-        /// <returns>
-        /// <list type="bullet">
-        ///     <item><strong>Ok 200:</strong> Successful request.</item>
-        ///     <item><strong>NotFound 404:</strong> The upload with given ID not found.</item>
-        /// </list>
-        /// </returns>
+        /// <param name="sessionKey">The session key of the user performing the action.</param>
         [HttpDelete("{id}")]
-        public ActionResult DeleteImage(string id)
+        public ActionResult DeleteImage(string id, [FromHeader(Name = SessionKeyHeader)] string? sessionKey)
         {
-            try
-            {
-                logic.DeleteImage(id);
-                return Ok();
-            }
-            catch (PasteImgException ex)
-            {
-                return ex.GetErrorResult();
-            }
+            logic.DeleteImage(id, sessionKey);
+            return Ok();
         }
-
         /// <summary>
-        /// Deletes the upload with the given ID.
+        /// Deletes an upload with the specified ID.
         /// </summary>
         /// <param name="id">The ID of the upload to delete.</param>
-        /// <returns>
-        /// <list type="bullet">
-        ///     <item><strong>Ok 200:</strong> Successful request.</item>
-        ///     <item><strong>NotFound 404:</strong> The upload with given ID not found.</item>
-        /// </list>
-        /// </returns>
+        /// <param name="sessionKey">The session key of the user performing the action.</param>
         [HttpDelete("{id}")]
-        public ActionResult DeleteUpload(string id)
+        public ActionResult DeleteUpload(string id, [FromHeader(Name = SessionKeyHeader)] string? sessionKey)
         {
-            try
-            {
-                logic.DeleteUpload(id);
-                return Ok();
-            }
-            catch (PasteImgException ex)
-            {
-                return ex.GetErrorResult();
-            }
+            logic.DeleteUpload(id, sessionKey);
+            return Ok();
         }
-
         /// <summary>
-        /// Updates the description and NSFW status of the image with the given ID.
+        /// Edits the metadata of an image with the specified ID.
         /// </summary>
         /// <param name="id">The ID of the image to edit.</param>
-        /// <param name="description">The new description for the image.</param>
-        /// <param name="nsfw">The new NSFW status for the image.</param>
-        /// <returns>
-        /// <list type="bullet">
-        ///     <item><strong>Ok 200:</strong> Successful request.</item>
-        ///     <item><strong>NotFound 404:</strong> The image with given ID not found.</item>
-        ///     <item><strong>BadRequest 400:</strong> The modelstate is invalid.</item>
-        /// </list>
-        /// </returns>
-        [HttpPut]
-        public ActionResult EditImage(string id, string? description, bool nsfw)
+        /// <param name="model">The EditImageModel containing the updated metadata.</param>
+        /// <param name="sessionKey">The session key of the user performing the action.</param>
+        [HttpPut("{id}")]
+        public ActionResult EditImage(string id, [FromBody] EditImageModel model, [FromHeader(Name = SessionKeyHeader)] string? sessionKey)
         {
-            try
-            {
-                logic.EditImage(id, description, nsfw);
-                return Ok();
-            }
-            catch (PasteImgException ex)
-            {
-                return ex.GetErrorResult();
-            }
+            logic.EditImage(id, model, sessionKey);
+            return Ok();
         }
-
         /// <summary>
-        /// Returns all images currently stored without files.
+        /// Gets a list of all images in the system.
         /// </summary>
-        /// <returns>
-        /// <list type="bullet">
-        ///     <item><strong>Ok 200:</strong> Requested content.</item>
-        /// </list>
-        /// </returns>
-
+        /// <param name="sessionKey">The session key of the user performing the action.</param>
         [HttpGet]
-        public ActionResult GetAllImage()
+        public ActionResult GetAllImage([FromHeader(Name = SessionKeyHeader)] string? sessionKey)
         {
-            return Ok(logic.GetAllImage());
+            return Ok(logic.GetAllImage(sessionKey));
         }
-
         /// <summary>
-        /// Returns all uploads currently stored without files.
+        /// Gets a list of all uploads in the system.
         /// </summary>
-        /// <returns>
-        /// <list type="bullet">
-        ///     <item><strong>Ok 200:</strong> Requested content.</item>
-        /// </list>
-        /// </returns>
+        /// <param name="sessionKey">The session key of the user performing the action.</param>
         [HttpGet]
-        public ActionResult GetAllUpload()
+        public ActionResult GetAllUpload([FromHeader(Name = SessionKeyHeader)] string? sessionKey)
         {
-            return Ok(logic.GetAllUpload());
+            return Ok(logic.GetAllUpload(sessionKey));
         }
-
         /// <summary>
-        /// Gets an image by ID without file.
+        /// Gets the system configuration.
         /// </summary>
-        /// <param name="id">The ID of the image to retrieve.</param>
-        /// <returns>
-        /// <list type="bullet">
-        ///     <item><strong>Ok 200:</strong> Requested content.</item>
-        ///     <item><strong>NotFound 404:</strong> The image with given ID not found.</item>
-        /// </list>
-        /// </returns>
-        [HttpGet("{id}")]
-        public ActionResult GetImage(string id)
+        /// <param name="sessionKey">The session key of the user performing the action.</param>
+        [HttpGet]
+        public ActionResult GetConfiguration([FromHeader(Name = SessionKeyHeader)] string? sessionKey)
         {
-            return GetContent(id, logic.GetImage);
+            return Ok(logic.GetConfiguration(sessionKey));
         }
-
         /// <summary>
-        /// Gets an image with its source file by ID.
+        /// Authenticates an admin user.
         /// </summary>
-        /// <param name="id">The ID of the image to retrieve.</param>
-        /// <returns>
-        /// <list type="bullet">
-        ///     <item><strong>Ok 200:</strong> Requested content.</item>
-        ///     <item><strong>NotFound 404:</strong> The image with given ID not found.</item>
-        /// </list>
-        /// </returns>
-        [HttpGet("{id}")]
-        public ActionResult GetImageWithSourceFile(string id)
-        {
-            return GetContent(id, logic.GetImageWithSourceFile);
-        }
-
-        /// <summary>
-        /// Gets an image with its thumbnail file by ID.
-        /// </summary>
-        /// <param name="id">The ID of the image to retrieve.</param>
-        /// <returns>
-        /// <list type="bullet">
-        ///     <item><strong>Ok 200:</strong> Requested content.</item>
-        ///     <item><strong>NotFound 404:</strong> The image with given ID not found.</item>
-        /// </list>
-        /// </returns>
-        [HttpGet("{id}")]
-        public ActionResult GetImageWithThumbnailFile(string id)
-        {
-            return GetContent(id, logic.GetImageWithThumbnailFile);
-        }
-
-        /// <summary>
-        /// Gets an upload by ID without files.
-        /// </summary>
-        /// <param name="id">The ID of the upload to retrieve.</param>
-        /// <returns>
-        /// <list type="bullet">
-        ///     <item><strong>Ok 200:</strong> Requested content.</item>
-        ///     <item><strong>NotFound 404:</strong> The upload with given ID not found.</item>
-        /// </list>
-        /// </returns>
-        [HttpGet("{id}")]
-        public ActionResult GetUpload(string id)
-        {
-            return GetContent(id, logic.GetUpload);
-        }
-
-        /// <summary>
-        /// Gets an upload with its source files by ID.
-        /// </summary>
-        /// <param name="id">The ID of the upload to retrieve.</param>
-        /// <returns>
-        /// <list type="bullet">
-        ///     <item><strong>Ok 200:</strong> Requested content.</item>
-        ///     <item><strong>NotFound 404:</strong> The upload with given ID not found.</item>
-        /// </list>
-        /// </returns>
-        [HttpGet("{id}")]
-        public ActionResult GetUploadWithSourceFiles(string id)
-        {
-            return GetContent(id, logic.GetUploadWithSourceFiles);
-        }
-
-        /// <summary>
-        /// Gets an upload with its thumbnail files by ID.
-        /// </summary>
-        /// <param name="id">The ID of the upload to retrieve.</param>
-        /// <returns>
-        /// <list type="bullet">
-        ///     <item><strong>Ok 200:</strong> Requested content.</item>
-        ///     <item><strong>NotFound 404:</strong> The upload with given ID not found.</item>
-        /// </list>
-        /// </returns>
-        [HttpGet("{id}")]
-        public ActionResult GetUploadWithThumbnailFiles(string id)
-        {
-            return GetContent(id, logic.GetUploadWithThumbnailFiles);
-        }
-
-        /// <summary>
-        /// Stores the uploaded images, if modelstate is valid.
-        /// </summary>
-        /// <param name="upload">The object containing the images to be uploaded.</param>
-        /// <returns>
-        /// <list type="bullet">
-        ///     <item><strong>Ok 200:</strong> Successful request.</item>
-        ///     <item><strong>BadRequest 400:</strong> The modelstate is invalid.</item>
-        ///     <item><strong>InternalServerError 500:</strong> Something wrong happened.</item>
-        /// </list>
-        /// </returns>
+        /// <param name="loginModel">The admin user to authenticate.</param>
+        /// <param name="sessionKey">The session key associated with the user's session.</param>
         [HttpPost]
-        public ActionResult PostUpload(Upload upload)
+        [HttpPost]
+        public ActionResult Login([FromBody] Admin loginModel, [FromHeader(Name = SessionKeyHeader)] string? sessionKey)
         {
-            try
-            {
-                return Ok(logic.PostUpload(upload));
-            }
-            catch (PasteImgException ex)
-            {
-                return ex.GetErrorResult();
-            }
-        }
-        [HttpGet]
-        public ActionResult GetConfiguration()
-        {
-            return Ok(logic.Configuration);
+            logic.Login(loginModel, sessionKey);
+            return Ok();
         }
 
         /// <summary>
-        /// Retrieves content of type T associated with a given id using the provided "get" function.
+        /// Logs out an admin user.
         /// </summary>
-        /// <typeparam name="T">The type of the content to retrieve.</typeparam>
-        /// <param name="id">The id associated with the content to retrieve.</param>
-        /// <param name="get">A function that takes in a string and returns an object of type T.</param>
-        /// <returns>
-        /// An HTTP actionresult containing the retrieved content.
-        /// </returns>
-        private ActionResult GetContent<T>(string id, Func<string, T> get)
+        /// <param name="sessionKey">The session key associated with the user's session.</param>
+        [HttpPost]
+        public ActionResult Logout([FromHeader(Name = SessionKeyHeader)] string? sessionKey)
         {
-            try
-            {
-                return Ok(get(id));
-            }
-            catch (PasteImgException ex)
-            {
-                return ex.GetErrorResult();
-            }
+            logic.Logout(sessionKey);
+            return Ok();
         }
     }
 }

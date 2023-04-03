@@ -1,12 +1,15 @@
 var dir_5f12d2a562cccef4719c57756c67b45c =
 [
-    [ "DebugPublicController.cs", "_debug_public_controller_8cs.html", [
-      [ "Pasteimg.Backend.Controllers.DebugViewController", "class_pasteimg_1_1_backend_1_1_controllers_1_1_debug_view_controller.html", "class_pasteimg_1_1_backend_1_1_controllers_1_1_debug_view_controller" ]
+    [ "AdminController.cs", "_admin_controller_8cs.html", [
+      [ "Pasteimg.Backend.Controllers.AdminController", "class_pasteimg_1_1_backend_1_1_controllers_1_1_admin_controller.html", "class_pasteimg_1_1_backend_1_1_controllers_1_1_admin_controller" ]
     ] ],
-    [ "HomeController.cs", "_home_controller_8cs.html", [
-      [ "Pasteimg.Backend.Controllers.HomeController", "class_pasteimg_1_1_backend_1_1_controllers_1_1_home_controller.html", "class_pasteimg_1_1_backend_1_1_controllers_1_1_home_controller" ]
+    [ "ErrorController.cs", "_error_controller_8cs.html", [
+      [ "Pasteimg.Backend.Controllers.ErrorController", "class_pasteimg_1_1_backend_1_1_controllers_1_1_error_controller.html", "class_pasteimg_1_1_backend_1_1_controllers_1_1_error_controller" ]
     ] ],
-    [ "ImageTransformationTestController.cs", "_image_transformation_test_controller_8cs.html", [
-      [ "Pasteimg.Backend.Controllers._Debug.ImageTransformationTestController", "class_pasteimg_1_1_backend_1_1_controllers_1_1___debug_1_1_image_transformation_test_controller.html", "class_pasteimg_1_1_backend_1_1_controllers_1_1___debug_1_1_image_transformation_test_controller" ]
+    [ "LogicController.cs", "_logic_controller_8cs.html", [
+      [ "Pasteimg.Backend.Controllers.LogicController< TLogic >", "class_pasteimg_1_1_backend_1_1_controllers_1_1_logic_controller.html", "class_pasteimg_1_1_backend_1_1_controllers_1_1_logic_controller" ]
+    ] ],
+    [ "PublicController.cs", "_public_controller_8cs.html", [
+      [ "Pasteimg.Backend.Controllers.PublicController", "class_pasteimg_1_1_backend_1_1_controllers_1_1_public_controller.html", "class_pasteimg_1_1_backend_1_1_controllers_1_1_public_controller" ]
     ] ]
 ];

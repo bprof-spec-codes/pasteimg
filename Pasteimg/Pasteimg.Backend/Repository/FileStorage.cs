@@ -1,4 +1,4 @@
-﻿using System.Net;
+﻿using System.Reflection;
 
 namespace Pasteimg.Backend.Repository
 {
@@ -121,6 +121,8 @@ namespace Pasteimg.Backend.Repository
 
     public class FileStorage : IFileStorage
     {
+        private static readonly string Bin = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+
         /// <summary>
         ///     Initializes a new instance of the FileStorage class with the specified settings.
         /// </summary>
@@ -136,7 +138,7 @@ namespace Pasteimg.Backend.Repository
                 throw new ArgumentNullException(nameof(settings.Root));
             }
 
-            Root = Path.Combine(settings.Root.ToArray());
+            Root = Path.Combine(Bin, Path.Combine(settings.Root.ToArray()));
             SubDirectoryDivision = settings.SubDirectoryDivision;
         }
 
@@ -241,6 +243,8 @@ namespace Pasteimg.Backend.Repository
             if (id is null) return null;
 
             string directory = GetDirectory(id);
+            var t = Path.GetFullPath(Root);
+            var d = Path.GetFullPath(directory);
             if (Directory.Exists(directory))
             {
                 string[] files = Directory.GetFiles(directory, GetFileName(id, fileClass) + ".*");
@@ -342,7 +346,7 @@ namespace Pasteimg.Backend.Repository
             Directory.CreateDirectory(GetDirectory(id));
             WriteFile(content, id, extension, fileClass);
         }
-      
+
         /// <summary>
         /// Writes the specified byte array to a file with the given ID, extension and file class (if any) in the file storage.
         /// </summary>

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['lockoutexception_0',['LockoutException',['../class_pasteimg_1_1_backend_1_1_models_1_1_error_1_1_lockout_exception.html',1,'Pasteimg::Backend::Models::Error']]]
+  ['notfoundexception_0',['NotFoundException',['../class_pasteimg_1_1_backend_1_1_logic_1_1_exceptions_1_1_not_found_exception.html',1,'Pasteimg::Backend::Logic::Exceptions']]]
 ];

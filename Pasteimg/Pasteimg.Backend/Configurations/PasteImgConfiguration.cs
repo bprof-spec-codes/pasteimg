@@ -31,10 +31,10 @@ namespace Pasteimg.Backend.Configurations
         ///    DescriptionMaxLength: 150
         /// </item>
         /// <item>
-        ///     MaxFileSize: 10000000 
+        ///     MaxFileSize: 10000000
         /// </item>
         /// <item>
-        ///    MaxImagePerUpload: 20 
+        ///    MaxImagePerUpload: 20
         /// </item>
         /// <item>
         ///     SupportedFormats: jpg, jpeg, jpe, jif, jfif, jfi, gif, png, apng, webp, bmp
@@ -61,7 +61,7 @@ namespace Pasteimg.Backend.Configurations
         /// <item>
         ///   MaxHeight: 2000
         /// </item>
-        /// <item> 
+        /// <item>
         ///     MaxWidth: 2000
         /// </item>
         /// <item>
@@ -75,11 +75,22 @@ namespace Pasteimg.Backend.Configurations
         /// <item>
         ///     MaxHeight: 300
         /// </item>
-        /// <item> 
+        /// <item>
         ///     MaxWidth: 300
         /// </item>
         /// <item>
         ///     Quality: 90
+        /// </item>
+        /// </list>
+        /// </item>
+        /// <item>
+        /// <see cref="Session"/>
+        /// <list type="bullet">
+        /// <item>
+        ///     IdleTimeOut: 60 minutes
+        /// </item>
+        /// <item>
+        ///     IOTimeout: 5 seconds
         /// </item>
         /// </list>
         /// </item>
@@ -121,12 +132,16 @@ namespace Pasteimg.Backend.Configurations
                 MaxWidth = 300,
                 Quality = 90
             },
-            Session=new SessionSettings()
+            Session = new SessionSettings()
             {
-                IdleTimeout=TimeSpan.FromMinutes(60),
-                IOTimeout=TimeSpan.FromSeconds(30)
+                IdleTimeout = TimeSpan.FromMinutes(60),
+                IOTimeout = TimeSpan.FromSeconds(30)
             }
         };
+        /// <summary>
+        /// Gets or sets the session settings.
+        /// </summary>
+        public SessionSettings Session { get; init; }
 
         /// <summary>
         /// Gets or sets the transformation settings for source image transformer.
@@ -152,7 +167,5 @@ namespace Pasteimg.Backend.Configurations
         /// Gets or sets the visitor configuration.
         /// </summary>
         public VisitorConfiguration Visitor { get; init; }
-
-        public SessionSettings Session { get; init; }
     }
 }

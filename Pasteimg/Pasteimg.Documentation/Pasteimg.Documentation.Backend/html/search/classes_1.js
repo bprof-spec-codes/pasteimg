@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['createidentityschema_0',['CreateIdentitySchema',['../class_pasteimg_1_1_backend_1_1_data_1_1_migrations_1_1_create_identity_schema.html',1,'Pasteimg::Backend::Data::Migrations']]]
+  ['content_0',['Content',['../class_pasteimg_1_1_backend_1_1_models_1_1_content.html',1,'Pasteimg::Backend::Models']]]
 ];

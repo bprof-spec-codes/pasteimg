@@ -5,40 +5,24 @@ using Pasteimg.Backend.Data;
 using Pasteimg.Backend.DebugMvc.ImageTransformers;
 using Pasteimg.Backend.ImageTransformers;
 using Pasteimg.Backend.Logic;
-using Pasteimg.Backend.Models.Entity;
+using Pasteimg.Backend.Models;
 using Pasteimg.Backend.Repository;
+using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-/*builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(connectionString));*/
 
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-{
-    options.UseInMemoryDatabase("test")
-           .UseLazyLoadingProxies(true)
-           .EnableDetailedErrors(true);
-});
 
-builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddRoles<IdentityRole>()
-    .AddEntityFrameworkStores<ApplicationDbContext>()
-    .AddDefaultTokenProviders()
-    .AddRoleManager<RoleManager<IdentityRole>>()
-    .AddUserManager<UserManager<IdentityUser>>();
 
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddTransient<IPasteImgConfigurer, PasteImgConfigurer>();
-builder.Services.AddSingleton((provider) => provider.GetRequiredService<IPasteImgConfigurer>().ReadConfiguration());
-builder.Services.AddSingleton((provider) => provider.GetRequiredService<PasteImgConfiguration>().Storage);
-builder.Services.AddTransient<IImageTransformerFactory, ImageTransformerFactory>();
-builder.Services.AddSingleton<ImageTransformerTester>();
-builder.Services.AddSession();
+builder.Services.AddTransient<IPasteImgConfigurer, PasteImgConfigurer>()
+                .AddSingleton((provider) => provider.GetRequiredService<IPasteImgConfigurer>().ReadConfiguration())
+                .AddSingleton((provider) => provider.GetRequiredService<PasteImgConfiguration>().Storage)
+                .AddTransient<IImageTransformerFactory, ImageTransformerFactory>()
+                .AddSingleton<ImageTransformerTester>()
+                .AddTransient<HttpClient>()
+                .AddSession();
 
 var app = builder.Build();
 
@@ -54,6 +38,7 @@ else
     app.UseHsts();
 }
 
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseSession();
@@ -65,6 +50,5 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
-app.MapRazorPages();
 app.MapControllers();
 app.Run();
