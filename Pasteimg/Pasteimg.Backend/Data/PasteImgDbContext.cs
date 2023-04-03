@@ -20,6 +20,14 @@ namespace Pasteimg.Backend.Data
             : base(options)
         {
             this.hasher = hasher;
+            if(Database.IsRelational())
+            {
+                Database.Migrate();
+            }
+            else if(Database.IsInMemory())
+            {
+                Database.EnsureCreated();
+            }
         }
         /// <summary>
         /// Gets or sets the DbSet for the <see cref="Admin"/> entity in the database.
@@ -42,8 +50,6 @@ namespace Pasteimg.Backend.Data
                 Email = "admin@admin.com",
                 Password = hasher.CreateHash("123Admin456")
             });
-
-            base.OnModelCreating(builder);
         }
     }
 }
