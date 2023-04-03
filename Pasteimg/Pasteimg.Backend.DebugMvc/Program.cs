@@ -7,29 +7,12 @@ using Pasteimg.Backend.ImageTransformers;
 using Pasteimg.Backend.Logic;
 using Pasteimg.Backend.Models;
 using Pasteimg.Backend.Repository;
+using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-/*builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(connectionString));*/
-builder.Services.AddTransient<IPasswordHasher, PasswordHasher>();
-builder.Services.AddDbContext<PasteImgDbContext>(options =>
-{
-    options.UseInMemoryDatabase("test")
-           .UseLazyLoadingProxies(true)
-           .EnableDetailedErrors(true);
-});
 
-builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddRoles<IdentityRole>()
-    .AddEntityFrameworkStores<PasteImgDbContext>()
-    .AddDefaultTokenProviders()
-    .AddRoleManager<RoleManager<IdentityRole>>()
-    .AddUserManager<UserManager<IdentityUser>>();
 
 builder.Services.AddControllersWithViews();
 
@@ -55,6 +38,7 @@ else
     app.UseHsts();
 }
 
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseSession();
@@ -66,6 +50,5 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
-app.MapRazorPages();
 app.MapControllers();
 app.Run();

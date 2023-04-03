@@ -14,12 +14,16 @@
 <h6>
     ErrorId: @Model.ErrorId
 </h6>
+@if(Model.Details is not null)
+{
     @foreach (var item in Model.Details)
     {
-    <p class="text-danger">
-        @item.Key: @item.Value;
-    </p>
+        <p class="text-danger">
+            @item.Key: @item.Value
+        </p>
     }
+}
+   
 
 <h3>Development Mode</h3>
 <p>
