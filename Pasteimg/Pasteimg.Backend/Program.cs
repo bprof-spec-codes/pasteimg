@@ -29,10 +29,11 @@ builder.Services.AddTransient<IPasteImgConfigurer, PasteImgConfigurer>()
                 .AddSingleton((provider) => provider.GetRequiredService<PasteImgConfiguration>().Storage)
                 .AddSingleton((provider) => provider.GetRequiredService<PasteImgConfiguration>().Session);
 builder.Services.AddSingleton<HttpErrorMapper>();
+
 builder.Services.AddTransient<IRepository<Image>, Repository<Image>>()
                 .AddTransient<IRepository<Upload>, Repository<Upload>>()
                 .AddTransient<IRepository<Admin>, Repository<Admin>>()
-                .AddSingleton<IFileStorage, FileStorage>()
+                .AddTransient<IFileStorage, FileStorage>()
                 .AddTransient<IImageTransformerFactory, ImageTransformerFactory>()
                 .AddTransient<IPasteImgLogic, PasteImgLogic>()
                 .AddSingleton<IDistributedCache, MemoryDistributedCache>()
