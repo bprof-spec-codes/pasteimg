@@ -38,4 +38,9 @@
     <Folder Include="Migrations\" />
   </ItemGroup>
 
+	<Target Name="DeleteBinObjFolders" BeforeTargets="Clean">
+		<RemoveDir Directories="..\..\Publish" />
+		<RemoveDir Directories=".\bin" />
+		<RemoveDir Directories="$(BaseIntermediateOutputPath)" />
+	</Target>
 </Project>
