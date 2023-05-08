@@ -98,5 +98,15 @@ namespace Pasteimg.Backend.Controllers
             logic.Logout(sessionKey);
             return Ok();
         }
+
+        /// <summary>
+        /// Gets a one time use register key.
+        /// </summary>
+        /// <param name="sessionKey">The session key of the user performing the action.</param>
+        [HttpGet]
+        public ActionResult GetRegisterKey([FromHeader(Name = SessionKeyHeader)] string? sessionKey)
+        {
+            return Ok(logic.GenerateRegisterKey(sessionKey));
+        }
     }
 }
