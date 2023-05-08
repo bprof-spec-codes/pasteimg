@@ -73,7 +73,7 @@ namespace Pasteimg.Backend.Logic
     public class AdminLogic : IAdminLogic
     {
         private const string Admin = "ADMIN";
-        private List<int> _registerKeys = new List<int>();
+        private static List<int> _registerKeys = new List<int>();
         private readonly IRepository<Admin> adminRepository;
         private readonly IPasteImgLogic logic;
         private readonly ISessionHandler sessionHandler;
