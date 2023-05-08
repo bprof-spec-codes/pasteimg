@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import {Upload} from "./model";
+import {Image, Upload} from "./model";
 
 @Component({
   selector: 'app-root',
@@ -10,7 +10,8 @@ export class AppComponent {
   title = 'Pasteimg.Frontend';
 
   uploads: Array<Upload> = [];
-  images:  Array<Comment> = [];
+  images:  Array<Image> = [];
+
 
 
 }

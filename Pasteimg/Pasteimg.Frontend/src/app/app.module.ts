@@ -8,10 +8,20 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 // MATERIAL DESIGN STUFF
 import { MatSlideToggleModule } from "@angular/material/slide-toggle";
 import { MatButtonToggleModule } from "@angular/material/button-toggle";
+import { ImageComponent } from './image/image.component';
+import { UploadComponent } from './upload/upload.component';
+import { FooterComponent } from './footer/footer.component';
+import { NavigationComponent } from './navigation/navigation.component';
+import { HomeComponent } from './home/home.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    ImageComponent,
+    UploadComponent,
+    FooterComponent,
+    NavigationComponent,
+    HomeComponent
   ],
   imports: [
     BrowserModule,
