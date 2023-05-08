@@ -61,6 +61,11 @@ namespace Pasteimg.Backend.Logic
         /// </summary>
         /// <param name="sessionKey">The session key of the user.</param>
         void Logout(string sessionKey);
+
+        /// <summary>
+        /// Generate a one time use code for admin regsitration.
+        /// </summary>
+        int GenerateRegisterKey(string sessionKey);
     }
     /// <summary>
     /// Interface for Admin Logic.
@@ -68,6 +73,7 @@ namespace Pasteimg.Backend.Logic
     public class AdminLogic : IAdminLogic
     {
         private const string Admin = "ADMIN";
+        private List<int> _registerKeys = new List<int>();
         private readonly IRepository<Admin> adminRepository;
         private readonly IPasteImgLogic logic;
         private readonly ISessionHandler sessionHandler;
@@ -118,6 +124,19 @@ namespace Pasteimg.Backend.Logic
             CheckIsAdmin(sessionKey);
             return logic.EditImage(id, model);
         }
+
+        public int GenerateRegisterKey(string sessionKey)
+        {
+            CheckIsAdmin(sessionKey);
+            int key;
+            do
+            {
+                key = System.DateTime.Now.GetHashCode();
+            } while (_registerKeys.Contains(key));
+            _registerKeys.Add(key);
+            return key;
+        }
+
         /// <inheritdoc/>
         /// <exception cref="UnauthorizedException"/>
         /// <exception cref="SomethingWentWrongException"/>
