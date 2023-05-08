@@ -30,6 +30,12 @@ namespace Pasteimg.Backend.Logic
         /// <param name="sessionKey">The session key (if any) to use.</param>
         /// <returns>The ID of the posted upload.</returns>
         string PostUpload(Upload upload, string? sessionKey);
+
+        /// <summary>
+        /// Register a new admin
+        /// </summary>
+        /// <param name="registerModell">The admin entity, plus the register key</param>
+        void RegisterAdmin(RegisterModell registerModell);
     }
     /// <summary>
     /// Provides public-facing functionality for interacting with Pasteimg services.
@@ -185,6 +191,11 @@ namespace Pasteimg.Backend.Logic
                 session.CommitAsync().Wait();
             }
             return uploadId;
+        }
+
+        public void RegisterAdmin(RegisterModell registerModell)
+        {
+            return;
         }
 
         /// <summary>
