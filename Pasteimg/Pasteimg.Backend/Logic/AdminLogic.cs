@@ -79,7 +79,7 @@ namespace Pasteimg.Backend.Logic
     public class AdminLogic : IAdminLogic
     {
         private const string Admin = "ADMIN";
-        private static List<int> _registerKeys = new List<int>();
+        private static List<RegisterKey> _registerKeys = new List<RegisterKey>();
         private readonly IRepository<Admin> adminRepository;
         private readonly IPasteImgLogic logic;
         private readonly ISessionHandler sessionHandler;
@@ -135,11 +135,15 @@ namespace Pasteimg.Backend.Logic
         {
             CheckIsAdmin(sessionKey);
             int key;
+            DateTime date = DateTime.Now;
+
+            RegisterKey regKey = new RegisterKey() { Creation = date }; 
             do
             {
                 key = System.DateTime.Now.GetHashCode();
-            } while (_registerKeys.Contains(key));
-            _registerKeys.Add(key);
+                regKey.Key = key;
+            } while (_registerKeys.Any(x => x.Key == regKey.Key));
+            _registerKeys.Add(regKey);
             return key;
         }
 
@@ -267,13 +271,16 @@ namespace Pasteimg.Backend.Logic
 
         public bool RegisterKeyValidator(int key)
         {
-            if(_registerKeys.Contains(key))
+            RegisterKey regKey = _registerKeys.FirstOrDefault(x => x.Key == key);
+            if (regKey is null) throw new WrongRegisterKey("Wrong register key");
+            if (regKey.Creation < DateTime.Now.AddHours(-24))
             {
-                _registerKeys.Remove(key);
-                return true;
+                _registerKeys.Remove(regKey);
+                throw new WrongRegisterKey("Key expired");
             }
-
-            throw new WrongRegisterKey();
+            _registerKeys.Remove(regKey);
+            return true;
+            
         }
 
         /// <inheritdoc/>
