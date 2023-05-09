@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Pasteimg.Backend.Logic;
+using Pasteimg.Backend.Models;
 
 namespace Pasteimg.Backend.Controllers
 {
@@ -17,6 +18,18 @@ namespace Pasteimg.Backend.Controllers
         public LogicController(TLogic logic)
         {
             this.logic = logic;
+        }
+
+        [HttpGet("Image")]
+        public IActionResult GetImageFIle(string id, [FromHeader(Name = SessionKeyHeader)] string? sessionKey)
+        {
+            Image img = this.logic.GetImageWithSourceFile(id, sessionKey); 
+            if (img == null)
+            {
+                return NotFound();
+            }
+
+            return new FileContentResult(img.Content.Data, img.Content.ContentType);
         }
 
         /// <summary>
