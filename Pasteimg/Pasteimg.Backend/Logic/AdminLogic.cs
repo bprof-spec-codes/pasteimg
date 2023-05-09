@@ -66,6 +66,12 @@ namespace Pasteimg.Backend.Logic
         /// Generate a one time use code for admin regsitration.
         /// </summary>
         int GenerateRegisterKey(string sessionKey);
+
+        /// <summary>
+        /// Check if regKey is valid, and if is, remove it.
+        /// </summary>
+        /// <param name="key">The regKey.</param>
+        bool RegisterKeyValidator(int key);
     }
     /// <summary>
     /// Interface for Admin Logic.
@@ -259,10 +265,21 @@ namespace Pasteimg.Backend.Logic
             session.CommitAsync();
         }
 
+        public bool RegisterKeyValidator(int key)
+        {
+            if(_registerKeys.Contains(key))
+            {
+                _registerKeys.Remove(key);
+                return true;
+            }
+
+            throw new WrongRegisterKey();
+        }
+
         /// <inheritdoc/>
-       
-     
-      
+
+
+
         /// <summary>
         /// Checks if the session identified by the given session key belongs to an admin user.
         /// Throws an UnauthorizedException if the session is invalid or the user is not an admin.
