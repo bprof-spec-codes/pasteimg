@@ -42,7 +42,19 @@ builder.Services.AddTransient<IRepository<Image>, Repository<Image>>()
                 .AddTransient<IPublicLogic, PublicLogic>()
                 .AddTransient<IAdminLogic, AdminLogic>();
 
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(
+        policy =>
+        {
+            policy.WithHeaders("*");
+            policy.WithOrigins("*");
+            policy.WithMethods("*");
+        });
+});
+
 var app = builder.Build();
+app.UseCors();
 app.UseExceptionHandler("/error");
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
