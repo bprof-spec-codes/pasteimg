@@ -21,7 +21,7 @@ namespace Pasteimg.Backend.Controllers
         }
 
         [HttpGet("Image")]
-        public IActionResult GetImageFIle(string id, [FromHeader(Name = SessionKeyHeader)] string? sessionKey)
+        public IActionResult GetImageFile(string id, [FromHeader(Name = SessionKeyHeader)] string? sessionKey)
         {
             Image img = this.logic.GetImageWithSourceFile(id, sessionKey); 
             if (img == null)
