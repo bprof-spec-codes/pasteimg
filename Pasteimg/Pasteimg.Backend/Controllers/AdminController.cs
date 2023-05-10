@@ -108,5 +108,16 @@ namespace Pasteimg.Backend.Controllers
         {
             return Ok(logic.GenerateRegisterKey(sessionKey));
         }
+        /// <summary>
+        /// Gets a one time use register key.
+        /// </summary>
+        /// <param name="sessionKey">The session key of the user performing the action.</param>
+        /// <param name="number">Upload number per page</param>
+        /// <param name="pageNum">Number of page of uploads</param>
+        [HttpGet]
+        public ActionResult GetUploads([FromHeader(Name = SessionKeyHeader)] string? sessionKey, int number, int pageNum)
+        {
+            return Ok(logic.GetUploads(sessionKey, number, pageNum));
+        }
     }
 }

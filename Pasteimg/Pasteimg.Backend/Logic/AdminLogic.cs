@@ -72,6 +72,8 @@ namespace Pasteimg.Backend.Logic
         /// </summary>
         /// <param name="key">The regKey.</param>
         bool RegisterKeyValidator(int key);
+
+        IEnumerable<Upload> GetUploads(string? sessionKey, int number, int pageNum);
     }
     /// <summary>
     /// Interface for Admin Logic.
@@ -208,6 +210,22 @@ namespace Pasteimg.Backend.Logic
         {
             CheckIsAdmin(sessionKey);
             return logic.GetUpload(id);
+        }
+
+        public IEnumerable<Upload> GetUploads(string? sessionKey, int number, int pageNum)
+        {
+            CheckIsAdmin(sessionKey);
+            List<Upload> uploads = new List<Upload>(logic.GetAllUpload());
+            List<Upload> result = new List<Upload>(number);
+            if (pageNum > Math.Ceiling((double)uploads.Count / 2)) pageNum = 1;
+
+            for (int i = (pageNum - 1) * number; i < (pageNum) * number && i < uploads.Count; i++)
+            {
+                result.Add(uploads[i]);
+            }
+
+            return result.AsEnumerable<Upload>();
+            
         }
 
         /// <inheritdoc/>
