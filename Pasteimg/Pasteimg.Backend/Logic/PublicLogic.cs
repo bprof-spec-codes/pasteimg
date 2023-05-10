@@ -3,6 +3,7 @@ using Pasteimg.Backend.Logic.Exceptions;
 using Pasteimg.Backend.Models;
 using Pasteimg.Backend.Repository;
 using System.Globalization;
+using System.Net.Mail;
 using System.Text;
 
 namespace Pasteimg.Backend.Logic
@@ -201,6 +202,15 @@ namespace Pasteimg.Backend.Logic
         public void RegisterAdmin(RegisterModell registerModell)
         {
             PasswordHasher psHaser = new PasswordHasher();
+
+            try
+            {
+                var MailAddress = new MailAddress(registerModell.Email);
+            }
+            catch(Exception e)
+            {
+                throw new RegisterError("Hibás email");
+            }
             Admin admin = new Admin()
             {
                 Email = registerModell.Email,

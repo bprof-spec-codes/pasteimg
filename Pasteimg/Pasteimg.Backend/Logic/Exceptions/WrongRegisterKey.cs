@@ -3,8 +3,8 @@
 namespace Pasteimg.Backend.Logic.Exceptions
 {
     [HttpError(HttpStatusCode.Conflict, 777)]
-    public class WrongRegisterKey : Exception
+    public class RegisterError : Exception
     {
-        public WrongRegisterKey(string msg): base(msg) { }
+        public RegisterError(string msg): base(msg) { }
     }
 }

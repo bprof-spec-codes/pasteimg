@@ -272,11 +272,11 @@ namespace Pasteimg.Backend.Logic
         public bool RegisterKeyValidator(int key)
         {
             RegisterKey regKey = _registerKeys.FirstOrDefault(x => x.Key == key);
-            if (regKey is null) throw new WrongRegisterKey("Wrong register key");
+            if (regKey is null) throw new RegisterError("Wrong register key");
             if (regKey.Creation < DateTime.Now.AddHours(-24))
             {
                 _registerKeys.Remove(regKey);
-                throw new WrongRegisterKey("Key expired");
+                throw new RegisterError("Key expired");
             }
             _registerKeys.Remove(regKey);
             return true;
