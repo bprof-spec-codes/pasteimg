@@ -32,6 +32,18 @@ namespace Pasteimg.Backend.Controllers
             return new FileContentResult(img.Content.Data, img.Content.ContentType);
         }
 
+        [HttpGet("Image")]
+        public IActionResult GetImageThumbnail(string id, [FromHeader(Name = SessionKeyHeader)] string? sessionKey)
+        {
+            Image img = this.logic.GetImageWithThumbnailFile(id, sessionKey);
+            if (img == null)
+            {
+                return NotFound();
+            }
+
+            return new FileContentResult(img.Content.Data, img.Content.ContentType);
+        }
+
         /// <summary>
         /// Creates a new session key and returns it in the response.
         /// </summary>
