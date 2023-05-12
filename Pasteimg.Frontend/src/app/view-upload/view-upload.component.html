@@ -1,4 +1,5 @@
-<p>view-upload works!</p>
-<div *ngFor="let img of upload.images">
-  <img src="https://localhost:7063/api/Public/GetImageFIle/Image?id={{ img.id }}" alt=""/>
+<div *ngIf="upload">
+  <div *ngFor="let img of upload.images">
+    <img src="https://localhost:7063/api/Public/GetImageThumbnail/Image?id={{ img.id }}" alt=""/>
+  </div>
 </div>
