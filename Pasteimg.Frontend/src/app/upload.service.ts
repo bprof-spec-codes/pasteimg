@@ -29,7 +29,7 @@ export class UploadService {
   async getUpload(id: string):Promise<Upload>  {
     return await (await fetch("https://localhost:7063/api/Public/GetUpload/" + id)).json()
   }
-//ok, most lyó
+
   async postUpload(){
   }
 
