@@ -26,11 +26,18 @@ export class ViewUploadComponent {
     this.uploadService.getUpload(uploadIdFromRoute).then(u => {
       this.upload = u
       //console.log(u)
-     });
+     })
+     .catch(error => {
+        if (error.status === 404) {
+          console.error('Image doesn\'t exist', error);
+        }
+        else {
+          console.error('An error occurred:', error);
+        }
+      });
+  };
 
     //this.uploadService.getUpload(uploadIdFromRoute)
 
 
-
-  }
 }
