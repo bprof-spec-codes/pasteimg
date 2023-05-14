@@ -15,6 +15,9 @@ import { FooterComponent } from './footer/footer.component';
 import {MatListModule} from "@angular/material/list";
 import {MatIconModule} from "@angular/material/icon";
 import { NewUploadComponent } from './new-upload/new-upload.component';
+import { DndDirective } from './new-upload/dnd.directive';
+import { FormsModule } from '@angular/forms';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 @NgModule({
   declarations: [
@@ -24,8 +27,10 @@ import { NewUploadComponent } from './new-upload/new-upload.component';
     NavigationComponent,
     FooterComponent,
     NewUploadComponent,
+    DndDirective,
   ],
   imports: [
+    MatSlideToggleModule,
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
@@ -33,7 +38,8 @@ import { NewUploadComponent } from './new-upload/new-upload.component';
     MatButtonModule,
     MatMenuModule,
     MatListModule,
-    MatIconModule
+    MatIconModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

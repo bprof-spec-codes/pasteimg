@@ -18,17 +18,27 @@ export type Upload = {
   "timeStamp": string
 }
 
+export class Content {
+  constructor(
+    public contentType: string,
+    public data: string,
+    public fileName: string
+  ) {}
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class UploadService {
   http: HttpClient
+  sessionId: string = '';
+  backendUrl: string = 'https://localhost:7063';
   constructor(http: HttpClient) {
     this.http =http}
 
   async getUpload(id: string): Promise<Upload> {
     try {
-      const response = await fetch("https://localhost:7063/api/Public/GetUpload/" + id);
+      const response = await fetch(this.backendUrl+"/api/Public/GetUpload/" + id);
       
       if (!response.ok) {
         if (response.status === 404) {
@@ -49,7 +59,26 @@ export class UploadService {
     }
   }
 
-  async postUpload(){
+  async postUpload(postUpload: Upload): Promise<string> {
+    console.log(JSON.stringify(postUpload));
+   /*  const upload = new Upload(this.images, this.password); */   
+      const response = await fetch(`${this.backendUrl}/api/Public/PostUpload`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(postUpload)
+      });
+
+      if (response.ok) {
+        //Contains the id of the upload
+        const uploadResponseString = await response.text();
+        console.log('Upload successful:', uploadResponseString);
+        return uploadResponseString;
+      } else {
+        console.error('Error uploading:', response.status);
+        return "";
+      }
   }
 
 }
