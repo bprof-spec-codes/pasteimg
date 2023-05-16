@@ -97,10 +97,7 @@ namespace Pasteimg.Backend.Controllers
                     Content = new Content()
                     {
                         Data = buffer,
-                        FileName = imageFile.FileName, // <-- így az lesz a filename mint a feltöltő gépén azthiszem óóóó
-                        // lehet azért kaptunk egyszerűbb feladat mert ide gyengébb embereket sikerült beletennie
-                        // és akkor így fair szegény agyam lehalt :DD
-                        
+                        FileName = imageFile.FileName,                        
                         ContentType = imageFile.ContentType
                     }
                 };
