@@ -63,21 +63,8 @@ namespace Pasteimg.Backend.Controllers
         [HttpPost]
         public ActionResult PostUpload([FromBody] Upload upload, [FromHeader(Name = SessionKeyHeader)] string? sessionKey)
         {
-            var testUpload = new Upload()
-            {
-                TimeStamp = DateTime.UtcNow,
-                Images = new List<Models.Image>
-                {
-                    new Models.Image
-                    {
-                        Description = "teszt",
-                        Content = new Content("C:\\Users\\Samu\\Pictures\\ns5903-image-kwvyax57.jpg","img/jpeg")
-                    }
-                }
-            };
-            string json = JsonConvert.SerializeObject(testUpload);
-            string json2= JsonConvert.SerializeObject(upload);
-            string uploadId = logic.PostUpload(upload, sessionKey); // ????
+            string json= JsonConvert.SerializeObject(upload);
+            string uploadId = logic.PostUpload(upload, sessionKey);
             return Ok(uploadId);
         }
 
