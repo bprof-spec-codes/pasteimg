@@ -1,5 +1,16 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild, Inject, PLATFORM_ID } from '@angular/core';
 import {Upload, UploadService, Image, Content} from "../upload.service";
+import { trigger, state, style, animate, transition } from '@angular/animations';
+import { MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition } from '@angular/material/snack-bar';
+import { Router } from '@angular/router';
+import { MatDialog, MatDialogConfig, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
+import {MatIconModule} from '@angular/material/icon';
+import {MatButtonModule} from '@angular/material/button';
+import {FormsModule} from '@angular/forms';
+import {MatInputModule} from '@angular/material/input';
+import {MAT_DIALOG_DATA} from '@angular/material/dialog';
+import { Clipboard } from '@angular/cdk/clipboard';
+import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 
 interface UploadedFile {
   name: string;
@@ -13,15 +24,33 @@ interface UploadedFile {
 @Component({
   selector: 'app-new-upload',
   templateUrl: './new-upload.component.html',
-  styleUrls: ['./new-upload.component.scss']
+  styleUrls: ['./new-upload.component.scss'],
+  animations: [
+    trigger('removeAnimation', [
+      state('true', style({ opacity: 0, transform: 'scale(0.5)' })),
+      transition('* => true', [
+        animate('600ms ease-out', style({ opacity: 1, transform: 'scale(1)' }))
+      ])
+    ])
+  ]
 })
+
 export class NewUploadComponent {
   files: UploadedFile[] = [];
   hasWrongFileExtension = false;
   showNotAllowed: boolean = false;
+  fileRemovalAnimations: boolean[] = []; // Define the file removal animations array
+  firstUpload: boolean = true;
+  fileuploadLimit: number = 6;
+  @ViewChild('sectionRef', { static: false, read: ElementRef }) sectionRef!: ElementRef;
 
   constructor(
-    private uploadService: UploadService
+    private uploadService: UploadService,
+    private _snackBar: MatSnackBar,
+    private router: Router,
+    private dialog: MatDialog,
+    @Inject(DOCUMENT) private document: Document,
+    @Inject(PLATFORM_ID) private platformId: any
   ) {}
 
   /**
@@ -30,18 +59,46 @@ export class NewUploadComponent {
   onFileDropped($event: any | null) {
     if ($event) {
       const files = $event instanceof FileList ? Array.from($event) : [$event];
-      if (files) {
+      if (files && files.length+this.files.length > this.fileuploadLimit) {
+        const message = `You can only submit ${this.fileuploadLimit} images at once!\n`;
+  
+        this._snackBar.open(message, 'Close', {
+          horizontalPosition: 'center',
+          verticalPosition: 'top',
+          duration: 3000
+        });
+        return;
+      }
+      else if (files) {
         const validFiles: any[] = this.filterValidFiles(Array.from(files));
         this.prepareFilesList(validFiles);
         this.hasWrongFileExtension = files.length !== validFiles.length;
+  
+        if (this.hasWrongFileExtension) {
+          const invalidFiles: File[] = Array.from(files).filter(file => !validFiles.includes(file));
+          const invalidFileExtensions: string[] = invalidFiles.reduce((extensions: string[], file: File) => {
+            const filenameParts = file.name.split('.');
+            const extension = filenameParts[filenameParts.length - 1]; // Get the last part as the extension
+            if (!extensions.includes(extension)) {
+              extensions.push(extension);
+            }
+            return extensions;
+          }, []);
+          const message = `Some of the files you tried to upload have unsupported extensions: ${invalidFileExtensions.join(', ')}`;
+  
+          this._snackBar.open(message, 'Close', {
+            horizontalPosition: 'center',
+            verticalPosition: 'top',
+            duration: 3000
+          });
+        }
       }
     }
-    if (this.hasWrongFileExtension) {
-      this.showNotAllowed = true;
-      setTimeout(() => {
-        this.showNotAllowed = false;
-      }, 2000);
-    }
+    
+    this.showNotAllowed = this.hasWrongFileExtension;
+    setTimeout(() => {
+      this.showNotAllowed = false;
+    }, 2000);
   }
   
 
@@ -49,11 +106,45 @@ export class NewUploadComponent {
    * handle file from browsing
    */
   fileBrowseHandler(files: FileList | null) {
-    if (files) {
+    if (files && files.length + this.files.length > this.fileuploadLimit) {
+      const message = `You can only submit ${this.fileuploadLimit} images at once!`;
+      this._snackBar.open(message, 'Close', {
+        horizontalPosition: 'center',
+        verticalPosition: 'top',
+        duration: 3000
+      });
+      return;
+    } else if (files) {
       const validFiles: any[] = this.filterValidFiles(Array.from(files));
       this.prepareFilesList(validFiles);
+      this.hasWrongFileExtension = files.length !== validFiles.length;
+  
+      if (this.hasWrongFileExtension) {
+        const invalidFiles: File[] = Array.from(files).filter(file => !validFiles.includes(file));
+        const invalidFileExtensions: string[] = invalidFiles.reduce((extensions: string[], file: File) => {
+          const filenameParts = file.name.split('.');
+          const extension = filenameParts[filenameParts.length - 1]; // Get the last part as the extension
+          if (!extensions.includes(extension)) {
+            extensions.push(extension);
+          }
+          return extensions;
+        }, []);
+        const message = `Some of the files you tried to upload have unsupported extensions: ${invalidFileExtensions.join(', ')}`;
+      
+        this._snackBar.open(message, 'Close', {
+          horizontalPosition: 'center',
+          verticalPosition: 'top',
+          duration: 3000
+        });
+      }
     }
+  
+    this.showNotAllowed = this.hasWrongFileExtension;
+    setTimeout(() => {
+      this.showNotAllowed = false;
+    }, 2000);
   }
+  
 
   /**
    * Delete file from files list
@@ -61,6 +152,15 @@ export class NewUploadComponent {
    */
   deleteFile(index: number) {
     this.files.splice(index, 1);
+        // Add the class to trigger the removal animation
+        setTimeout(() => {
+          this.fileRemovalAnimations[index] = true;
+        }, 0);
+    
+        // Remove the class after the animation duration
+        setTimeout(() => {
+          this.fileRemovalAnimations.splice(index, 1);
+        }, 600);
   }
 
   /**
@@ -68,12 +168,15 @@ export class NewUploadComponent {
    * @param files (Files List)
    */
   prepareFilesList(files: Array<File>) {
-    for (const item of files) {
+    const fileCount = files.length;
+    let processedCount = 0;
+  
+    const loadFile = (file: File) => {
       const reader = new FileReader();
       reader.onload = (event: any) => {
         const uploadedFile: UploadedFile = {
-          file: item,
-          name: item.name,
+          file: file,
+          name: file.name,
           url: event.target.result,
           description: '',
           NSFW: false,
@@ -81,9 +184,13 @@ export class NewUploadComponent {
         };
         this.files.push(uploadedFile);
       };
-      reader.readAsDataURL(item);
-    }
+      reader.readAsDataURL(file);
+    };
+  
+    files.forEach((file) => loadFile(file));
+    this.scrollToSectionEnd();
   }
+  
 
   /**
    * format bytes
@@ -103,6 +210,7 @@ export class NewUploadComponent {
 
   private filterValidFiles(files: File[]): File[] {
     const allowedExtensions = ['.jpg', '.jpeg', '.jpe', '.jif', '.jfif', '.jfi', '.gif', '.png', '.apng', '.webp', '.bmp'];
+    
     return files.filter(file => {
       const fileExtension = file.name.toLowerCase().substring(file.name.lastIndexOf('.'));
       return allowedExtensions.includes(fileExtension);
@@ -136,6 +244,22 @@ export class NewUploadComponent {
     // Call the upload service to submit the upload
     const uploadedUpload = await this.uploadService.postUpload(upload);
     console.log("alma");
+    this.files=[];
+    let message = `Files uploaded!`;
+    if (uploadedUpload==""){
+      message="Files couldn't be uploaded!"
+    }
+    else{
+
+    }      
+    this._snackBar.open(message, 'Close', {
+      horizontalPosition: 'center',
+      verticalPosition: 'bottom',
+      duration: 3000
+    });
+    //this.router.navigate(['link/'+uploadedUpload]);
+    this.openDialog(uploadedUpload);
+    
     // Handle the response as needed
     // ...
   }
@@ -170,14 +294,69 @@ export class NewUploadComponent {
       readChunk();
     });
   }
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  scrollToSectionEnd() {
+    if (this.sectionRef && this.sectionRef.nativeElement) {
+      const sectionElement = this.sectionRef.nativeElement as HTMLElement;
+      sectionElement.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    }
+  }
+ 
+  openDialog(idOfThheUpload:string) {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.disableClose = true;
+    dialogConfig.data={ url: (this.getBaseUrl()+"/link/"+idOfThheUpload) };
 
+    this.dialog.open(DialogContentComponent, dialogConfig);
+  }
+  private getBaseUrl(): string {
+    if (isPlatformBrowser(this.platformId)) {
+      return this.document.location.origin + '/';
+    } else {
+      // Return a fallback value if not running in a browser environment
+      return '';
+    }
+  }
+
+}
+
+@Component({
+  selector: 'app-dialog-content',
+  templateUrl: 'modalHTML.html',
+  standalone: true,
+  imports: [MatDialogModule, MatIconModule, MatButtonModule, FormsModule, MatInputModule]
+})
+export class DialogContentComponent {
+  constructor(
+    private dialogRef: MatDialogRef<DialogContentComponent>,
+    private clipboard: Clipboard,
+    @Inject(DOCUMENT) private document: Document,
+    @Inject(PLATFORM_ID) private platformId: any,
+    @Inject(MAT_DIALOG_DATA) public data: { url: string },
+    private _snackBar: MatSnackBar,
+  ) {}
+
+  copyToClipboard() {
+    this.clipboard.copy(this.data.url);
+    const message="Copied!"
+    this._snackBar.open(message, 'Close', {
+      horizontalPosition: 'center',
+      verticalPosition: 'bottom',
+      duration: 2000
+    });
+  }
+
+  private getBaseUrl(): string {
+    if (isPlatformBrowser(this.platformId)) {
+      return this.document.location.origin + '/';
+    } else {
+      // Return a fallback value if not running in a browser environment
+      return '';
+    }
+  }
+
+  selectInputText(event: MouseEvent) {
+    const inputElement = event.target as HTMLInputElement;
+    inputElement.select();
+  }
+  // ... Implement the dialog component functionality ...
 }

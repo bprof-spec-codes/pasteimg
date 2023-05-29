@@ -1,5 +1,19 @@
 <div *ngIf="upload">
   <div *ngFor="let img of upload.images">
-    <img src="https://localhost:7063/api/Public/GetImageThumbnail/Image?id={{ img.id }}" alt=""/>
+    <div class="image-card">
+      <div class="title">
+        <h2>name of the image</h2>
+      </div>
+      <div class="image-container" [ngClass]="{ 'blur-image': img.nsfw }">
+        <img src="https://localhost:7063/api/Public/GetImageFile/Image?id={{ img.id }}" alt="Image">
+      </div>
+      <div class="description">
+        <span>{{ img.description }}</span>
+      </div>
+      <div class="nsfw-toggle">
+        <span class="tooltip" matTooltip="Not safe for work mode will hide the image by default when link is opened"></span>
+        <mat-slide-toggle [(ngModel)]="img.nsfw" aria-label="NSFW">NSFW</mat-slide-toggle>
+      </div>
+    </div>
   </div>
 </div>
