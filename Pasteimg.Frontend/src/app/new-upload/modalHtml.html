@@ -1,0 +1,21 @@
+<h2 mat-dialog-title style="display: flex; justify-content: space-between; align-items: center; padding-right:0px">
+    <span>Successfull Upload</span>
+    <button mat-raised-button color="accent" mat-dialog-close style="margin-left: auto;">
+    <mat-icon style="margin:0px">close</mat-icon>
+    </button>
+</h2>
+<mat-dialog-content>
+<p>Share:
+    <mat-form-field>
+        <mat-label>URL TO SHARE</mat-label>
+        <input matInput [ngModel]="data.url" (click)="selectInputText($event)" readonly>
+    </mat-form-field>
+    <button mat-raised-button color="accent"
+        style="width: 40px; height: 40px; margin-left: 8px; margin-bottom:17px"
+        (click)="copyToClipboard()">
+        <mat-icon style="margin:0px">share</mat-icon>
+    </button>
+</p>
+</mat-dialog-content>
+
+  

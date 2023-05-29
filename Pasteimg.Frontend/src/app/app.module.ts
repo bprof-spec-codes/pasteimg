@@ -6,18 +6,37 @@ import { AppComponent } from './app.component';
 import { ViewUploadComponent } from './view-upload/view-upload.component';
 import { HomeComponent } from './home/home.component';
 
+
 import { HttpClientModule } from "@angular/common/http";
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import {MatButtonModule} from "@angular/material/button";
-import {MatMenuModule} from "@angular/material/menu";
 import { NavigationComponent } from './navigation/navigation.component';
 import { FooterComponent } from './footer/footer.component';
 import {MatListModule} from "@angular/material/list";
-import {MatIconModule} from "@angular/material/icon";
 import { NewUploadComponent } from './new-upload/new-upload.component';
 import { DndDirective } from './new-upload/dnd.directive';
-import { FormsModule } from '@angular/forms';
+
+
+// MATERIAL DESIGN STUFF
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatSelectModule } from '@angular/material/select';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatToolbarModule } from "@angular/material/toolbar";
+import { MatSidenavModule } from "@angular/material/sidenav";
+import { MatTabsModule } from "@angular/material/tabs";
+import { MatTooltipModule  } from '@angular/material/tooltip';
+import {MatBadgeModule} from '@angular/material/badge'; 
+import { MatDialogModule } from '@angular/material/dialog';
+// form
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MatInputModule } from '@angular/material/input';
 
 @NgModule({
   declarations: [
@@ -39,7 +58,20 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
     MatMenuModule,
     MatListModule,
     MatIconModule,
-    FormsModule
+    FormsModule,
+    MatFormFieldModule,
+    MatCardModule,
+    MatSnackBarModule,
+    MatSelectModule,
+    MatCheckboxModule,
+    ReactiveFormsModule,
+    MatInputModule,
+    MatToolbarModule,
+    MatSidenavModule,
+    MatTabsModule,
+    MatTooltipModule,
+    MatBadgeModule,
+    MatDialogModule
   ],
   providers: [],
   bootstrap: [AppComponent]

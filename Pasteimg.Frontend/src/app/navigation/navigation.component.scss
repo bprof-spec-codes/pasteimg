@@ -1,35 +1,23 @@
-section {
-  display: table;
+nav {
+  width: 100%;
 }
 
-.example-label {
-  display: table-cell;
-  font-size: 14px;
-  margin-left: 8px;
-  min-width: 120px;
-}
-
-.example-button-row {
-  display: table-cell;
-  max-width: 600px;
-}
-
-.example-button-row .mat-mdc-button-base {
-  margin: 8px 8px 8px 0;
-}
-
-.example-flex-container {
+mat-toolbar {
   display: flex;
   justify-content: space-between;
-  flex-wrap: wrap;
+  align-items: center;
 }
 
-.example-button-container {
+.logo {
+  /* Add styles for your logo here, such as width, height, and margin */
+}
+
+.button-container {
   display: flex;
-  justify-content: center;
-  width: 120px;
+  align-items: center;
+  margin-left: 5px;
 }
 
-*{
-  margin-left: 5px;
+button {
+  margin-left: 8px;
 }
