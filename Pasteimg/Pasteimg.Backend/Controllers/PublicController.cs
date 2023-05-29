@@ -63,7 +63,6 @@ namespace Pasteimg.Backend.Controllers
         [HttpPost]
         public ActionResult PostUpload([FromBody] Upload upload, [FromHeader(Name = SessionKeyHeader)] string? sessionKey)
         {
-            string json= JsonConvert.SerializeObject(upload);
             string uploadId = logic.PostUpload(upload, sessionKey);
             return Ok(uploadId);
         }
