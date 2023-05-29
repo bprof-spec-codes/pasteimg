@@ -100,7 +100,7 @@ namespace Pasteimg.Backend.Controllers
         }
 
         [HttpGet]
-        public ActionResult CheckifAdmin([FromHeader(Name =SessionKeyHeader)] string? sessionKey) 
+        public ActionResult IsAdmin([FromHeader(Name =SessionKeyHeader)] string? sessionKey) 
         {
             return Ok(logic.IsAdmin(sessionKey));
         }
