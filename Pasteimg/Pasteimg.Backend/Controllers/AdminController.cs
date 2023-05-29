@@ -98,5 +98,11 @@ namespace Pasteimg.Backend.Controllers
             logic.Logout(sessionKey);
             return Ok();
         }
+
+        [HttpGet]
+        public ActionResult CheckifAdmin([FromHeader(Name =SessionKeyHeader)] string? sessionKey) 
+        {
+            return Ok(logic.IsAdmin(sessionKey));
+        }
     }
 }

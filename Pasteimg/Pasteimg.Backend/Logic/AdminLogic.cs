@@ -50,6 +50,8 @@ namespace Pasteimg.Backend.Logic
         /// <param name="sessionKey">The session key of the user.</param>
         /// <returns>The PasteImg configuration settings.</returns>
         PasteImgConfiguration GetConfiguration(string? sessionKey);
+        bool IsAdmin(string? sessionKey);
+
         /// <summary>
         /// Logs in an admin user.
         /// </summary>
@@ -260,6 +262,12 @@ namespace Pasteimg.Backend.Logic
                 throw new UnauthorizedException();
             }
             return session;
+        }
+
+        public bool IsAdmin(string? sessionKey)
+        {
+            ISession? session = sessionHandler.GetSession(sessionKey);
+            return session?.GetString(Admin) != null;
         }
     }
 }
