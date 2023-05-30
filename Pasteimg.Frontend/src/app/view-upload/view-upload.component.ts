@@ -19,10 +19,7 @@ export class ViewUploadComponent {
   ngOnInit() {
     const routeParams = this.route.snapshot.paramMap;
     const uploadIdFromRoute = String(routeParams.get('uploadId'));
-    //this.uploadService.getUpload(uploadIdFromRoute).subscribe(u => {
-    //  this.upload=u
-    //  console.log(u)
-    //});
+
     this.uploadService.getUpload(uploadIdFromRoute).then(u => {
       this.upload = u
       //console.log(u)
@@ -36,8 +33,4 @@ export class ViewUploadComponent {
         }
       });
   };
-
-    //this.uploadService.getUpload(uploadIdFromRoute)
-
-
-}
+  }
