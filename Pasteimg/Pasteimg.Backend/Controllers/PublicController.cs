@@ -93,5 +93,18 @@ namespace Pasteimg.Backend.Controllers
                 return Ok(i);
             }
         }
+
+        /// <summary>
+        /// Posts a register.
+        /// </summary>
+        /// <param name="upload">The <see cref="Upload"/> data to post.</param>
+        /// <param name="sessionKey">The session key of the user performing the action.</param>
+        /// <returns>An <see cref="ActionResult"/> representing the result of the action.</returns>
+        [HttpPost]
+        public ActionResult PostRegister([FromBody] RegisterModell modell)
+        {
+            logic.RegisterAdmin(modell);
+            return Ok(modell.Email);
+        }
     }
 }

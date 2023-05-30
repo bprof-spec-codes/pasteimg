@@ -63,6 +63,18 @@ namespace Pasteimg.Backend.Logic
         /// </summary>
         /// <param name="sessionKey">The session key of the user.</param>
         void Logout(string sessionKey);
+
+
+        /// <summary>
+        /// Generate a one time use code for admin regsitration.
+        /// </summary>
+        int GenerateRegisterKey(string sessionKey);
+
+        /// <summary>
+        /// Check if regKey is valid, and if is, remove it.
+        /// </summary>
+        /// <param name="key">The regKey.</param>
+        bool RegisterKeyValidator(int key);
     }
     /// <summary>
     /// Interface for Admin Logic.
@@ -70,6 +82,7 @@ namespace Pasteimg.Backend.Logic
     public class AdminLogic : IAdminLogic
     {
         private const string Admin = "ADMIN";
+        private static List<RegisterKey> _registerKeys = new List<RegisterKey>();
         private readonly IRepository<Admin> adminRepository;
         private readonly IPasteImgLogic logic;
         private readonly ISessionHandler sessionHandler;
@@ -127,6 +140,20 @@ namespace Pasteimg.Backend.Logic
         {
             CheckIsAdmin(sessionKey);
             return logic.GetAllImage();
+        }
+
+        public bool RegisterKeyValidator(int key)
+        {
+            RegisterKey regKey = _registerKeys.FirstOrDefault(x => x.Key == key);
+            if (regKey is null) throw new RegisterError("Wrong register key");
+            if (regKey.Creation < DateTime.Now.AddHours(-24))
+            {
+                _registerKeys.Remove(regKey);
+                throw new RegisterError("Key expired");
+            }
+
+            _registerKeys.Remove(regKey);
+            return true;
         }
 
         /// <inheritdoc/>
@@ -268,6 +295,21 @@ namespace Pasteimg.Backend.Logic
         {
             ISession? session = sessionHandler.GetSession(sessionKey);
             return session?.GetString(Admin) != null;
+        }
+
+        public int GenerateRegisterKey(string sessionKey)
+        {
+            CheckIsAdmin(sessionKey);
+            int key;
+            DateTime date = DateTime.Now;
+
+            RegisterKey regKey = new RegisterKey() { Creation = date };
+            do
+            {
+                regKey.Key = key = System.DateTime.Now.GetHashCode();
+            } while (_registerKeys.Any(x => x.Key == regKey.Key));
+            _registerKeys.Add(regKey);
+            return key;
         }
     }
 }
