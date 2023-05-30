@@ -37,6 +37,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
+import { LoginComponent } from './login/login.component';
+import { RegisterComponent } from './register/register.component';
 
 @NgModule({
   declarations: [
@@ -47,6 +49,8 @@ import { MatInputModule } from '@angular/material/input';
     FooterComponent,
     NewUploadComponent,
     DndDirective,
+    LoginComponent,
+    RegisterComponent,
   ],
   imports: [
     MatSlideToggleModule,

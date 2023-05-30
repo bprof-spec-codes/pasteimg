@@ -1,0 +1,46 @@
+
+<h1>Register</h1>
+
+
+<form class="input-form">
+    <mat-form-field class="example-full-width">
+      <mat-label>Email</mat-label>
+      <input type="email" matInput [formControl]="this.email" [(ngModel)]="this.registerModel.email" placeholder="Ex. pat@example.com">
+      <mat-error *ngIf="this.email.hasError('email') && !this.email.hasError('required')">
+        Please enter a valid email address
+      </mat-error>
+      <mat-error *ngIf="this.email.hasError('required')">
+        Email is <strong>required</strong>
+      </mat-error>
+    </mat-form-field>
+  </form>
+
+  <form class="input-form">
+    <mat-form-field class="example-full-width">
+      <mat-label>Password</mat-label>
+      <input [(ngModel)]="this.registerModel.password" type="password" matInput [formControl]="this.password" placeholder="***">
+      <mat-error *ngIf="this.password.hasError('required')">
+        Email is <strong>required</strong>
+      </mat-error>
+    </mat-form-field>
+  </form>
+
+  <form class="input-form">
+    <mat-form-field class="example-full-width">
+      <mat-label>key</mat-label>
+      <input [(ngModel)]="this.registerModel.key" type="password" matInput [formControl]="this.key" placeholder="***">
+      <mat-error *ngIf="this.key.hasError('required')">
+        Email is <strong>required</strong>
+      </mat-error>
+    </mat-form-field>
+  </form>
+  
+
+<button
+    mat-flat-button
+    color="accent"
+    (click)="send()"
+    [disabled]="this.email.invalid || this.password.invalid || this.key.invalid"
+>    
+    Register
+</button>
