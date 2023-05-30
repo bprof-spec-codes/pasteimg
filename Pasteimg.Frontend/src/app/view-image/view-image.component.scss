@@ -1,0 +1,34 @@
+.image-card {
+  max-height: 50%;
+  max-width: 100vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #ccc;
+}
+
+.image-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.blur-image {
+  filter: blur(15px);
+}
+
+.description {
+  margin-top: 16px;
+  text-align: center;
+}
+
+.nsfw-toggle {
+  margin-top: 8px;
+  display: flex;
+  justify-content: center;
+}
+
+.title{
+  margin-bottom:10px;
+}

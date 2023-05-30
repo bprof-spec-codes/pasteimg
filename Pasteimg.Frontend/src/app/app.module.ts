@@ -36,6 +36,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
+import { ViewImageComponent } from './view-image/view-image.component';
 
 @NgModule({
   declarations: [
@@ -45,6 +46,7 @@ import { MatInputModule } from '@angular/material/input';
     FooterComponent,
     NewUploadComponent,
     DndDirective,
+    ViewImageComponent,
   ],
   imports: [
     MatSlideToggleModule,
