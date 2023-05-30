@@ -63,7 +63,7 @@ export class NewUploadComponent {
       const files = $event instanceof FileList ? Array.from($event) : [$event];
       if (files && files.length+this.files.length > this.fileuploadLimit) {
         const message = `You can only submit ${this.fileuploadLimit} images at once!\n`;
-  
+
         this._snackBar.open(message, 'Close', {
           horizontalPosition: 'center',
           verticalPosition: 'top',
@@ -75,7 +75,7 @@ export class NewUploadComponent {
         const validFiles: any[] = this.filterValidFiles(Array.from(files));
         this.prepareFilesList(validFiles);
         this.hasWrongFileExtension = files.length !== validFiles.length;
-  
+
         if (this.hasWrongFileExtension) {
           const invalidFiles: File[] = Array.from(files).filter(file => !validFiles.includes(file));
           const invalidFileExtensions: string[] = invalidFiles.reduce((extensions: string[], file: File) => {
@@ -87,7 +87,7 @@ export class NewUploadComponent {
             return extensions;
           }, []);
           const message = `Some of the files you tried to upload have unsupported extensions: ${invalidFileExtensions.join(', ')}`;
-  
+
           this._snackBar.open(message, 'Close', {
             horizontalPosition: 'center',
             verticalPosition: 'top',
@@ -96,13 +96,13 @@ export class NewUploadComponent {
         }
       }
     }
-    
+
     this.showNotAllowed = this.hasWrongFileExtension;
     setTimeout(() => {
       this.showNotAllowed = false;
     }, 2000);
   }
-  
+
 
   /**
    * handle file from browsing
@@ -120,7 +120,7 @@ export class NewUploadComponent {
       const validFiles: any[] = this.filterValidFiles(Array.from(files));
       this.prepareFilesList(validFiles);
       this.hasWrongFileExtension = files.length !== validFiles.length;
-  
+
       if (this.hasWrongFileExtension) {
         const invalidFiles: File[] = Array.from(files).filter(file => !validFiles.includes(file));
         const invalidFileExtensions: string[] = invalidFiles.reduce((extensions: string[], file: File) => {
@@ -132,7 +132,7 @@ export class NewUploadComponent {
           return extensions;
         }, []);
         const message = `Some of the files you tried to upload have unsupported extensions: ${invalidFileExtensions.join(', ')}`;
-      
+
         this._snackBar.open(message, 'Close', {
           horizontalPosition: 'center',
           verticalPosition: 'top',
@@ -140,13 +140,13 @@ export class NewUploadComponent {
         });
       }
     }
-  
+
     this.showNotAllowed = this.hasWrongFileExtension;
     setTimeout(() => {
       this.showNotAllowed = false;
     }, 2000);
   }
-  
+
 
   /**
    * Delete file from files list
@@ -158,7 +158,7 @@ export class NewUploadComponent {
         setTimeout(() => {
           this.fileRemovalAnimations[index] = true;
         }, 0);
-    
+
         // Remove the class after the animation duration
         setTimeout(() => {
           this.fileRemovalAnimations.splice(index, 1);
@@ -172,7 +172,7 @@ export class NewUploadComponent {
   prepareFilesList(files: Array<File>) {
     const fileCount = files.length;
     let processedCount = 0;
-  
+
     const loadFile = (file: File) => {
       const reader = new FileReader();
       reader.onload = (event: any) => {
@@ -188,11 +188,11 @@ export class NewUploadComponent {
       };
       reader.readAsDataURL(file);
     };
-  
+
     files.forEach((file) => loadFile(file));
     this.scrollToSectionEnd();
   }
-  
+
 
   /**
    * format bytes
@@ -212,13 +212,13 @@ export class NewUploadComponent {
 
   private filterValidFiles(files: File[]): File[] {
     const allowedExtensions = ['.jpg', '.jpeg', '.jpe', '.jif', '.jfif', '.jfi', '.gif', '.png', '.apng', '.webp', '.bmp'];
-    
+
     return files.filter(file => {
       const fileExtension = file.name.toLowerCase().substring(file.name.lastIndexOf('.'));
       return allowedExtensions.includes(fileExtension);
     });
   }
-  
+
   async submitUpload() {
     const images: Image[] = [];
 
@@ -253,7 +253,7 @@ export class NewUploadComponent {
     }
     else{
 
-    }      
+    }
     this._snackBar.open(message, 'Close', {
       horizontalPosition: 'center',
       verticalPosition: 'bottom',
@@ -261,7 +261,7 @@ export class NewUploadComponent {
     });
     //this.router.navigate(['link/'+uploadedUpload]);
     this.openDialog(uploadedUpload);
-    
+
     // Handle the response as needed
     // ...
   }
@@ -273,14 +273,14 @@ export class NewUploadComponent {
       const chunkSize = 1024 * 1024; // 1MB chunk size
       let offset = 0;
       let base64String = '';
-  
+
       const readChunk = () => {
         const blob = file.slice(offset, offset + chunkSize);
         reader.onload = () => {
           const chunkBase64 = reader.result as string;
           base64String += chunkBase64.split(',')[1];
           offset += chunkSize;
-  
+
           if (offset < file.size) {
             readChunk();
           } else {
@@ -292,7 +292,7 @@ export class NewUploadComponent {
         };
         reader.readAsDataURL(blob);
       };
-  
+
       readChunk();
     });
   }
@@ -302,11 +302,11 @@ export class NewUploadComponent {
       sectionElement.scrollIntoView({ behavior: 'smooth', block: 'end' });
     }
   }
- 
+
   openDialog(idOfThheUpload:string) {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.disableClose = true;
-    dialogConfig.data={ url: (this.getBaseUrl()+"/link/"+idOfThheUpload) };
+    dialogConfig.data={ url: (this.getBaseUrl()+"link/"+idOfThheUpload) };
 
     this.dialog.open(DialogContentComponent, dialogConfig);
   }
