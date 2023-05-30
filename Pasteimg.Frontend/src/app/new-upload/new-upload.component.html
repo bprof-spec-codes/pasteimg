@@ -40,9 +40,18 @@
 			</mat-form-field>
 			</div>
 			<mat-form-field class="form-field">
-			<mat-label>Description</mat-label>
-			<textarea matInput placeholder="Write some text..." [(ngModel)]="file.description"></textarea>
-			</mat-form-field>
+				<mat-label [ngClass]="{ 
+					'yellow-label': file.description.length > characterLimit / 2 && file.description.length < characterLimit && isTextareaSelected,
+				    'red-label': file.description.length === characterLimit && isTextareaSelected
+				 }">Description ({{ file.description.length }}/{{ characterLimit }})</mat-label>
+				<textarea matInput
+					placeholder="Write some text..."
+					[(ngModel)]="file.description"
+					maxlength="{{ characterLimit }}"
+					(focus)="isTextareaSelected = true"
+					(blur)="isTextareaSelected = false">
+				</textarea>
+			  </mat-form-field>			  
 			<div class="form-row">
 			<span class="tooltip" matTooltip="Not safe for work mode will hide the image by default when link is opened">
 				<mat-slide-toggle [(ngModel)]="file.NSFW" aria-label="NSFW">NSFW</mat-slide-toggle>

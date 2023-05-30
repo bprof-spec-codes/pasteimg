@@ -42,6 +42,8 @@ export class NewUploadComponent {
   fileRemovalAnimations: boolean[] = []; // Define the file removal animations array
   firstUpload: boolean = true;
   fileuploadLimit: number = 6;
+  characterLimit: number= 120;
+  isTextareaSelected: boolean = false;
   @ViewChild('sectionRef', { static: false, read: ElementRef }) sectionRef!: ElementRef;
 
   constructor(
