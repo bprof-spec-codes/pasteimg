@@ -17,9 +17,17 @@ interface UploadedFile {
   description: string;
   file: File;
   NSFW: boolean;
-  password: string;
   url: string;
 }
+
+const images: Image[] = [];
+
+const upload: Upload = {
+  images: images,
+  id: '',
+  password: '',
+  timeStamp: new Date().toISOString()
+};
 
 @Component({
   selector: 'app-new-upload',
@@ -45,6 +53,9 @@ export class NewUploadComponent {
   characterLimit: number= 120;
   isTextareaSelected: boolean = false;
   @ViewChild('sectionRef', { static: false, read: ElementRef }) sectionRef!: ElementRef;
+  toggleChecked:boolean = false;
+
+
 
   constructor(
     private uploadService: UploadService,
@@ -182,7 +193,6 @@ export class NewUploadComponent {
           url: event.target.result,
           description: '',
           NSFW: false,
-          password: '',
         };
         this.files.push(uploadedFile);
       };
@@ -220,11 +230,11 @@ export class NewUploadComponent {
   }
 
   async submitUpload() {
-    const images: Image[] = [];
 
     for (const file of this.files) {
       let data=await this.readFileAsByteArray(file.file);
       let content: Content=new Content(file.file.type, data, file.name);
+
       /* const content = await this.readFileAsByteArray(file.file); */
       const image: Image = {
         content: content,
@@ -236,12 +246,6 @@ export class NewUploadComponent {
       images.push(image);
     }
 
-    const upload: Upload = {
-      images: images,
-      id: '',
-      password: '',
-      timeStamp: new Date().toISOString()
-    };
 
     // Call the upload service to submit the upload
     const uploadedUpload = await this.uploadService.postUpload(upload);
@@ -319,6 +323,7 @@ export class NewUploadComponent {
     }
   }
 
+  protected readonly upload = upload;
 }
 
 @Component({

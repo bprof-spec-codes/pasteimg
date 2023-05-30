@@ -33,10 +33,6 @@
 				<mat-label>File Name</mat-label>
 				<input matInput [(ngModel)]="file.name" />
 			</mat-form-field>
-			<mat-form-field class="form-field">
-				<mat-label>Password</mat-label>
-				<input matInput [(ngModel)]="file.password" />
-			</mat-form-field>
 			</div>
 			<mat-form-field class="form-field">
 				<mat-label [ngClass]="{
@@ -61,6 +57,16 @@
 			</div>
 		</div>
 		</div>
+  </div>
+
+  <div style="display: flex; justify-content: center">
+    <mat-slide-toggle [(ngModel)]="toggleChecked">Password</mat-slide-toggle>
+    <div *ngIf="toggleChecked">
+    <mat-form-field class="form-field">
+      <mat-label>Password</mat-label>
+      <input matInput [(ngModel)]="upload.password" />
+    </mat-form-field>
+  </div>
   </div>
 	<div style=" display: flex; justify-content: center;" #sectionRef>
 		  <button mat-raised-button color="primary"
