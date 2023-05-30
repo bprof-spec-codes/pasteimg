@@ -1,37 +1,15 @@
-.login-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 65vh;
-    background-color: #303030;
-  }
-  
-  .login-card {
-    width: 300px;
-  }
-  
-  .login-header {
-    background-color: #404040;
-    display: flex;
-    justify-content: center; 
-  }
-  
-  .login-title {
-    color: white;
-    padding-bottom: 16px;
-  }
-  
-  .login-form {
-    padding: 1rem 1rem 0 1rem;
-  }
-  
-  .login-input {
-    width: 100%;
-  }
-  
-  .login-actions {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
+h1 {
+  margin: 30px;
+}
+
+mat-form-field, mat-checkbox, button {
+  width: 100%;
+  margin-bottom: 30px;
+  color: red;
+}
+
+.input-form {
+  margin-top: 20px;
+  margin-left: 10px;
+  margin-right: 10px;
+}
