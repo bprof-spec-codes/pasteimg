@@ -1,9 +1,5 @@
 import { Component } from '@angular/core';
-import { sessionIdService } from '../sessionId.service';
-import { LoginModel } from '../_models/loginModel';
-import { FormControl, Validators } from '@angular/forms';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { UploadService } from "../upload.service";
 import { Router } from '@angular/router';
 
 @Component({
@@ -12,24 +8,28 @@ import { Router } from '@angular/router';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent {
+  constructor(
+    private router: Router,
+    private uploadService: UploadService
+  ) {}
 
+  async ngOnInit(): Promise<void> {
+    if (await this.uploadService.checkSessionIsAdmin()) 
+    {
+      this.router.navigate(['/upload']);
     }
-    return '';
   }
 
+  email: string = "";
+  password: string= "";
 
-  }
-
-  public send(){
-    console.log('sending');
-    
-    this.http.post('https://localhost:7063/api/Admin/Login', this.loginModel, {headers: this.header}).subscribe(
-      (success) => {
-        this.nav.navigate(['/admin'])
-      },
-      (error) => {
-        console.log(error)
-        this.snackBar.open(error.message, 'Close', { duration: 5000 })
-      })
+  async login(): Promise<void> {
+    const isLoginSuccessfull = await this.uploadService.submitLogin(this.email, this.password);
+    if (isLoginSuccessfull) {
+      this.router.navigate(['/upload']);
+    } else {
+      // Handle login failure
+      console.log('Login failed');
+    }
   }
 }

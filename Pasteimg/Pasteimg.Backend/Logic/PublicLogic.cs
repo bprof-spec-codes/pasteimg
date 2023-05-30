@@ -1,9 +1,7 @@
 ﻿using Pasteimg.Backend.Configurations;
 using Pasteimg.Backend.Logic.Exceptions;
 using Pasteimg.Backend.Models;
-using Pasteimg.Backend.Repository;
 using System.Globalization;
-using System.Net.Mail;
 using System.Text;
 
 namespace Pasteimg.Backend.Logic
@@ -32,12 +30,6 @@ namespace Pasteimg.Backend.Logic
         /// <param name="sessionKey">The session key (if any) to use.</param>
         /// <returns>The ID of the posted upload.</returns>
         string PostUpload(Upload upload, string? sessionKey);
-
-        /// <summary>
-        /// Register a new admin
-        /// </summary>
-        /// <param name="registerModell">The admin entity, plus the register key</param>
-        void RegisterAdmin(RegisterModell registerModell);
     }
     /// <summary>
     /// Provides public-facing functionality for interacting with Pasteimg services.
@@ -47,19 +39,15 @@ namespace Pasteimg.Backend.Logic
         private const string DateTimeFormat = @"MM/dd/yyyy HH:mm";
         private readonly ISessionHandler sessionHandler;
         private IPasteImgLogic logic;
-        private IAdminLogic adminLogic;
-        private readonly IRepository<Admin> adminRepo;
         /// <summary>
         /// Initializes a new instance of the <see cref="PublicLogic"/> class with the specified <see cref="IPasteImgLogic"/> and <see cref="ISessionHandler"/> dependencies.
         /// </summary>
         /// <param name="logic">The <see cref="IPasteImgLogic"/> implementation to use for logic operations.</param>
         /// <param name="sessionHandler">The <see cref="ISessionHandler"/> implementation to use for session-related operations.</param>
-        public PublicLogic(IPasteImgLogic logic, ISessionHandler sessionHandler, IAdminLogic adminLogic, IRepository<Admin> adminRepo)
+        public PublicLogic(IPasteImgLogic logic, ISessionHandler sessionHandler)
         {
             this.logic = logic;
             this.sessionHandler = sessionHandler;
-            this.adminLogic = adminLogic;
-            this.adminRepo = adminRepo;
         }
         /// <inheritdoc/>
         public string CreateSession()
@@ -197,29 +185,6 @@ namespace Pasteimg.Backend.Logic
                 session.CommitAsync().Wait();
             }
             return uploadId;
-        }
-
-        public void RegisterAdmin(RegisterModell registerModell)
-        {
-            PasswordHasher psHaser = new PasswordHasher();
-
-            try
-            {
-                var MailAddress = new MailAddress(registerModell.Email);
-            }
-            catch(Exception e)
-            {
-                throw new RegisterError("Hibás email");
-            }
-            Admin admin = new Admin()
-            {
-                Email = registerModell.Email,
-                Password = psHaser.CreateHash(registerModell.Password)
-            };
-            if (adminLogic.RegisterKeyValidator(registerModell.Key))
-            {
-                adminRepo.Create(admin);
-            }
         }
 
         /// <summary>
