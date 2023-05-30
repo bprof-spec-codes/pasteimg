@@ -12,6 +12,4 @@ export class AppComponent {
   uploads: Array<Upload> = [];
   images:  Array<Image> = [];
 
-
-
 }

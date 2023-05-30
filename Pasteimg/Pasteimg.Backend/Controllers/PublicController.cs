@@ -67,6 +67,19 @@ namespace Pasteimg.Backend.Controllers
             return Ok(uploadId);
         }
 
+        /// <summary>
+        /// Posts a register.
+        /// </summary>
+        /// <param name="upload">The <see cref="Upload"/> data to post.</param>
+        /// <param name="sessionKey">The session key of the user performing the action.</param>
+        /// <returns>An <see cref="ActionResult"/> representing the result of the action.</returns>
+        [HttpPost]
+        public ActionResult PostRegister([FromBody] RegisterModell modell)
+        {
+            logic.RegisterAdmin(modell);
+            return Ok(modell.Email);
+        }
+
         [HttpPost]
         public ActionResult PostImage([FromForm] Image imageObject, IFormFile imageFile)
         {
@@ -83,7 +96,7 @@ namespace Pasteimg.Backend.Controllers
                     Content = new Content()
                     {
                         Data = buffer,
-                        FileName = imageFile.FileName,                        
+                        FileName = imageFile.FileName,
                         ContentType = imageFile.ContentType
                     }
                 };
