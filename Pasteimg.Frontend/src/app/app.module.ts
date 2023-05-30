@@ -38,6 +38,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { ViewImageComponent } from './view-image/view-image.component';
 import { LoginComponent } from './login/login.component';
+import { RegisterComponent } from './register/register.component';
 
 @NgModule({
   declarations: [
@@ -49,6 +50,7 @@ import { LoginComponent } from './login/login.component';
     DndDirective,
     ViewImageComponent,
     LoginComponent,
+    RegisterComponent,
   ],
   imports: [
     MatSlideToggleModule,
