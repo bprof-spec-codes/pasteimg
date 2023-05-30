@@ -1,8 +1,7 @@
-<!-- gondolom a form itt lesz és itt fogja meghívni -->
 <section style="background-color: #303030; margin-top:-10px">
-	<div class="container" [ngClass]="{ 'wrong-file-extension': hasWrongFileExtension }" [class.not-allowed]="showNotAllowed" appDnd (fileDropped)="onFileDropped($event)">
+	<div class="container" *ngIf="fileuploadLimit!==files.length" [ngClass]="{ 'wrong-file-extension': hasWrongFileExtension }" [class.not-allowed]="showNotAllowed" appDnd (fileDropped)="onFileDropped($event)">
 		<input [disabled]="showNotAllowed" type="file" #fileDropRef id="fileDropRef" multiple (change)="fileBrowseHandler(fileDropRef.files)" />
-	
+
 		<div *ngIf="showNotAllowed" class="wrong-file-overlay">
 		<img src="https://www.pngmart.com/files/17/Wrong-Cross-Transparent-PNG.png" alt="Wrong File" />
 		</div>
@@ -27,7 +26,7 @@
 			<p class="size">Size: {{ formatBytes(file.file.size, 0) }}</p>
 			</div>
 		</div>
-	
+
 		<div class="form-fields">
 			<div class="form-row">
 			<mat-form-field class="form-field">
@@ -40,7 +39,7 @@
 			</mat-form-field>
 			</div>
 			<mat-form-field class="form-field">
-				<mat-label [ngClass]="{ 
+				<mat-label [ngClass]="{
 					'yellow-label': file.description.length > characterLimit / 2 && file.description.length < characterLimit && isTextareaSelected,
 				    'red-label': file.description.length === characterLimit && isTextareaSelected
 				 }">Description ({{ file.description.length }}/{{ characterLimit }})</mat-label>
@@ -51,7 +50,7 @@
 					(focus)="isTextareaSelected = true"
 					(blur)="isTextareaSelected = false">
 				</textarea>
-			  </mat-form-field>			  
+			  </mat-form-field>
 			<div class="form-row">
 			<span class="tooltip" matTooltip="Not safe for work mode will hide the image by default when link is opened">
 				<mat-slide-toggle [(ngModel)]="file.NSFW" aria-label="NSFW">NSFW</mat-slide-toggle>
@@ -62,14 +61,14 @@
 			</div>
 		</div>
 		</div>
-	</div>
+  </div>
 	<div style=" display: flex; justify-content: center;" #sectionRef>
-		  <button mat-raised-button color="primary" 
-		  (click)="submitUpload()" 
-		  *ngIf="files.length > 0" 
+		  <button mat-raised-button color="primary"
+		  (click)="submitUpload()"
+		  *ngIf="files.length > 0"
 		  style="margin-bottom:10px; font-size: 25px;"
 		  class="mat-button-lg"
-		  matBadge="{{files.length}}" matBadgePosition="after" matBadgeColor="accent"> 
+		  matBadge="{{files.length}}" matBadgePosition="after" matBadgeColor="accent">
 		  Upload
 		</button>
 	</div>
