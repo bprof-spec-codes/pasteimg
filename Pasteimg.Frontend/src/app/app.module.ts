@@ -4,7 +4,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ViewUploadComponent } from './view-upload/view-upload.component';
-import { HomeComponent } from './home/home.component';
 
 
 import { HttpClientModule } from "@angular/common/http";
@@ -30,7 +29,7 @@ import { MatToolbarModule } from "@angular/material/toolbar";
 import { MatSidenavModule } from "@angular/material/sidenav";
 import { MatTabsModule } from "@angular/material/tabs";
 import { MatTooltipModule  } from '@angular/material/tooltip';
-import {MatBadgeModule} from '@angular/material/badge'; 
+import {MatBadgeModule} from '@angular/material/badge';
 import { MatDialogModule } from '@angular/material/dialog';
 // form
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -42,7 +41,6 @@ import { MatInputModule } from '@angular/material/input';
   declarations: [
     AppComponent,
     ViewUploadComponent,
-    HomeComponent,
     NavigationComponent,
     FooterComponent,
     NewUploadComponent,
