@@ -11,9 +11,17 @@
       Paste Image
     </div>
     <div class="button-container">
-      <button mat-raised-button color="primary">
-        <mat-icon>add_photo_alternate</mat-icon>
+      <button mat-raised-button color="primary"
+      routerLink="/login"
+      *ngIf="!isLoggedIn">
+        <mat-icon>lock</mat-icon>
         <span>Log in</span>
+      </button>
+      <button mat-raised-button color="primary"
+      (click)="logout()"
+      *ngIf="isLoggedIn">
+        <mat-icon>exit_to_app</mat-icon>
+        <span>Log out</span>
       </button>
     </div>
   </mat-toolbar>

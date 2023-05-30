@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
+import { Observable, Subject } from 'rxjs';
 
 export type Image = {
   "content": any,
@@ -31,6 +32,9 @@ export class UploadService {
   http: HttpClient
   sessionId: string = '';
   backendUrl: string = 'https://localhost:7063';
+  private isLoggedInSubject: Subject<boolean> = new Subject<boolean>();
+  isLoggedIn$ = this.isLoggedInSubject.asObservable();
+  isLoggedIn: boolean = false;
   constructor(http: HttpClient) {
     this.http =http}
 
@@ -102,5 +106,62 @@ export class UploadService {
       }
   }
 
+  async submitLogin(email:string, password:string):Promise<Boolean> {
+    const requestBody = {
+      email: email,
+      password: password
+    };
+  
+    const response = await fetch(`${this.backendUrl}/api/Admin/Login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'API-SESSION-KEY': localStorage.getItem('sessionId')?.toString() || ''
+      },
+      body: JSON.stringify(requestBody)
+    });
+  
+    if (response.ok) {
+      const uploadResponseString = await response.text();
+      console.log('LoginSuccesfull:', uploadResponseString);
+      this.updateIsLoggedIn(true);
+      return true;
+    } else {
+      console.error('LoginFailed:', response.status);
+      return false;
+    }
+  }
+  
+  async checkSessionIsAdmin(): Promise<boolean> {
+    const sessionId = localStorage.getItem('sessionId');
+    if (!sessionId) {
+      //throw new Error('Session ID not found');
+      return false;
+    }
+
+    const url = `${this.backendUrl}/api/Admin/IsAdmin`;
+    const headers = {
+      'accept': '*/*',
+      'API-SESSION-KEY': sessionId
+    };
+
+    try {
+      const response = await fetch(url, { headers });
+      if (!response.ok) {
+        throw new Error('Failed to check session isAdmin');
+      }
+      const isAdmin = await response.json();
+      this.updateIsLoggedIn(isAdmin);
+      return isAdmin;
+    } catch (error) {
+      console.error('Error checking session isAdmin:', error);
+      return false;
+    }
+  }
+
+  updateIsLoggedIn(valueToChange: boolean) {
+    this.isLoggedIn = valueToChange;
+    this.isLoggedInSubject.next(valueToChange);
+  }
 }
 
