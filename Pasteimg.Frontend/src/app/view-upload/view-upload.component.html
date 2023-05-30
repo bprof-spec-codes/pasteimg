@@ -10,7 +10,7 @@
       <div class="description">
         <span>{{ img.description }}</span>
       </div>
-      <div class="nsfw-toggle">
+      <div class="nsfw-toggle" *ngIf="img.nsfw">
         <span class="tooltip" matTooltip="Not safe for work mode will hide the image by default when link is opened"></span>
         <mat-slide-toggle [(ngModel)]="img.nsfw" aria-label="NSFW">NSFW</mat-slide-toggle>
       </div>
