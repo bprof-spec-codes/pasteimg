@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 
+
 @Component({
   selector: 'app-navigation',
   templateUrl: './navigation.component.html',
@@ -22,15 +23,18 @@ export class NavigationComponent {
     http: HttpClient,
     nav: Router
   ) {
+      this.header = new HttpHeaders
       this.sessionIdService = sessionIdService
       this.http = http
       this.nav = nav
 
-      this.header = new HttpHeaders({
-        //'SessionKeyHeader' : localStorage.getItem('sessionId')!.toString(),
-        'API-SESSION-KEY' : localStorage.getItem('sessionId')!.toString()
+      sessionIdService.getSessionId().then(id => {
+        this.header = new HttpHeaders({
+          //'SessionKeyHeader' : localStorage.getItem('sessionId')!.toString(),
+          'API-SESSION-KEY' : id
+        })
       })
-      console.log('id:' + localStorage.getItem('sessionId')!.toString())
+      
       console.log(this.header)
       
       
