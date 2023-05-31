@@ -63,6 +63,7 @@ export class LoginComponent {
     
     this.http.post('https://localhost:7063/api/Admin/Login', this.loginModel, {headers: this.header}).subscribe(
       (success) => {
+        this.sessionIdService.setAdmimFlag(true)
         this.nav.navigate(['/admin'])
       },
       (error) => {

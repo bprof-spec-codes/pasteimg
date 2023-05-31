@@ -33,6 +33,16 @@ export class sessionIdService {
       localStorage.clear()
     }
 
+    public setAdmimFlag(val: boolean){
+      if(val) localStorage.setItem('isAdmin', 'true')
+      else localStorage.setItem('isAdmin', 'false')
+    }
+
+    public isAdmin(): boolean{
+      if(localStorage.getItem('isAdmin') === 'true') return true
+      else return false
+    }
+
     @HostListener('window:beforeunload', [ '$event' ])
     beforeUnloadHandler() {
       localStorage.setItem('sessionId', '')
