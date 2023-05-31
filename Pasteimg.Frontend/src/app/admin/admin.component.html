@@ -2,7 +2,7 @@
   <mat-card class="example-card">
     <mat-card-header>
       <mat-card-title-group>
-        <mat-card-title>Upload ID: {{ item.id }}</mat-card-title>
+        <mat-card-title routerLink="/link/{{item.id}}">Upload ID: {{ item.id }}</mat-card-title>
       </mat-card-title-group>
     </mat-card-header>
     <mat-card-content>
@@ -38,9 +38,9 @@
                   </mat-form-field>   
               </div>
               <mat-action-row>
-                <button mat-raised-button color="accent" (click)="edit(image.id)">View</button>
-                <button mat-raised-button color="primary" (click)="edit(image.id)">Save Edit</button>
-                <button mat-raised-button color="warn" (click)="del(image.id)">Delete</button>
+                <button mat-raised-button color="accent" routerLink="/link/image/{{image.id}}">View</button>
+                <button mat-raised-button color="primary" (click)="editImage(item.id, image.id)">Save Edit</button>
+                <button mat-raised-button color="warn" (click)="deleteImage(item.id, image.id)">Delete</button>
               </mat-action-row>
             </mat-expansion-panel>
           </div>

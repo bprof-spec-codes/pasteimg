@@ -163,5 +163,53 @@ export class UploadService {
     this.isLoggedIn = valueToChange;
     this.isLoggedInSubject.next(valueToChange);
   }
+
+  async editImage(imageId: string, description: string, nsfw: boolean): Promise<Boolean> {
+    const requestBody = {
+      description: description,
+      nsfw: nsfw
+    };
+  
+    const sessionId = localStorage.getItem('sessionId')  || '';
+  
+    const response = await fetch(`${this.backendUrl}/api/Admin/EditImage/${imageId}`, {
+      method: 'PUT',
+      headers: {
+        'accept': '*/*',
+        'API-SESSION-KEY': sessionId,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(requestBody)
+    });
+  
+    if (response.ok) {
+      console.log('Image edited successfully');
+      return true;
+    } else {
+      console.error('Failed to edit image:', response.status);
+      return false;
+    }
+  }
+
+  async deleteImage(imageId: string): Promise<Boolean> {
+    const sessionId = localStorage.getItem('sessionId') || '';
+  
+    const response = await fetch(`https://localhost:7063/api/Admin/DeleteImage/${imageId}`, {
+      method: 'DELETE',
+      headers: {
+        'accept': '*/*',
+        'API-SESSION-KEY': sessionId
+      }
+    });
+  
+    if (response.ok) {
+      console.log('Image deleted successfully');
+      return true;
+    } else {
+      console.error('Failed to delete image:', response.status);
+      return false;
+    }
+  }
+  
 }
 
