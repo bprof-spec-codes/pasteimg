@@ -9,7 +9,7 @@ namespace Pasteimg.Backend.Models
 
         public bool Equals(RegisterKey? x, RegisterKey? y)
         {
-            if(x.Key == y.Key) return true;
+            if (x.Key == y.Key) return true;
             return false;
         }
 

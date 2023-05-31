@@ -33,7 +33,7 @@ namespace Pasteimg.Backend.Logic
         /// <returns>The ID of the posted upload.</returns>
         string PostUpload(Upload upload, string? sessionKey);
 
-        /// <summary>
+        // <summary>
         /// Register a new admin
         /// </summary>
         /// <param name="registerModell">The admin entity, plus the register key</param>
@@ -207,10 +207,11 @@ namespace Pasteimg.Backend.Logic
             {
                 var MailAddress = new MailAddress(registerModell.Email);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 throw new RegisterError("Hibás email");
             }
+
             Admin admin = new Admin()
             {
                 Email = registerModell.Email,

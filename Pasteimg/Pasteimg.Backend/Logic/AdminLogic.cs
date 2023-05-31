@@ -50,6 +50,8 @@ namespace Pasteimg.Backend.Logic
         /// <param name="sessionKey">The session key of the user.</param>
         /// <returns>The PasteImg configuration settings.</returns>
         PasteImgConfiguration GetConfiguration(string? sessionKey);
+        bool IsAdmin(string? sessionKey);
+
         /// <summary>
         /// Logs in an admin user.
         /// </summary>
@@ -62,6 +64,7 @@ namespace Pasteimg.Backend.Logic
         /// <param name="sessionKey">The session key of the user.</param>
         void Logout(string sessionKey);
 
+
         /// <summary>
         /// Generate a one time use code for admin regsitration.
         /// </summary>
@@ -72,8 +75,6 @@ namespace Pasteimg.Backend.Logic
         /// </summary>
         /// <param name="key">The regKey.</param>
         bool RegisterKeyValidator(int key);
-
-        IEnumerable<Upload> GetUploads(string? sessionKey, int number, int pageNum);
     }
     /// <summary>
     /// Interface for Admin Logic.
@@ -132,23 +133,6 @@ namespace Pasteimg.Backend.Logic
             CheckIsAdmin(sessionKey);
             return logic.EditImage(id, model);
         }
-
-        public int GenerateRegisterKey(string sessionKey)
-        {
-            CheckIsAdmin(sessionKey);
-            int key;
-            DateTime date = DateTime.Now;
-
-            RegisterKey regKey = new RegisterKey() { Creation = date }; 
-            do
-            {
-                key = System.DateTime.Now.GetHashCode();
-                regKey.Key = key;
-            } while (_registerKeys.Any(x => x.Key == regKey.Key));
-            _registerKeys.Add(regKey);
-            return key;
-        }
-
         /// <inheritdoc/>
         /// <exception cref="UnauthorizedException"/>
         /// <exception cref="SomethingWentWrongException"/>
@@ -156,6 +140,20 @@ namespace Pasteimg.Backend.Logic
         {
             CheckIsAdmin(sessionKey);
             return logic.GetAllImage();
+        }
+
+        public bool RegisterKeyValidator(int key)
+        {
+            RegisterKey regKey = _registerKeys.FirstOrDefault(x => x.Key == key);
+            if (regKey is null) throw new RegisterError("Wrong register key");
+            if (regKey.Creation < DateTime.Now.AddHours(-24))
+            {
+                _registerKeys.Remove(regKey);
+                throw new RegisterError("Key expired");
+            }
+
+            _registerKeys.Remove(regKey);
+            return true;
         }
 
         /// <inheritdoc/>
@@ -210,22 +208,6 @@ namespace Pasteimg.Backend.Logic
         {
             CheckIsAdmin(sessionKey);
             return logic.GetUpload(id);
-        }
-
-        public IEnumerable<Upload> GetUploads(string? sessionKey, int number, int pageNum)
-        {
-            CheckIsAdmin(sessionKey);
-            List<Upload> uploads = new List<Upload>(logic.GetAllUpload());
-            List<Upload> result = new List<Upload>(number);
-            if (pageNum > Math.Ceiling((double)uploads.Count / 2)) pageNum = 1;
-
-            for (int i = (pageNum - 1) * number; i < (pageNum) * number && i < uploads.Count; i++)
-            {
-                result.Add(uploads[i]);
-            }
-
-            return result.AsEnumerable<Upload>();
-            
         }
 
         /// <inheritdoc/>
@@ -287,24 +269,10 @@ namespace Pasteimg.Backend.Logic
             session.CommitAsync();
         }
 
-        public bool RegisterKeyValidator(int key)
-        {
-            RegisterKey regKey = _registerKeys.FirstOrDefault(x => x.Key == key);
-            if (regKey is null) throw new RegisterError("Wrong register key");
-            if (regKey.Creation < DateTime.Now.AddHours(-24))
-            {
-                _registerKeys.Remove(regKey);
-                throw new RegisterError("Key expired");
-            }
-            _registerKeys.Remove(regKey);
-            return true;
-            
-        }
-
         /// <inheritdoc/>
-
-
-
+       
+     
+      
         /// <summary>
         /// Checks if the session identified by the given session key belongs to an admin user.
         /// Throws an UnauthorizedException if the session is invalid or the user is not an admin.
@@ -321,6 +289,27 @@ namespace Pasteimg.Backend.Logic
                 throw new UnauthorizedException();
             }
             return session;
+        }
+
+        public bool IsAdmin(string? sessionKey)
+        {
+            ISession? session = sessionHandler.GetSession(sessionKey);
+            return session?.GetString(Admin) != null;
+        }
+
+        public int GenerateRegisterKey(string sessionKey)
+        {
+            CheckIsAdmin(sessionKey);
+            int key;
+            DateTime date = DateTime.Now;
+
+            RegisterKey regKey = new RegisterKey() { Creation = date };
+            do
+            {
+                regKey.Key = key = System.DateTime.Now.GetHashCode();
+            } while (_registerKeys.Any(x => x.Key == regKey.Key));
+            _registerKeys.Add(regKey);
+            return key;
         }
     }
 }
