@@ -40,6 +40,7 @@ import { ViewImageComponent } from './view-image/view-image.component';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { AdminComponent } from './admin/admin.component';
+import { UploadPasswordCheckComponent } from './upload-password-check/upload-password-check.component';
 
 @NgModule({
   declarations: [
@@ -53,6 +54,7 @@ import { AdminComponent } from './admin/admin.component';
     LoginComponent,
     RegisterComponent,
     AdminComponent,
+    UploadPasswordCheckComponent,
   ],
   imports: [
     MatSlideToggleModule,

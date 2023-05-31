@@ -6,10 +6,12 @@ import {ViewImageComponent} from "./view-image/view-image.component";
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { AdminComponent } from './admin/admin.component';
+import { UploadPasswordCheckComponent } from './upload-password-check/upload-password-check.component';
 
 const routes: Routes = [
   /* {path: "", component: HomeComponent}, */
   {path: "link/:uploadId", component: ViewUploadComponent},
+  {path: "password/:uploadId", component: UploadPasswordCheckComponent},
   {path: "link/image/:imageId", component: ViewImageComponent},
   {path: "upload", component: NewUploadComponent},
   {path: "register", component: RegisterComponent},
