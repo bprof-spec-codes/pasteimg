@@ -7,12 +7,14 @@ import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { AdminComponent } from './admin/admin.component';
 import { UploadPasswordCheckComponent } from './upload-password-check/upload-password-check.component';
+import { ImagePasswordCheckComponent } from './image-password-check/image-password-check.component';
 
 const routes: Routes = [
   /* {path: "", component: HomeComponent}, */
   {path: "link/:uploadId", component: ViewUploadComponent},
   {path: "password/:uploadId", component: UploadPasswordCheckComponent},
   {path: "link/image/:imageId", component: ViewImageComponent},
+  {path: "password/image/:imageId", component: ImagePasswordCheckComponent},
   {path: "upload", component: NewUploadComponent},
   {path: "register", component: RegisterComponent},
   {path: "admin", component: AdminComponent},

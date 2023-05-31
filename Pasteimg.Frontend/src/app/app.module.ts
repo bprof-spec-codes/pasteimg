@@ -41,6 +41,7 @@ import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { AdminComponent } from './admin/admin.component';
 import { UploadPasswordCheckComponent } from './upload-password-check/upload-password-check.component';
+import { ImagePasswordCheckComponent } from './image-password-check/image-password-check.component';
 
 @NgModule({
   declarations: [
@@ -55,6 +56,7 @@ import { UploadPasswordCheckComponent } from './upload-password-check/upload-pas
     RegisterComponent,
     AdminComponent,
     UploadPasswordCheckComponent,
+    ImagePasswordCheckComponent,
   ],
   imports: [
     MatSlideToggleModule,
