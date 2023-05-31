@@ -13,13 +13,13 @@
     <div class="button-container">
       <button mat-raised-button color="primary"
       routerLink="/login"
-      *ngIf="!isLoggedIn">
+      *ngIf="!this.sessionIdService.isAdmin()">
         <mat-icon>lock</mat-icon>
         <span>Log in</span>
       </button>
       <button mat-raised-button color="primary"
       (click)="logout()"
-      *ngIf="isLoggedIn">
+      *ngIf="this.sessionIdService.isAdmin()">
         <mat-icon>exit_to_app</mat-icon>
         <span>Log out</span>
       </button>

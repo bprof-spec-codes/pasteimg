@@ -1,5 +1,9 @@
 import { Component } from '@angular/core';
 import { UploadService } from "../upload.service";
+import { sessionIdService } from '../sessionId.service';
+import { HttpClient } from '@angular/common/http';
+import { HttpHeaders } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-navigation',
@@ -7,9 +11,30 @@ import { UploadService } from "../upload.service";
   styleUrls: ['./navigation.component.scss']
 })
 export class NavigationComponent {
+  sessionIdService: sessionIdService
+  http: HttpClient
+  header: HttpHeaders
+  nav: Router
+
   constructor(
-    private uploadService: UploadService
-  ) {}
+    private uploadService: UploadService,
+    sessionIdService: sessionIdService,
+    http: HttpClient,
+    nav: Router
+  ) {
+      this.sessionIdService = sessionIdService
+      this.http = http
+      this.nav = nav
+
+      this.header = new HttpHeaders({
+        //'SessionKeyHeader' : localStorage.getItem('sessionId')!.toString(),
+        'API-SESSION-KEY' : localStorage.getItem('sessionId')!.toString()
+      })
+      console.log('id:' + localStorage.getItem('sessionId')!.toString())
+      console.log(this.header)
+      
+      
+  }
 
   isLoggedIn: boolean = false;
 
@@ -20,13 +45,22 @@ export class NavigationComponent {
     });
   }
 
-  logout(): void {
-    this.uploadService.updateIsLoggedIn(false);
-    this.uploadService.sessionId = '';
-    localStorage.setItem('sessionId', '');
-    localStorage.setItem('expirationTime', '');
-    localStorage.clear();
-    sessionStorage.clear();
+  logout(){
+    // this.uploadService.updateIsLoggedIn(false);
+    // this.uploadService.sessionId = '';
+    // localStorage.setItem('sessionId', '');
+    // localStorage.setItem('expirationTime', '');
+    // localStorage.clear();
+    // sessionStorage.clear();
+
+    this.http.post('https://localhost:7063/api/Admin/Logout', {headers: this.header}, {headers: this.header}).subscribe(
+      (success) => {
+        this.sessionIdService.setAdmimFlag(false)
+        this.nav.navigate(['/login'])
+      },
+      (error) => {
+        console.log(error)
+      })
     
   }
 
