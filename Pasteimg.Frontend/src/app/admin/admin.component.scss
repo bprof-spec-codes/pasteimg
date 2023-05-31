@@ -34,3 +34,15 @@ button{
   display: flex;
   justify-content: flex-start;
 }
+
+.red-label {
+  color: red;
+}
+
+.yellow-label {
+  color: yellow;
+}
+
+.mat-action-row {
+  place-content: space-between;
+}

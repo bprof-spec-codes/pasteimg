@@ -31,6 +31,7 @@ import { MatTabsModule } from "@angular/material/tabs";
 import { MatTooltipModule  } from '@angular/material/tooltip';
 import {MatBadgeModule} from '@angular/material/badge';
 import { MatDialogModule } from '@angular/material/dialog';
+import {MatExpansionModule} from '@angular/material/expansion'; 
 // form
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
@@ -77,7 +78,8 @@ import { AdminComponent } from './admin/admin.component';
     MatTabsModule,
     MatTooltipModule,
     MatBadgeModule,
-    MatDialogModule
+    MatDialogModule,
+    MatExpansionModule
   ],
   providers: [],
   bootstrap: [AppComponent]

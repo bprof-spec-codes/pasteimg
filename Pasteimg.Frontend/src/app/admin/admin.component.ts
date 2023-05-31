@@ -37,6 +37,8 @@ export class AdminComponent implements OnInit {
   //   })
   // }
 
+  characterLimit: number= 120;
+  isTextareaSelected: boolean = false;
 
   public find(){
     console.log(this.searchId);

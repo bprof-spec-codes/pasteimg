@@ -1,28 +1,51 @@
-<!-- <div align="center">
-    <form class="input-form" id="filter">
-        <mat-form-field class="example-full-width">
-          <mat-label>Search ID</mat-label>
-          <input type="text" matInput [(ngModel)]="this.searchId" placeholder="ID">
-        </mat-form-field>
-      </form>
-    <button mat-raised-button color="accent" (click)="this.find()">Find</button>
-</div> -->
-
-<mat-card class="example-card" *ngFor="let item of this.uploads">
-  <mat-card-header>
-    <mat-card-title-group>
-      <mat-card-title>Upload ID: {{item.id}}</mat-card-title>
-    </mat-card-title-group>
-  </mat-card-header>
-  <mat-card-content>
-    <div class="image-container">
-      <div *ngFor="let image of item.images" class="image-wrapper">
-        <img mat-card-sm-image src="https://localhost:7063/api/Admin/GetImageThumbnail/Image?id={{image.id}}">
-      </div>
-    </div>
-    <div class="button-container">
-      <button mat-raised-button color="primary" (click)="edit(item.id)">Edit</button>
-      <button mat-raised-button color="warn" (click)="del(item.id)">Delete</button>
-    </div>
-  </mat-card-content>
-</mat-card>
+<div *ngFor="let item of uploads">
+  <mat-card class="example-card">
+    <mat-card-header>
+      <mat-card-title-group>
+        <mat-card-title>Upload ID: {{ item.id }}</mat-card-title>
+      </mat-card-title-group>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-card class="example-card" *ngFor="let image of item.images">
+        <mat-card-header>
+          <mat-card-title-group>
+            <mat-card-title>Image ID: {{ image.id }}</mat-card-title>
+          </mat-card-title-group>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="image-container">
+            <div class="image-wrapper">
+              <img mat-card-sm-image src="https://localhost:7063/api/Admin/GetImageThumbnail/Image?id={{ image.id }}">
+            </div>
+            <mat-expansion-panel style="width:100%">
+              <mat-expansion-panel-header>
+                <mat-panel-title>Actions</mat-panel-title>
+              </mat-expansion-panel-header>
+              <div id="FormElements">
+                <mat-form-field class="form-field" style="width:100%">
+                  <mat-label [ngClass]="{
+                    'yellow-label': image.description.length > characterLimit / 2 && image.description.length < characterLimit && isTextareaSelected,
+                      'red-label': image.description.length === characterLimit && isTextareaSelected
+                   }">Description ({{ image.description.length }}/{{ characterLimit }})</mat-label>
+                  <textarea matInput
+                    placeholder="Write some text..."
+                    [(ngModel)]="image.description"
+                    maxlength="{{ characterLimit }}"
+                    (focus)="isTextareaSelected = true"
+                    (blur)="isTextareaSelected = false">
+                  </textarea>
+                  <mat-slide-toggle [(ngModel)]="image.nsfw">NSFW</mat-slide-toggle>
+                  </mat-form-field>   
+              </div>
+              <mat-action-row>
+                <button mat-raised-button color="accent" (click)="edit(image.id)">View</button>
+                <button mat-raised-button color="primary" (click)="edit(image.id)">Save Edit</button>
+                <button mat-raised-button color="warn" (click)="del(image.id)">Delete</button>
+              </mat-action-row>
+            </mat-expansion-panel>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </mat-card-content>
+  </mat-card>
+</div>
