@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { Upload } from '../_models/upload';
+import {image, Upload} from '../_models/upload';
 import { Router } from '@angular/router';
 
 @Component({
@@ -26,21 +26,21 @@ export class AdminComponent implements OnInit {
       'Content-Type': 'application/json',
       //'SessionKeyHeader' : localStorage.getItem('sessionId')!.toString(),
       'API-SESSION-KEY' : localStorage.getItem('sessionId')!.toString()
-    })  
-    
+    })
+
   }
   //DONT USE - Memory Leak
   // public getThumbnail(id: string){
   //   this.http.get('https://localhost:7063/api/Admin/GetImageThumbnail/Image?id=' + id, {headers: this.header}).subscribe(p =>{
   //     console.log(p)
-      
+
   //   })
   // }
 
 
   public find(){
     console.log(this.searchId);
-    
+
   }
 
   public edit(id: string){
@@ -48,7 +48,7 @@ export class AdminComponent implements OnInit {
 
     //Ide megadni hova navigáljon ha edit van
     //this.nav.navigate([''])
-    
+
   }
   public del(id: string){
     this.http.delete('https://localhost:7063/api/Admin/DeleteUpload/' + id, {headers: this.header}).subscribe(p =>{
@@ -61,9 +61,10 @@ export class AdminComponent implements OnInit {
     this.http.get<Array<Upload>>('https://localhost:7063/api/Admin/GetAllUpload', {headers: this.header}).subscribe(p => {
       this.uploads = p
       console.log(this.uploads)
-      
-      
+
+
     })
   }
 
+  protected readonly image = image;
 }

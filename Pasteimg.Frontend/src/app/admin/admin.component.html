@@ -9,15 +9,20 @@
 </div> -->
 
 <mat-card class="example-card" *ngFor="let item of this.uploads">
-    <mat-card-header>
-      <mat-card-title-group>
-        <mat-card-title>{{item.id}}</mat-card-title>
-        <img mat-card-sm-image src="https://localhost:7063/api/Admin/GetImageThumbnail/Image?id={{item.images[0].id}}">
-      </mat-card-title-group>
-    </mat-card-header>
-    <mat-card-content>
-        <button mat-raised-button color="primary" (click)="edit(item.id)">Edit</button>
-        <button mat-raised-button color="warn" (click)="del(item.id)">Delete</button>
-
-    </mat-card-content>
-  </mat-card>
+  <mat-card-header>
+    <mat-card-title-group>
+      <mat-card-title>Upload ID: {{item.id}}</mat-card-title>
+    </mat-card-title-group>
+  </mat-card-header>
+  <mat-card-content>
+    <div class="image-container">
+      <div *ngFor="let image of item.images" class="image-wrapper">
+        <img mat-card-sm-image src="https://localhost:7063/api/Admin/GetImageThumbnail/Image?id={{image.id}}">
+      </div>
+    </div>
+    <div class="button-container">
+      <button mat-raised-button color="primary" (click)="edit(item.id)">Edit</button>
+      <button mat-raised-button color="warn" (click)="del(item.id)">Delete</button>
+    </div>
+  </mat-card-content>
+</mat-card>
