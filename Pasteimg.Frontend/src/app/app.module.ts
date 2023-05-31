@@ -39,6 +39,7 @@ import { MatInputModule } from '@angular/material/input';
 import { ViewImageComponent } from './view-image/view-image.component';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
+import { AdminComponent } from './admin/admin.component';
 
 @NgModule({
   declarations: [
@@ -51,6 +52,7 @@ import { RegisterComponent } from './register/register.component';
     ViewImageComponent,
     LoginComponent,
     RegisterComponent,
+    AdminComponent,
   ],
   imports: [
     MatSlideToggleModule,

@@ -196,7 +196,7 @@ namespace Pasteimg.Backend.Logic
         /// <inheritdoc/>
         public Image GetImageWithThumbnailFile(string id, string? sessionKey)
         {
-            CheckIsAdmin(sessionKey);
+            //CheckIsAdmin(sessionKey);
             return logic.GetImageWithThumbnailFile(id);
         }
 
