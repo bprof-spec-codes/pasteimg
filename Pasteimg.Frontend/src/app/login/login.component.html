@@ -19,17 +19,17 @@
       <mat-label>Password</mat-label>
       <input [(ngModel)]="this.loginModel.password" type="password" matInput [formControl]="this.password" placeholder="***">
       <mat-error *ngIf="this.password.hasError('required')">
-        Email is <strong>required</strong>
+        Password is <strong>required</strong>
       </mat-error>
     </mat-form-field>
   </form>
-  
+
 
 <button
     mat-flat-button
     color="accent"
     (click)="send()"
     [disabled]="this.email.invalid || this.password.invalid"
->    
+>
     Login
 </button>
