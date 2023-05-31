@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpHeaders, HttpErrorResponse} from "@angular/common/http";
 import { Observable, Subject } from 'rxjs';
 
 export type Image = {
@@ -40,12 +40,23 @@ export class UploadService {
 
   async getUpload(id: string): Promise<Upload> {
     try {
-      const response = await fetch(this.backendUrl+"/api/Public/GetUpload/" + id);
+      const sessionId = localStorage.getItem('sessionId') || ''; // Get the session ID from localStorage
+  
+      const response = await fetch(this.backendUrl + '/api/Public/GetUpload/' + id, {
+        headers: {
+          'API-SESSION-KEY': sessionId
+        }
+      });
 
       if (!response.ok) {
         if (response.status === 404) {
           let error = new Error('404 - File not Found');
           (error as any).status = response.status; // Add status to the error object
+          throw error;
+        }
+        else if (response.status === 401) {
+          let error = new Error('404 - Authorization required');
+          (error as any).status = response.status;
           throw error;
         }
         throw new Error('Network response was not ok');
@@ -61,21 +72,32 @@ export class UploadService {
     }
   }
 
-  async getImage(id: string):Promise<Image>{
-    try{
-      const response = await fetch(this.backendUrl+"/api/Public/GetImage/" + id);
-
+  async getImage(id: string): Promise<Image> {
+    try {
+      const sessionId = localStorage.getItem('sessionId') || ''; // Get the session ID from localStorage
+  
+      const response = await fetch(this.backendUrl + '/api/Public/GetImage/' + id, {
+        headers: {
+          'API-SESSION-KEY': sessionId
+        }
+      });
+  
       if (!response.ok) {
         if (response.status === 404) {
           let error = new Error('404 - File not Found');
           (error as any).status = response.status; // Add status to the error object
           throw error;
         }
+        else if (response.status === 401) {
+          let error = new Error('404 - Authorization required');
+          (error as any).status = response.status;
+          throw error;
+        }
         throw new Error('Network response was not ok');
       }
-
+  
       const image = await response.json();
-
+  
       return image;
     } catch (error) {
       // Handle the error appropriately, such as logging or displaying a user-friendly message

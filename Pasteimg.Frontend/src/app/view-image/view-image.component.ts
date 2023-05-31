@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router } from "@angular/router";
 import {Image, UploadService} from "../upload.service";
 
 @Component({
@@ -10,6 +10,7 @@ import {Image, UploadService} from "../upload.service";
 export class ViewImageComponent {
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private uploadService: UploadService
   ) {}
 
@@ -26,7 +27,10 @@ export class ViewImageComponent {
         if (error.status === 404) {
           console.error('Image doesn\'t exist', error);
         }
-        else {
+        else if (error.status === 401) {
+          this.router.navigate(['/password/'+this.image.id]);
+        }
+        else{
           console.error('An error occurred:', error);
         }
       });
