@@ -91,11 +91,6 @@ export class AdminComponent implements OnInit {
     });
   }
 
-  public redirectToImage(imageId: string){
-    
-    link/image/:imageId
-  }
-
   ngOnInit(): void {
     this.http.get<Array<Upload>>(this.uploadService.backendUrl+'/api/Admin/GetAllUpload', {headers: this.header}).subscribe(p => {
       this.uploads = p
