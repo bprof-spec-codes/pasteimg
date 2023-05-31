@@ -83,7 +83,7 @@ export class RegisterComponent {
       },
       (error) => {
         console.log(error)
-        this.snackBar.open(error.message, 'Close', { duration: 5000 })
+        this.snackBar.open(error.error.message, 'Close', { duration: 5000 })
       })
   }
 }

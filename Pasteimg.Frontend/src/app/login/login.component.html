@@ -25,11 +25,20 @@
   </form>
 
 
-<button
-    mat-flat-button
-    color="accent"
-    (click)="send()"
-    [disabled]="this.email.invalid || this.password.invalid"
->
-    Login
-</button>
+  <button
+      mat-flat-button
+      color="accent"
+      (click)="send()"
+      [disabled]="this.email.invalid || this.password.invalid"
+  >
+      Login
+  </button>
+  
+  <button
+      mat-flat-button
+      color="primary"
+      routerLink="/register"
+  >
+      Register
+  </button>
+  
