@@ -231,6 +231,9 @@ export class NewUploadComponent {
 
   async submitUpload() {
 
+    if (this.toggleChecked==false){
+      upload.password="";
+    }
     for (const file of this.files) {
       let data=await this.readFileAsByteArray(file.file);
       let content: Content=new Content(file.file.type, data, file.name);
@@ -256,15 +259,16 @@ export class NewUploadComponent {
       message="Files couldn't be uploaded!"
     }
     else{
-
+      this._snackBar.open(message, 'Close', {
+        horizontalPosition: 'center',
+        verticalPosition: 'bottom',
+        duration: 3000
+      });
+      this.openDialog(uploadedUpload);
+      this.files = [];
+      images.splice(0, images.length);
     }
-    this._snackBar.open(message, 'Close', {
-      horizontalPosition: 'center',
-      verticalPosition: 'bottom',
-      duration: 3000
-    });
-    //this.router.navigate(['link/'+uploadedUpload]);
-    this.openDialog(uploadedUpload);
+
 
     // Handle the response as needed
     // ...
