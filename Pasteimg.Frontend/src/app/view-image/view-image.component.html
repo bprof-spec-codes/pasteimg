@@ -1,10 +1,9 @@
 <div *ngIf="image">
     <div class="image-card">
       <div class="title">
-        <h2>name of the image</h2>
       </div>
       <div class="image-container" [ngClass]="{ 'blur-image': image.nsfw }">
-        <img src="https://localhost:7063/api/Public/GetImageFile/Image?id={{ image.id }}" alt="Image">
+        <img src='data:{{this.contentType}};base64, {{this.data}}' alt="Image">
       </div>
       <div class="description">
         <span>{{ image.description }}</span>
