@@ -100,12 +100,12 @@ Az adminisztrációs felület eléréséhez az alapértelmezett email-cím + jel
 
 ## Probléma jegyzőkönyv
 - A legelején elfelejtettünk .gitignore fájlt betenni, így rengeteg felesleges dolog került fel a repoba
- - megoldás: töröltük az egész projektet, újrakezdtük, de előtte betettük a gitignore fájlt
+	- megoldás: töröltük az egész projektet, újrakezdtük, de előtte betettük a gitignore fájlt
 - Eredetileg api projektet kellett volna létrehozni, helyette ASP.NET MVC appot hoztunk létre
- - megoldás: a swaggert kézzel üzemeltettük be, macerásnak tűnt
+	- megoldás: a swaggert kézzel üzemeltettük be, macerásnak tűnt
 - Adminlogin készítésekor félrecsúszott a kommunikáció a csapatban, és két csapattag készítette egyidőben ugyanazt, commitkor pedig konfliktus keletkezett, mivel bár más módon, de ugyanazon funkciót implementálták, a sessionid között is volt összeakadás
- - megoldás: az egyikük egyenként, kézzel megoldotta a conflictot, ellentmondásokat
+	- megoldás: az egyikük egyenként, kézzel megoldotta a conflictot, ellentmondásokat
 - frontend: modelek nem jól lettek megírva / nem konzisztensen (kis/nagybetű pl.)
- - megoldás: mivel későn jöttünk rá (valószínűleg A és B ember más konvenciókkal dolgozott), ezekkel együtt dolgoztunk tovább, lassabb lett a kliens fejlesztése
+	- megoldás: mivel későn jöttünk rá (valószínűleg A és B ember más konvenciókkal dolgozott), ezekkel együtt dolgoztunk tovább, lassabb lett a kliens fejlesztése
 - már majdnem készen volt a teljes kliens, amikor egyikünk észrevette, hogy új munkamenetben az egész alkalmazás egy fehér ablak, nem működik
- - megoldás: 'API-SESSION-KEY' -t nem szerzünk localStorage -ból, helyette a sessionIdService service-en belül található getSessionId-t meghívja jutunk id-hez, és azt az id-t állítjuk be a kérések header-ébe
+	- megoldás: 'API-SESSION-KEY' -t nem szerzünk localStorage -ból, helyette a sessionIdService service-en belül található getSessionId-t meghívja jutunk id-hez, és azt az id-t állítjuk be a kérések header-ébe
