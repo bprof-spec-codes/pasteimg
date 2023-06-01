@@ -104,7 +104,7 @@ namespace Pasteimg.Backend.Controllers
         public ActionResult PostRegister([FromBody] RegisterModell modell)
         {
             logic.RegisterAdmin(modell);
-            return Ok(modell.Email);
+            return Ok();
         }
     }
 }
