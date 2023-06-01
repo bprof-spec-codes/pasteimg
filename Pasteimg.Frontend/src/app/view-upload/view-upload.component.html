@@ -1,0 +1,19 @@
+<div *ngIf="upload">
+  <div *ngFor="let img of images">
+    <div class="image-card">
+      <div class="title">
+      </div>
+      <div class="image-container" [ngClass]="{ 'blur-image': img.nsfw }">
+        <a href="/link/image/{{ img.imageId }}">
+          <img src='data:{{img.contentType}};base64, {{img.data}}' alt="Image"></a>
+      </div>
+      <div class="description">
+        <span>{{ img.imageDescription }}</span>
+      </div>
+      <div class="nsfw-toggle" *ngIf="img.nsfw">
+        <span class="tooltip" matTooltip="Not safe for work mode will hide the image by default when link is opened"></span>
+        <mat-slide-toggle [(ngModel)]="img.nsfw" aria-label="NSFW">NSFW</mat-slide-toggle>
+      </div>
+    </div>
+  </div>
+</div>

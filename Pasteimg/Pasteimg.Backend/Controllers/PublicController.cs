@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Pasteimg.Backend.Configurations;
 using Pasteimg.Backend.Logic;
 using Pasteimg.Backend.Logic.Exceptions;
 using Pasteimg.Backend.Models;
+using Pasteimg.Backend.Repository;
 
 namespace Pasteimg.Backend.Controllers
 {
@@ -15,9 +17,11 @@ namespace Pasteimg.Backend.Controllers
     {
 
         private readonly HttpErrorMapper mapper;
-        public PublicController(IPublicLogic logic,HttpErrorMapper mapper) : base(logic)
+        private readonly IRepository<Image> imageRepo;
+        public PublicController(IPublicLogic logic, IRepository<Image> imageRepo, HttpErrorMapper mapper) : base(logic)
         {
             this.mapper = mapper;
+            this.imageRepo = imageRepo;
         }
 
         /// <summary>
@@ -63,6 +67,33 @@ namespace Pasteimg.Backend.Controllers
             return Ok(uploadId);
         }
 
+        [HttpPost]
+        public ActionResult PostImage([FromForm] Image imageObject, IFormFile imageFile)
+        {
+            using (var stream = imageFile.OpenReadStream())
+            {
+                byte[] buffer = new byte[imageFile.Length];
+                stream.Read(buffer, 0, (int)imageFile.Length);
+
+                Image i = new Image()
+                {
+                    Description = imageObject.Description,
+                    NSFW = imageObject.NSFW,
+                    UploadId = imageObject.UploadId,
+                    Content = new Content()
+                    {
+                        Data = buffer,
+                        FileName = imageFile.FileName,                        
+                        ContentType = imageFile.ContentType
+                    }
+                };
+
+
+                this.imageRepo.Create(i);
+                return Ok(i);
+            }
+        }
+
         /// <summary>
         /// Posts a register.
         /// </summary>
@@ -73,7 +104,7 @@ namespace Pasteimg.Backend.Controllers
         public ActionResult PostRegister([FromBody] RegisterModell modell)
         {
             logic.RegisterAdmin(modell);
-            return Ok(modell.Email);
+            return Ok();
         }
     }
 }

@@ -1,0 +1,20 @@
+nav {
+  width: 100%;
+  position: sticky;
+}
+
+mat-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.button-container {
+  display: flex;
+  align-items: center;
+  margin-left: 5px;
+}
+
+button {
+  margin-left: 8px;
+}

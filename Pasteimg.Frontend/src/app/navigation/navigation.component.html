@@ -1,0 +1,41 @@
+<nav>
+  <mat-toolbar>
+    <div class="button-container">
+      <button mat-raised-button color="primary"
+      routerLink="/upload">
+        <mat-icon>add_photo_alternate</mat-icon>
+        <span>Upload</span>
+      </button>
+    </div>
+    <div class="logo">
+      Paste Image
+    </div>
+    <div class="button-container">
+      <button mat-raised-button color="primary"
+      routerLink="/login"
+      *ngIf="!this.sessionIdService.isAdmin()">
+        <mat-icon>lock</mat-icon>
+        <span>Log in</span>
+      </button>
+
+      <button mat-raised-button color="primary"
+      routerLink="/admin"
+      *ngIf="this.sessionIdService.isAdmin()">
+      <mat-icon>assignment_turned_in</mat-icon>
+        <span>Admin view</span>
+      </button>
+      <button mat-raised-button color="primary"
+      (click)="getKey()"
+      *ngIf="this.sessionIdService.isAdmin()">
+      <mat-icon> vpn_key</mat-icon>
+        <span>Get Key</span>
+      </button>
+      <button mat-raised-button color="primary"
+      (click)="logout()"
+      *ngIf="this.sessionIdService.isAdmin()">
+        <mat-icon>exit_to_app</mat-icon>
+        <span>Log out</span>
+      </button>
+    </div>
+  </mat-toolbar>
+</nav>

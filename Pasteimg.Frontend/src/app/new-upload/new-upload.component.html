@@ -1,0 +1,84 @@
+<section style="background-color: #303030; margin-top:-10px">
+	<div class="container" *ngIf="fileuploadLimit!==files.length" [ngClass]="{ 'wrong-file-extension': hasWrongFileExtension }" [class.not-allowed]="showNotAllowed" appDnd (fileDropped)="onFileDropped($event)">
+		<input [disabled]="showNotAllowed" type="file" #fileDropRef id="fileDropRef" multiple (change)="fileBrowseHandler(fileDropRef.files)" />
+
+		<div *ngIf="showNotAllowed" class="wrong-file-overlay">
+		<img src="https://www.pngmart.com/files/17/Wrong-Cross-Transparent-PNG.png" alt="Wrong File" />
+		</div>
+		<div id="here" class="center-content">
+		<div id="innerContainer">
+			<h3>Drag and drop file here</h3>
+			<h3>or</h3>
+			<label for="fileDropRef">Browse for file</label>
+		</div>
+		</div>
+	</div>
+	<div style="text-align:center">
+		<button mat-button disabled>Images: {{files.length}}/{{fileuploadLimit}}</button>
+	</div>
+	<div class="files-list" id="FilesList">
+		<div class="single-file" *ngFor="let file of files; let i = index">
+		<div class="image-info">
+			<div class="file-icon">
+			<img [src]="file.url" alt="File" width="200" height="200" />
+			</div>
+			<div class="info">
+			<p class="size">Size: {{ formatBytes(file.file.size, 0) }}</p>
+			</div>
+		</div>
+
+		<div class="form-fields">
+			<div class="form-row">
+			<mat-form-field class="form-field">
+				<mat-label>File Name</mat-label>
+				<input matInput [(ngModel)]="file.name" />
+			</mat-form-field>
+			</div>
+			<mat-form-field class="form-field">
+				<mat-label [ngClass]="{
+					'yellow-label': file.description.length > characterLimit / 2 && file.description.length < characterLimit && isTextareaSelected,
+				    'red-label': file.description.length === characterLimit && isTextareaSelected
+				 }">Description ({{ file.description.length }}/{{ characterLimit }})</mat-label>
+				<textarea matInput
+					placeholder="Write some text..."
+					[(ngModel)]="file.description"
+					maxlength="{{ characterLimit }}"
+					(focus)="isTextareaSelected = true"
+					(blur)="isTextareaSelected = false">
+				</textarea>
+			  </mat-form-field>
+			<div class="form-row">
+			<span class="tooltip" matTooltip="Not safe for work mode will hide the image by default when link is opened">
+				<mat-slide-toggle [(ngModel)]="file.NSFW" aria-label="NSFW">NSFW</mat-slide-toggle>
+			</span>
+			</div>
+			<div class="delete" (click)="deleteFile(i)">
+				<mat-icon>delete_forever</mat-icon>
+			</div>
+		</div>
+		</div>
+  </div>
+
+  <div style="display: flex; justify-content: center">
+    <mat-slide-toggle [(ngModel)]="toggleChecked">Password</mat-slide-toggle>
+    <div *ngIf="toggleChecked">
+    <mat-form-field class="form-field">
+      <mat-label>Password</mat-label>
+      <input matInput [(ngModel)]="upload.password" />
+    </mat-form-field>
+  </div>
+  </div>
+	<div style=" display: flex; justify-content: center;" #sectionRef>
+		  <button mat-raised-button color="primary"
+		  (click)="submitUpload()"
+		  *ngIf="files.length > 0"
+		  style="margin-bottom:10px; font-size: 25px;"
+		  class="mat-button-lg"
+		  matBadge="{{files.length}}" matBadgePosition="after" matBadgeColor="accent">
+		  Upload
+		</button>
+	</div>
+
+ 	 <!-- Source: https://medium.com/@tarekabdelkhalek/how-to-create-a-drag-and-drop-file-uploading-in-angular-78d9eba0b854 -->
+
+</section >

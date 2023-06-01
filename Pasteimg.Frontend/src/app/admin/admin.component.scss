@@ -1,0 +1,48 @@
+.example-card {
+    margin-bottom: 20px;
+    margin-left: 20px;
+    margin-right: 20px;
+    color: white;
+}
+
+
+#filter{
+    margin-top: 15px;
+    align-items: center;
+    align-self: center;
+    width: 44em;
+}
+
+.image-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.image-wrapper {
+  margin-top: 25px;
+  margin-bottom: 25px;
+  margin-right: 15px;
+}
+
+
+button{
+  margin-right: 10px;
+}
+
+.button-container {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.red-label {
+  color: red;
+}
+
+.yellow-label {
+  color: yellow;
+}
+
+.mat-action-row {
+  place-content: space-between;
+}
