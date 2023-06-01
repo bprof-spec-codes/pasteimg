@@ -1,4 +1,4 @@
-<div *ngFor="let item of uploads">
+<ng-container *ngFor="let item of uploads">
   <mat-card class="example-card">
     <mat-card-header>
       <mat-card-title-group>
@@ -35,7 +35,7 @@
                     (blur)="isTextareaSelected = false">
                   </textarea>
                   <mat-slide-toggle [(ngModel)]="image.nsfw">NSFW</mat-slide-toggle>
-                  </mat-form-field>   
+                  </mat-form-field>
               </div>
               <mat-action-row>
                 <button mat-raised-button color="accent" routerLink="/link/image/{{image.id}}">View</button>
@@ -48,4 +48,4 @@
       </mat-card>
     </mat-card-content>
   </mat-card>
-</div>
+</ng-container>

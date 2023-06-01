@@ -31,7 +31,7 @@ import { MatTabsModule } from "@angular/material/tabs";
 import { MatTooltipModule  } from '@angular/material/tooltip';
 import {MatBadgeModule} from '@angular/material/badge';
 import { MatDialogModule } from '@angular/material/dialog';
-import {MatExpansionModule} from '@angular/material/expansion'; 
+import {MatExpansionModule} from '@angular/material/expansion';
 // form
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
@@ -43,6 +43,7 @@ import { RegisterComponent } from './register/register.component';
 import { AdminComponent } from './admin/admin.component';
 import { UploadPasswordCheckComponent } from './upload-password-check/upload-password-check.component';
 import { ImagePasswordCheckComponent } from './image-password-check/image-password-check.component';
+import {MatGridListModule} from "@angular/material/grid-list";
 
 @NgModule({
   declarations: [
@@ -59,32 +60,33 @@ import { ImagePasswordCheckComponent } from './image-password-check/image-passwo
     UploadPasswordCheckComponent,
     ImagePasswordCheckComponent,
   ],
-  imports: [
-    MatSlideToggleModule,
-    BrowserModule,
-    AppRoutingModule,
-    HttpClientModule,
-    BrowserAnimationsModule,
-    MatButtonModule,
-    MatMenuModule,
-    MatListModule,
-    MatIconModule,
-    FormsModule,
-    MatFormFieldModule,
-    MatCardModule,
-    MatSnackBarModule,
-    MatSelectModule,
-    MatCheckboxModule,
-    ReactiveFormsModule,
-    MatInputModule,
-    MatToolbarModule,
-    MatSidenavModule,
-    MatTabsModule,
-    MatTooltipModule,
-    MatBadgeModule,
-    MatDialogModule,
-    MatExpansionModule
-  ],
+    imports: [
+        MatSlideToggleModule,
+        BrowserModule,
+        AppRoutingModule,
+        HttpClientModule,
+        BrowserAnimationsModule,
+        MatButtonModule,
+        MatMenuModule,
+        MatListModule,
+        MatIconModule,
+        FormsModule,
+        MatFormFieldModule,
+        MatCardModule,
+        MatSnackBarModule,
+        MatSelectModule,
+        MatCheckboxModule,
+        ReactiveFormsModule,
+        MatInputModule,
+        MatToolbarModule,
+        MatSidenavModule,
+        MatTabsModule,
+        MatTooltipModule,
+        MatBadgeModule,
+        MatDialogModule,
+        MatExpansionModule,
+        MatGridListModule
+    ],
   providers: [],
   bootstrap: [AppComponent]
 })

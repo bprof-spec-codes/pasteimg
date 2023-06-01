@@ -1,15 +1,12 @@
 nav {
   width: 100%;
+  position: sticky;
 }
 
 mat-toolbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-}
-
-.logo {
-  /* Add styles for your logo here, such as width, height, and margin */
 }
 
 .button-container {
