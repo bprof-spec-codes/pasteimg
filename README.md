@@ -81,22 +81,22 @@ Az adminisztrációs felület eléréséhez az alapértelmezett email-cím + jel
 	- egy adott egyedi azonosítójú feltöltésnek az összes képének a bélyegképének a bináris adatát elérhetjük
 
 #### UI felületek
-- új feltöltés, kezdőoldal
- - ![image](https://github.com/bprof-spec-codes/pasteimg/assets/92106195/3782153e-7508-42bb-ae4c-e940b62b9187)
- - ![image](https://github.com/bprof-spec-codes/pasteimg/assets/92106195/414ca054-b193-48a7-a290-5869a4e5964f)
-- meglévő feltöltés megtekintése
- - ![image](https://github.com/bprof-spec-codes/pasteimg/assets/92106195/fd7e623a-3d95-4b3c-9b46-4f039810e9fb)
- - ![image](https://github.com/bprof-spec-codes/pasteimg/assets/92106195/9168cbfe-862c-4466-a9b2-1c1d5231e8f5)
-- adott képre kattintás után
- - ![image](https://github.com/bprof-spec-codes/pasteimg/assets/92106195/61e8bb6b-1e01-49bb-a1d1-7ff23f8bd2ea)
-- login felület adminra
- - ![image](https://github.com/bprof-spec-codes/pasteimg/assets/92106195/f5e188ba-6003-4d39-a404-ccd41ab47931)
-- admin felhasználói felület
- - ![image](https://github.com/bprof-spec-codes/pasteimg/assets/92106195/c4253e92-6816-444a-b96e-d8b865c7764e)
+- új feltöltés, kezdőoldal:
+ ![image](https://github.com/bprof-spec-codes/pasteimg/assets/92106195/3782153e-7508-42bb-ae4c-e940b62b9187)
+ ![image](https://github.com/bprof-spec-codes/pasteimg/assets/92106195/414ca054-b193-48a7-a290-5869a4e5964f)
+- meglévő feltöltés megtekintése:
+ ![image](https://github.com/bprof-spec-codes/pasteimg/assets/92106195/fd7e623a-3d95-4b3c-9b46-4f039810e9fb)
+ ![image](https://github.com/bprof-spec-codes/pasteimg/assets/92106195/9168cbfe-862c-4466-a9b2-1c1d5231e8f5)
+- adott képre kattintás után:
+ ![image](https://github.com/bprof-spec-codes/pasteimg/assets/92106195/61e8bb6b-1e01-49bb-a1d1-7ff23f8bd2ea)
+- login felület adminra:
+ ![image](https://github.com/bprof-spec-codes/pasteimg/assets/92106195/f5e188ba-6003-4d39-a404-ccd41ab47931)
+- admin felhasználói felület:
+ ![image](https://github.com/bprof-spec-codes/pasteimg/assets/92106195/c4253e92-6816-444a-b96e-d8b865c7764e)
  - szerkesztés után: ![image](https://github.com/bprof-spec-codes/pasteimg/assets/92106195/c79878ba-eef1-42fa-aa36-48aacf42ff92)
- - ![image](https://github.com/bprof-spec-codes/pasteimg/assets/92106195/8576cf66-5d81-4148-aa4e-b5f7b171e063)
-- admin regisztráció
- - ![image](https://github.com/bprof-spec-codes/pasteimg/assets/92106195/e0b57bce-1cb4-4f4a-9047-1fb020f61f51)
+ ![image](https://github.com/bprof-spec-codes/pasteimg/assets/92106195/8576cf66-5d81-4148-aa4e-b5f7b171e063)
+- admin regisztráció:
+ ![image](https://github.com/bprof-spec-codes/pasteimg/assets/92106195/e0b57bce-1cb4-4f4a-9047-1fb020f61f51)
 
 ## Probléma jegyzőkönyv
 - A legelején elfelejtettünk .gitignore fájlt betenni, így rengeteg felesleges dolog került fel a repoba
