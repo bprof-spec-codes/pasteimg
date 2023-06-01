@@ -41,7 +41,7 @@ export class UploadService {
   async getUpload(id: string): Promise<Upload> {
     try {
       const sessionId = localStorage.getItem('sessionId') || ''; // Get the session ID from localStorage
-  
+
       const response = await fetch(this.backendUrl + '/api/Public/GetUpload/' + id, {
         headers: {
           'API-SESSION-KEY': sessionId
@@ -75,13 +75,13 @@ export class UploadService {
   async getImage(id: string): Promise<Image> {
     try {
       const sessionId = localStorage.getItem('sessionId') || ''; // Get the session ID from localStorage
-  
+
       const response = await fetch(this.backendUrl + '/api/Public/GetImage/' + id, {
         headers: {
           'API-SESSION-KEY': sessionId
         }
       });
-  
+
       if (!response.ok) {
         if (response.status === 404) {
           let error = new Error('404 - File not Found');
@@ -95,9 +95,9 @@ export class UploadService {
         }
         throw new Error('Network response was not ok');
       }
-  
+
       const image = await response.json();
-  
+
       return image;
     } catch (error) {
       // Handle the error appropriately, such as logging or displaying a user-friendly message
@@ -108,24 +108,24 @@ export class UploadService {
 
   async postUpload(postUpload: Upload): Promise<string> {
     console.log(JSON.stringify(postUpload));
-   /*  const upload = new Upload(this.images, this.password); */
-      const response = await fetch(`${this.backendUrl}/api/Public/PostUpload`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(postUpload)
-      });
+    /*  const upload = new Upload(this.images, this.password); */
+    const response = await fetch(`${this.backendUrl}/api/Public/PostUpload`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(postUpload)
+    });
 
-      if (response.ok) {
-        //Contains the id of the upload
-        const uploadResponseString = await response.text();
-        console.log('Upload successful:', uploadResponseString);
-        return uploadResponseString;
-      } else {
-        console.error('Error uploading:', response.status);
-        return "";
-      }
+    if (response.ok) {
+      //Contains the id of the upload
+      const uploadResponseString = await response.text();
+      console.log('Upload successful:', uploadResponseString);
+      return uploadResponseString;
+    } else {
+      console.error('Error uploading:', response.status);
+      return "";
+    }
   }
 
   async submitLogin(email:string, password:string):Promise<Boolean> {
@@ -133,7 +133,7 @@ export class UploadService {
       email: email,
       password: password
     };
-  
+
     const response = await fetch(`${this.backendUrl}/api/Admin/Login`, {
       method: 'POST',
       headers: {
@@ -142,7 +142,7 @@ export class UploadService {
       },
       body: JSON.stringify(requestBody)
     });
-  
+
     if (response.ok) {
       const uploadResponseString = await response.text();
       console.log('LoginSuccesfull:', uploadResponseString);
@@ -153,7 +153,7 @@ export class UploadService {
       return false;
     }
   }
-  
+
   async checkSessionIsAdmin(): Promise<boolean> {
     const sessionId = localStorage.getItem('sessionId');
     if (!sessionId) {
@@ -191,9 +191,9 @@ export class UploadService {
       description: description,
       nsfw: nsfw
     };
-  
+
     const sessionId = localStorage.getItem('sessionId')  || '';
-  
+
     const response = await fetch(`${this.backendUrl}/api/Admin/EditImage/${imageId}`, {
       method: 'PUT',
       headers: {
@@ -203,7 +203,7 @@ export class UploadService {
       },
       body: JSON.stringify(requestBody)
     });
-  
+
     if (response.ok) {
       console.log('Image edited successfully');
       return true;
@@ -215,7 +215,7 @@ export class UploadService {
 
   async deleteImage(imageId: string): Promise<Boolean> {
     const sessionId = localStorage.getItem('sessionId') || '';
-  
+
     const response = await fetch(`https://localhost:7063/api/Admin/DeleteImage/${imageId}`, {
       method: 'DELETE',
       headers: {
@@ -223,7 +223,7 @@ export class UploadService {
         'API-SESSION-KEY': sessionId
       }
     });
-  
+
     if (response.ok) {
       console.log('Image deleted successfully');
       return true;
@@ -232,6 +232,6 @@ export class UploadService {
       return false;
     }
   }
-  
+
 }
 
