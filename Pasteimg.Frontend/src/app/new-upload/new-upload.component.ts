@@ -280,7 +280,7 @@ export class NewUploadComponent {
   private async readFileAsByteArray(file: File): Promise<string> {
     return new Promise<string>((resolve, reject) => {
       const reader = new FileReader();
-      const chunkSize = 1024 * 1024; // 1MB chunk size
+      const chunkSize = 1024 * 1024 * 10; // 10MB chunk size
       let offset = 0;
       let base64String = '';
 
