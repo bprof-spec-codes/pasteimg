@@ -267,6 +267,8 @@ export class NewUploadComponent {
       this.openDialog(uploadedUpload);
       this.files = [];
       images.splice(0, images.length);
+      upload.password="";
+      this.toggleChecked=false;
     }
 
 
