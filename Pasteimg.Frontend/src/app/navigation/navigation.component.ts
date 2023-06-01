@@ -4,6 +4,8 @@ import { sessionIdService } from '../sessionId.service';
 import { HttpClient } from '@angular/common/http';
 import { HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { MatSnackBar } from '@angular/material/snack-bar';
+
 
 @Component({
   selector: 'app-navigation',
@@ -15,25 +17,38 @@ export class NavigationComponent {
   http: HttpClient
   header: HttpHeaders
   nav: Router
+  snackBar: MatSnackBar
 
   constructor(
     private uploadService: UploadService,
     sessionIdService: sessionIdService,
     http: HttpClient,
+    snackBar: MatSnackBar,
     nav: Router
   ) {
+      this.header = new HttpHeaders
       this.sessionIdService = sessionIdService
       this.http = http
       this.nav = nav
+      this.snackBar = snackBar
 
-      this.header = new HttpHeaders({
-        //'SessionKeyHeader' : localStorage.getItem('sessionId')!.toString(),
-        'API-SESSION-KEY' : localStorage.getItem('sessionId')!.toString()
+      sessionIdService.getSessionId().then(id => {
+        this.header = new HttpHeaders({
+          //'SessionKeyHeader' : localStorage.getItem('sessionId')!.toString(),
+          'API-SESSION-KEY' : id
+        })
       })
-      console.log('id:' + localStorage.getItem('sessionId')!.toString())
+      
       console.log(this.header)
       
       
+  }
+
+  public getKey(){
+    this.http.get('https://localhost:7063/api/Admin/GetRegisterKey', {headers: this.header}).subscribe(p => {
+      this.snackBar.open('Register key is: '+p.toString(), 'Close')
+      
+    })
   }
 
   isLoggedIn: boolean = false;
