@@ -47,11 +47,11 @@ export class ViewUploadComponent {
     for (const image of this.upload.images) {
       const imageId = image.id;
       const imageDescription = image.description;
-      const imageNsfw = image.nsfw;
+      const nsfw = image.nsfw;
       this.http.get<any>('https://localhost:7063/api/Public/GetImageWithSourceFile/' + image.id, { headers }).subscribe(p => {
         const contentType = p.content.contentType;
         const data = p.content.data;
-        this.images.push({ imageId, imageDescription, imageNsfw, contentType , data,  }); // Push the image data to the array
+        this.images.push({ imageId, imageDescription, nsfw, contentType , data,  }); // Push the image data to the array
       });
     }
   }

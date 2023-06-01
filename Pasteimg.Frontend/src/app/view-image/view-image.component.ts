@@ -35,7 +35,7 @@ export class ViewImageComponent {
         console.error('Image doesn\'t exist', error);
       }
       else if (error.status === 401) {
-        this.router.navigate(['/password/' + imageIdFromRoute]);
+        this.router.navigate(['/password/image/' + imageIdFromRoute]);
       }
       else {
         console.error('An error occurred:', error);
