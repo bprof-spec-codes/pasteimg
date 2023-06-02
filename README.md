@@ -15,6 +15,7 @@
 ### Telepítés, beüzemelés
 
 A szoftvertermék beüzemeléséhez működő Visual Studio fejlesztőkörnyezet szükséges, amely támogatja a .NET6 keretrendszerben készült projekteket. Fontos, hogy telepítve legyenek az ASP.NET and web development, Data storage and processing, SQL Server Data Tools, IIS Express, NuGet package manager, NuGet targets and build tasks és Entity Framework 6 tools komponensek.
+A fejlesztőkörnyezet "Package Manager Console" funkciójában szükséges az "Update-Database" parancs kiadása a program indítása előtt.
 A projekt fejlesztőkörnyezetben történő megnyitását követően a szerver réteg a Ctrl + F5 billentyűkombinációval indítható.
 A felugró böngészőablakkal (swagger) nem szükséges foglalkozni, bezárása azonban nem javasolt, mivel az a szerver leállásához vezet.
 Későbbiekben, igény esetén csapatunk nyitott arra, hogy a fenti projektet publikusan elérhető weboldalra migráljuk (pl. Azure), hogy a szerver eléréséhez ne legyenek szükségesek a fent leírtak.
